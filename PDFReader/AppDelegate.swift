@@ -16,6 +16,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        
+        
+        var tempPath = NSBundle.mainBundle().pathForResource("mongodb", ofType: "pdf")
+        var pdfDoc: PDFDocument!
+        //an example of initial pdf preprocessing
+        if pdfDoc == nil {
+            let alert = UIAlertView()
+            alert.title = "Message"
+            alert.message = "PDF is being preprocessed"
+            alert.show()
+            //it will copy file from temp directory, create a wrapper object as well as create background image for each page
+            PDFDocument.createPDFDocument("mongodb.pdf", password: "", tempPath: tempPath!, deleteOriginalFile: false,completionHandler: { (success, pdfDocument) -> Void in
+                //once processing is done, a callback is called to perform potential UI updates
+                var rootViewController = PDFViewController(document: pdfDocument)
+                self.window?.rootViewController = rootViewController
+                alert.dismissWithClickedButtonIndex(0, animated: true)
+            })
+        }
+        self.window?.makeKeyAndVisible()
         return true
     }
 

@@ -8,11 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		21DB49C21AE913C900CC19DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C11AE913C900CC19DC /* AppDelegate.swift */; };
-		21DB49C41AE913C900CC19DC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C31AE913C900CC19DC /* ViewController.swift */; };
-		21DB49C71AE913C900CC19DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49C51AE913C900CC19DC /* Main.storyboard */; };
+		21DB49C41AE913C900CC19DC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C31AE913C900CC19DC /* PDFViewController.swift */; };
 		21DB49C91AE913C900CC19DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49C81AE913C900CC19DC /* Images.xcassets */; };
 		21DB49CC1AE913C900CC19DC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49CA1AE913C900CC19DC /* LaunchScreen.xib */; };
 		21DB49D81AE913C900CC19DC /* PDFReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49D71AE913C900CC19DC /* PDFReaderTests.swift */; };
+		21DB49E41AE9142C00CC19DC /* mongodb.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49E31AE9142C00CC19DC /* mongodb.pdf */; };
+		21DB49EB1AE9146200CC19DC /* PDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49E61AE9146200CC19DC /* PDFDocument.swift */; };
+		21DB49EC1AE9146200CC19DC /* PDFPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49E71AE9146200CC19DC /* PDFPageView.swift */; };
+		21DB49ED1AE9146200CC19DC /* PDFPreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49E81AE9146200CC19DC /* PDFPreprocessor.swift */; };
+		21DB49EE1AE9146200CC19DC /* TiledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49E91AE9146200CC19DC /* TiledView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +33,17 @@
 		21DB49BC1AE913C900CC19DC /* PDFReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DB49C01AE913C900CC19DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21DB49C11AE913C900CC19DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		21DB49C31AE913C900CC19DC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		21DB49C61AE913C900CC19DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		21DB49C31AE913C900CC19DC /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		21DB49C81AE913C900CC19DC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		21DB49CB1AE913C900CC19DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		21DB49D11AE913C900CC19DC /* PDFReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DB49D61AE913C900CC19DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21DB49D71AE913C900CC19DC /* PDFReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderTests.swift; sourceTree = "<group>"; };
+		21DB49E31AE9142C00CC19DC /* mongodb.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = mongodb.pdf; sourceTree = "<group>"; };
+		21DB49E61AE9146200CC19DC /* PDFDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFDocument.swift; sourceTree = "<group>"; };
+		21DB49E71AE9146200CC19DC /* PDFPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPageView.swift; sourceTree = "<group>"; };
+		21DB49E81AE9146200CC19DC /* PDFPreprocessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPreprocessor.swift; sourceTree = "<group>"; };
+		21DB49E91AE9146200CC19DC /* TiledView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiledView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,10 +86,9 @@
 			isa = PBXGroup;
 			children = (
 				21DB49C11AE913C900CC19DC /* AppDelegate.swift */,
-				21DB49C31AE913C900CC19DC /* ViewController.swift */,
-				21DB49C51AE913C900CC19DC /* Main.storyboard */,
 				21DB49C81AE913C900CC19DC /* Images.xcassets */,
 				21DB49CA1AE913C900CC19DC /* LaunchScreen.xib */,
+				21DB49F01AE9147800CC19DC /* PDFReader */,
 				21DB49BF1AE913C900CC19DC /* Supporting Files */,
 			);
 			path = PDFReader;
@@ -90,6 +97,7 @@
 		21DB49BF1AE913C900CC19DC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				21DB49E31AE9142C00CC19DC /* mongodb.pdf */,
 				21DB49C01AE913C900CC19DC /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -110,6 +118,18 @@
 				21DB49D61AE913C900CC19DC /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		21DB49F01AE9147800CC19DC /* PDFReader */ = {
+			isa = PBXGroup;
+			children = (
+				21DB49C31AE913C900CC19DC /* PDFViewController.swift */,
+				21DB49E61AE9146200CC19DC /* PDFDocument.swift */,
+				21DB49E71AE9146200CC19DC /* PDFPageView.swift */,
+				21DB49E81AE9146200CC19DC /* PDFPreprocessor.swift */,
+				21DB49E91AE9146200CC19DC /* TiledView.swift */,
+			);
+			name = PDFReader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,7 +212,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21DB49C71AE913C900CC19DC /* Main.storyboard in Resources */,
+				21DB49E41AE9142C00CC19DC /* mongodb.pdf in Resources */,
 				21DB49CC1AE913C900CC19DC /* LaunchScreen.xib in Resources */,
 				21DB49C91AE913C900CC19DC /* Images.xcassets in Resources */,
 			);
@@ -212,8 +232,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21DB49C41AE913C900CC19DC /* ViewController.swift in Sources */,
+				21DB49C41AE913C900CC19DC /* PDFViewController.swift in Sources */,
+				21DB49EC1AE9146200CC19DC /* PDFPageView.swift in Sources */,
+				21DB49EB1AE9146200CC19DC /* PDFDocument.swift in Sources */,
 				21DB49C21AE913C900CC19DC /* AppDelegate.swift in Sources */,
+				21DB49ED1AE9146200CC19DC /* PDFPreprocessor.swift in Sources */,
+				21DB49EE1AE9146200CC19DC /* TiledView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,14 +260,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		21DB49C51AE913C900CC19DC /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				21DB49C61AE913C900CC19DC /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		21DB49CA1AE913C900CC19DC /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -411,6 +427,7 @@
 				21DB49DD1AE913C900CC19DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		21DB49DE1AE913C900CC19DC /* Build configuration list for PBXNativeTarget "PDFReaderTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +436,7 @@
 				21DB49E01AE913C900CC19DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
