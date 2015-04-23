@@ -22,6 +22,26 @@ class PDFPreprocessor {
         return _sharedInstance
     }
     
+    init(){
+        initDirectories()
+    }
+    
+    func initDirectories(){
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as NSArray
+        let documentsDirectory = paths.objectAtIndex(0)as! NSString
+        let path = documentsDirectory.stringByAppendingPathComponent(ROOT_FOLDER)
+        let fileManager = NSFileManager.defaultManager()
+        if(!fileManager.fileExistsAtPath(path))
+        {
+            var error: NSError?
+            fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: &error)
+            if error != nil{
+                            NSLog("Failed to read file size of with error \(error)")
+
+            }
+        }
+    }
+    
     //saves pdf to /pdfs/{id}/pdf_name.pdf
     func savePDF(name: String, pdf: NSData){
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as NSArray

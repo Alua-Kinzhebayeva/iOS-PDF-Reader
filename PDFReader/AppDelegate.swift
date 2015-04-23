@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var tempPath = NSBundle.mainBundle().pathForResource("mongodb", ofType: "pdf")
         var pdfDoc: PDFDocument!
+        //get previously preprocessed PDF
+        pdfDoc = PDFDocument.getPDFDocument("mongodb.pdf",password: "")
         //an example of initial pdf preprocessing
         if pdfDoc == nil {
             let alert = UIAlertView()
@@ -34,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.window?.rootViewController = rootViewController
                 alert.dismissWithClickedButtonIndex(0, animated: true)
             })
+        }else {
+            var rootViewController = PDFViewController(document: pdfDoc)
+            self.window?.rootViewController = rootViewController
         }
         self.window?.makeKeyAndVisible()
         return true

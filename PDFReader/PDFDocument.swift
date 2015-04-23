@@ -10,15 +10,13 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-class PDFDocument: NSCoding {
+class PDFDocument: NSObject, NSCoding {
     
-    var _guid: String!
-    
-    var _fileDate: NSDate!
-    
+//    var _fileDate: NSDate!
+//    
     var _lastOpen: NSDate!
-    
-    var _fileSize: NSNumber!
+//
+//    var _fileSize: NSNumber!
     
     var _pageCount: NSNumber!
     
@@ -38,10 +36,9 @@ class PDFDocument: NSCoding {
     
     @objc required convenience init(coder decoder: NSCoder) {
         self.init()
-        self._guid = decoder.decodeObjectForKey("guid") as! String
-        self._fileDate = decoder.decodeObjectForKey("fileDate") as! NSDate
+//        self._fileDate = decoder.decodeObjectForKey("fileDate") as! NSDate
         self._lastOpen = decoder.decodeObjectForKey("lastOpen") as! NSDate
-        self._fileSize = decoder.decodeObjectForKey("fileSize") as! NSNumber
+//        self._fileSize = decoder.decodeObjectForKey("fileSize") as! NSNumber
         self._pageCount = decoder.decodeObjectForKey("pageCount") as! NSNumber
         self._pageNumber = decoder.decodeObjectForKey("pageNumber") as! NSNumber
         self._bookmarks = decoder.decodeObjectForKey("bookmarks") as! NSMutableIndexSet
@@ -51,10 +48,9 @@ class PDFDocument: NSCoding {
     }
     
      @objc func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(self._guid, forKey: "guid")
-        coder.encodeObject(self._fileDate, forKey: "fileDate")
+//        coder.encodeObject(self._fileDate, forKey: "fileDate")
         coder.encodeObject(self._lastOpen, forKey: "lastOpen")
-        coder.encodeObject(self._fileSize, forKey: "fileSize")
+//        coder.encodeObject(self._fileSize, forKey: "fileSize")
         coder.encodeObject(self._pageCount, forKey: "pageCount")
         coder.encodeObject(self._pageNumber, forKey: "pageNumber")
         coder.encodeObject(self._bookmarks, forKey: "bookmarks")
@@ -63,20 +59,12 @@ class PDFDocument: NSCoding {
         coder.encodeObject(self._fileURL, forKey: "fileURL")
     }
     
-    init(){}
+    override init(){}
     
     init(fileName:String, password: String){
         self._fileName = fileName
         self._password = password
     }
-    
-    /*
-        TODO page count
-        TODO page image
-        TODO keep reference to CGPDFDocumentRef
-        TODO get reference to CGPDFPageRef for page
-        TODO archive and unarchive secondary task
-    */
     
     class func isPDF(filePath:String)->Bool{
         var state = false;
@@ -101,12 +89,43 @@ class PDFDocument: NSCoding {
         
         return state;
     }
-    //= CGPDFDocumentCreateWithURL(docURLRef)
+    
+    class func archiveFilePath(fileName: NSString) -> NSString{
+        var pathToPDF = PDFPreprocessor.sharedInstance.getPathToPdfDirectory(fileName as String)
+        if pathToPDF != nil{
+            var achiveName = fileName.stringByDeletingPathExtension.stringByAppendingString(".plist")
+            var archivePath = pathToPDF?.stringByAppendingPathComponent(achiveName)
+            return archivePath!
+        }
+        return ""
+    }
+    
+    class func unarchiveFromFileName(fileName: NSString, password: NSString) -> PDFDocument?{
+        var document: PDFDocument?
+        var archiveFilePath = PDFDocument.archiveFilePath(fileName)
+        if !archiveFilePath.isEqualToString(""){
+            document = NSKeyedUnarchiver.unarchiveObjectWithFile(archiveFilePath as String) as! PDFDocument
+            document!._password = password as String
+        }
+        return document
+    }
+    
+    func archiveWithFileName(fileName: NSString) -> Bool{
+        var archiveFilePath = PDFDocument.archiveFilePath(fileName)
+        return NSKeyedArchiver.archiveRootObject(self, toFile: archiveFilePath as String)
+    }
+    
+    func saveDocument(){
+        self.archiveWithFileName(self._fileName)
+    }
+
     func getPDFRef()-> CGPDFDocument{
         if(self.thePDFDocRef == nil){
-            let docURLRef = self._fileURL as CFURLRef
+            var dir = PDFPreprocessor.sharedInstance.getPathToPdfDirectory(self._fileName)
+            var file = dir!+"/"+self._fileName
+            let docURLRef = NSURL(fileURLWithPath: file) as! CFURLRef
             self.thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)
-            return CGPDFDocumentCreateWithURL(docURLRef)
+            return self.thePDFDocRef
         }
         return self.thePDFDocRef;
     }
@@ -116,6 +135,12 @@ class PDFDocument: NSCoding {
         var pageRef = CGPDFDocumentGetPage(getPDFRef(), page+1);
         return (backgroundImage!, pageRef)
         
+    }
+    
+    class func getPDFDocument(fileName:String, password:String) -> PDFDocument?{
+        var document: PDFDocument?
+        document = PDFDocument.unarchiveFromFileName(fileName, password: password)
+        return document
     }
     
     /*
@@ -146,8 +171,6 @@ class PDFDocument: NSCoding {
         }
         
         var document = PDFDocument(fileName: fileName, password: password)
-        //
-        document._guid = "1"//[ReaderDocument GUID]; // Create a document GUID
         
         document._password = password // pdf password
         
@@ -165,7 +188,7 @@ class PDFDocument: NSCoding {
         var docURLRef = document._fileURL as CFURLRef
         
         //TODO take into consideration password
-        var thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)//CGPDFDocumentCreateX(docURLRef, _password);
+        var thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)
         
         if (thePDFDocRef != nil) // Get the number of pages in the document
         {
@@ -174,27 +197,34 @@ class PDFDocument: NSCoding {
             document._pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef);
             
         }
-        else // Cupertino, we have a problem with the document
+        else
         {
-//            NSAssert(NO, @"CGPDFDocumentRef == NULL");
+            //a problem here
         }
         
-        document._lastOpen = NSDate.new()//[NSDate dateWithTimeIntervalSinceReferenceDate:0.0]; // Last opened
-        
-        let fileAttributes : NSDictionary?  = fileManager.attributesOfItemAtPath(document._fileURL.absoluteString!, error: nil)//[fileManager attributesOfItemAtPath:fullFilePath error:NULL];
-        
-        document._fileDate = fileAttributes!.valueForKey(NSFileModificationDate) as! NSDate //objectForKey:NSFileModificationDate]; // File date
-        
-        document._fileSize = fileAttributes!.valueForKey(NSFileSize) as! NSNumber // File size (bytes)
-//
+        document._lastOpen = NSDate.new()
         
         preprocessor.preprocessPDF(fileName, completion: { (success) -> Void in
+            
+//            var error: NSError?
+//            
+//            let item = document._fileURL.absoluteString!
+//            
+//            let fileAttributes : NSDictionary?  = fileManager.attributesOfItemAtPath(item, error: &error)
+//            
+//            if (fileAttributes == nil) {
+//                NSLog("Failed to read file size of with error \(error)")
+//            }
+//            
+//            document._fileDate = fileAttributes!.valueForKey(NSFileModificationDate) as! NSDate
+//            
+//            document._fileSize = fileAttributes!.valueForKey(NSFileSize) as! NSNumber // File size (bytes)
+            document.saveDocument()
             completionHandler(success: success, pdfDocument: document)
         })
         
     }
     
-    //TODO
     func pageCount()-> NSNumber{
         return self._pageCount;
     }
