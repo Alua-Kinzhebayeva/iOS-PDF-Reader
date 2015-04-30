@@ -16,6 +16,10 @@ Second and subsequent uses
 var pdfDoc = PDFDocument.getPDFDocument("mongodb.pdf",password: "")
 var rootViewController = PDFViewController(document: pdfDoc)
 ```
+# TODO
+- Handling PDFs with password
+- ThumbView at the page bottom
+- Displaying two pages in landscape orientation
 
 # Acknowledgements
 
