@@ -24,3 +24,7 @@ var rootViewController = PDFViewController(document: pdfDoc)
 # Acknowledgements
 
 inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alua-Kinzhebayeva/ios-pdf-reader/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
