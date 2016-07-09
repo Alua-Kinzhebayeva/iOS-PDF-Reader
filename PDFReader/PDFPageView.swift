@@ -13,7 +13,6 @@ internal final class PDFPageView: UIScrollView {
     private let ZOOM_LEVELS = 2
     private let ZOOM_STEP = 2
     private let CONTENT_INSET: CGFloat = 2
-    private var myContext = 0
     
     /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
     private var backgroundImageView: UIImageView?
@@ -21,8 +20,6 @@ internal final class PDFPageView: UIScrollView {
     /// The TiledPDFView that is currently front most.
     private var tiledPDFView: TiledView!
     
-    /// The old TiledPDFView that we draw on top of when the zooming stops.
-    private var oldTiledPDFView: TiledView!
     
     private var PDFPage: CGPDFPageRef!
     private var PDFScale: CGFloat?

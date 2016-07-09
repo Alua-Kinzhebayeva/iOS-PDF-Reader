@@ -11,11 +11,12 @@ import UIKit
 import QuartzCore
 
 internal final class TiledView: UIView {
-    private let myScale: CGFloat?
     private var leftPdfPage: CGPDFPageRef?
+    private let myScale: CGFloat
    
-    init(frame:CGRect, scale: CGFloat){
+    init(frame:CGRect, scale: CGFloat, newPage: CGPDFPage) {
         myScale = scale
+        leftPdfPage = newPage
         super.init(frame: frame)
         
         /*
@@ -28,17 +29,15 @@ internal final class TiledView: UIView {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        myScale = nil
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        leftPdfPage = nil
     }
     
     override class func layerClass() -> AnyClass {
         return CATiledLayer.self
-    }
-    
-    // Set the CGPDFPageRef for the view.
-    func setLeftPage(newPage: CGPDFPageRef) {
-        leftPdfPage = newPage
     }
     
     override func drawRect(r: CGRect) {
