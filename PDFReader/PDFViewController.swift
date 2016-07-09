@@ -7,105 +7,78 @@
 
 import UIKit
 
-class PDFViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+internal final class PDFViewController: UIViewController {
+    @IBOutlet private var collectionView: UICollectionView!
     
-    var collectionView: UICollectionView!
-    var currentPDFPage: PDFPageView!
     var document: PDFDocument!
-    var currentPageIndex: Int = 0
-    
-    init(document: PDFDocument){
-        super.init(nibName: nil, bundle: nil);
-        self.document = document
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    private var currentPDFPage: PDFPageView!
+    private var currentPageIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.autoresizesSubviews = true
-        self.view.autoresizingMask =  .FlexibleHeight | .FlexibleWidth
+        self.view.autoresizingMask =  [.FlexibleHeight, .FlexibleWidth]
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        var scrollDirection = UICollectionViewScrollDirection.Horizontal
+        let scrollDirection = UICollectionViewScrollDirection.Horizontal
         layout.scrollDirection = scrollDirection
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0.0
-        collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collectionView!.dataSource = self
-        collectionView!.delegate = self
         collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
-        collectionView!.backgroundColor = UIColor.whiteColor()
-        collectionView!.pagingEnabled = true
-        self.view.addSubview(collectionView!)
+        collectionView!.pagingEnabled = false
         
-        self.collectionView.autoresizesSubviews = true
-        self.collectionView.autoresizingMask =  .FlexibleHeight | .FlexibleWidth
-        
-        self.view.backgroundColor = UIColor.clearColor()
-        self.collectionView.backgroundColor = UIColor.clearColor()
-    
+        view.backgroundColor = UIColor.clearColor()
+        collectionView.backgroundColor = UIColor.clearColor()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1;
-    }
-    
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.document.pageCount().integerValue
-    }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSizeMake(self.collectionView.frame.size.width, self.collectionView.frame.size.height-20)
-    }
-    
-    //returns page view
-    func pageView(page: Int, cell: UICollectionViewCell) -> UIScrollView{
-        var pageTuple = self.document.getPage(page)
-        var scrollView = PDFPageView(frame: cell.bounds)
-        scrollView.setPDFPage(pageTuple.pageRef, backgroundImage: pageTuple.backgroundImage)
-        self.currentPDFPage = scrollView
-        var doubleTapOne = UITapGestureRecognizer(target: scrollView, action:Selector("handleDoubleTap:"))
-        doubleTapOne.numberOfTapsRequired = 2;
-        doubleTapOne.cancelsTouchesInView = false;
-        scrollView.addGestureRecognizer(doubleTapOne)
-        return scrollView
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath) as! UICollectionViewCell
-
-        var pageTuple = self.document.getPage(indexPath.row+1)
-        var children = cell.subviews
-        for view in children{
-            view.removeFromSuperview()
-        }
-        cell.addSubview(self.pageView(indexPath.row, cell: cell))
-            
-        return cell
-        
-    }
-    
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        self.currentPageIndex =  Int(floor(self.collectionView.contentOffset.x / self.collectionView.bounds.size.width))
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        var newContentOffsetX = CGFloat(self.currentPageIndex) * self.collectionView.bounds.size.width
-        self.collectionView.contentOffset = CGPointMake(newContentOffsetX, self.collectionView.contentOffset.y);
-        self.collectionView.collectionViewLayout.invalidateLayout()
+        let newContentOffsetX = CGFloat(currentPageIndex) * collectionView.bounds.size.width
+        collectionView.contentOffset = CGPointMake(newContentOffsetX, collectionView.contentOffset.y)
+        collectionView.collectionViewLayout.invalidateLayout()
     }
     
+    /// Returns page view
+    private func pageView(page: Int, cell: UICollectionViewCell) -> UIScrollView {
+        let pageTuple = document.getPage(page)
+        let scrollView = PDFPageView(frame: cell.bounds)
+        guard let pageRef = pageTuple.pageRef else { return scrollView }
+        guard let backgroundImage = pageTuple.backgroundImage else { return scrollView }
+        scrollView.setPDFPage(pageRef, backgroundImage: backgroundImage)
+        currentPDFPage = scrollView
+        let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
+        doubleTapOne.numberOfTapsRequired = 2
+        doubleTapOne.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(doubleTapOne)
+        return scrollView
+    }
 }
 
+extension PDFViewController: UICollectionViewDataSource {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return document.pageCount.integerValue
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
+        cell.subviews.forEach({ $0.removeFromSuperview() })
+        cell.addSubview(pageView(indexPath.row, cell: cell))
+        return cell
+    }
+}
 
+extension PDFViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return CGSizeMake(collectionView.frame.size.width, collectionView.frame.size.height-20)
+    }
+}
 
+extension PDFViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        self.currentPageIndex =  Int(floor(collectionView.contentOffset.x / collectionView.bounds.size.width))
+    }
+}
