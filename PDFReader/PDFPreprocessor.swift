@@ -12,7 +12,6 @@ import CoreGraphics
 internal struct PDFPreprocessor {
     private let ROOT_FOLDER = "pdfs"
     private let PAGES_FOLDER = "background_images"
-    private let STATUS_BAR_OFFSET: CGFloat = 20.0
     
     private let cachesDirectory = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask).first!
     
@@ -75,11 +74,6 @@ internal struct PDFPreprocessor {
         return UIImage(named: path)
     }
     
-    private func sizeForPageBackgroundImage() -> CGSize {
-        let screenRect = UIScreen.mainScreen().bounds
-        return CGSizeMake(screenRect.size.width, screenRect.size.height-STATUS_BAR_OFFSET)
-    }
-    
     private func imageFromPDFPage(page:CGPDFPageRef, frame:CGRect) -> UIImage {
         // Determine the size of the PDF page.
         var pageRect = CGPDFPageGetBoxRect(page, CGPDFBox.MediaBox)
@@ -126,7 +120,7 @@ internal struct PDFPreprocessor {
             
             let pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef) as Int
             var backgroundImageRect = CGRectZero
-            backgroundImageRect.size = self.sizeForPageBackgroundImage()
+            backgroundImageRect.size = UIScreen.mainScreen().bounds.size
 
             for i in 1...pageCount {
                 let PDFPage = CGPDFDocumentGetPage(thePDFDocRef, i)

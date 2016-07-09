@@ -20,11 +20,10 @@ internal final class StartViewController: UIViewController {
         })
     }
     
-    @IBAction private func go() {
-        if let pdfDocument = pdfDocument {
-            let controller = UIStoryboard(name: "Storyboard", bundle: nil).instantiateViewControllerWithIdentifier("PDFViewController") as! PDFViewController
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let controller = segue.destinationViewController as? PDFViewController {
             controller.document = pdfDocument
-            presentViewController(controller, animated: true, completion: nil)
+            controller.title = pdfDocument?.fileName
         }
     }
 

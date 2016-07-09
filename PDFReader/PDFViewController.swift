@@ -17,9 +17,6 @@ internal final class PDFViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
-        
-        view.backgroundColor = UIColor.clearColor()
-        collectionView.backgroundColor = UIColor.clearColor()
     }
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
@@ -28,12 +25,28 @@ internal final class PDFViewController: UIViewController {
         collectionView.collectionViewLayout.invalidateLayout()
     }
     
+    @IBAction func print() {
+        guard UIPrintInteractionController.isPrintingAvailable() else { return }
+        guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
+        
+        let printInfo = UIPrintInfo.printInfo()
+        printInfo.duplex = .LongEdge
+        printInfo.outputType = .General
+        printInfo.jobName = document.fileName
+        
+        let printInteraction = UIPrintInteractionController.sharedPrintController()
+        printInteraction.printInfo = printInfo
+        printInteraction.printingItem = document.fileURL
+        printInteraction.showsPageRange = true
+        printInteraction.presentAnimated(true, completionHandler: nil)
+    }
+    
     /// Returns page view
-    private func pageView(page: Int, cell: UICollectionViewCell) -> UIScrollView {
+    private func pageView(page: Int, cellBounds: CGRect) -> UIScrollView {
         let pageTuple = document.getPage(page)
         guard let pageRef = pageTuple.pageRef else { fatalError() }
         guard let backgroundImage = pageTuple.backgroundImage else { fatalError() }
-        let scrollView = PDFPageView(frame: cell.bounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
+        let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
         
         currentPDFPage = scrollView
         let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
@@ -52,14 +65,14 @@ extension PDFViewController: UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
         cell.subviews.forEach({ $0.removeFromSuperview() })
-        cell.addSubview(pageView(indexPath.row, cell: cell))
+        cell.addSubview(pageView(indexPath.row, cellBounds: cell.bounds))
         return cell
     }
 }
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSizeMake(collectionView.frame.size.width, collectionView.frame.size.height-20)
+        return CGSizeMake(collectionView.frame.size.width, collectionView.frame.size.height)
     }
 }
 
