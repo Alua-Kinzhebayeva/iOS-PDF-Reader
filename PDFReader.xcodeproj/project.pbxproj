@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1419B1B21D309BF2008A5FAB /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1419B1B11D309BF2008A5FAB /* Storyboard.storyboard */; };
 		1419B1B41D309C33008A5FAB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1419B1B31D309C33008A5FAB /* StartViewController.swift */; };
+		1465884E1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */; };
+		146588501D31B88600149C87 /* PDFThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */; };
 		21DB49C21AE913C900CC19DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C11AE913C900CC19DC /* AppDelegate.swift */; };
 		21DB49C41AE913C900CC19DC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C31AE913C900CC19DC /* PDFViewController.swift */; };
 		21DB49C91AE913C900CC19DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49C81AE913C900CC19DC /* Images.xcassets */; };
@@ -23,6 +25,8 @@
 /* Begin PBXFileReference section */
 		1419B1B11D309BF2008A5FAB /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		1419B1B31D309C33008A5FAB /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
+		1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCell.swift; sourceTree = "<group>"; };
 		21DB49BC1AE913C900CC19DC /* PDFReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DB49C01AE913C900CC19DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21DB49C11AE913C900CC19DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 				21DB49C31AE913C900CC19DC /* PDFViewController.swift */,
 				1419B1B31D309C33008A5FAB /* StartViewController.swift */,
 				21DB49E91AE9146200CC19DC /* TiledView.swift */,
+				1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */,
+				1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */,
 			);
 			name = PDFReader;
 			sourceTree = "<group>";
@@ -176,8 +182,10 @@
 				1419B1B41D309C33008A5FAB /* StartViewController.swift in Sources */,
 				21DB49EC1AE9146200CC19DC /* PDFPageView.swift in Sources */,
 				21DB49EB1AE9146200CC19DC /* PDFDocument.swift in Sources */,
+				146588501D31B88600149C87 /* PDFThumbnailCell.swift in Sources */,
 				21DB49C21AE913C900CC19DC /* AppDelegate.swift in Sources */,
 				21DB49ED1AE9146200CC19DC /* PDFPreprocessor.swift in Sources */,
+				1465884E1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift in Sources */,
 				21DB49EE1AE9146200CC19DC /* TiledView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -55,6 +55,19 @@ internal final class PDFViewController: UIViewController {
         scrollView.addGestureRecognizer(doubleTapOne)
         return scrollView
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let controller = segue.destinationViewController as? PDFThumbnailCollectionViewController {
+            controller.document = document
+            controller.delegate = self
+        }
+    }
+}
+
+extension PDFViewController: PDFThumbnailControllerDelegate {
+    func didSelectIndexPath(indexPath: NSIndexPath) {
+        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: true)
+    }
 }
 
 extension PDFViewController: UICollectionViewDataSource {

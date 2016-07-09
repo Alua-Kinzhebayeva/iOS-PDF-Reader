@@ -12,6 +12,7 @@ import CoreGraphics
 internal struct PDFPreprocessor {
     private let ROOT_FOLDER = "pdfs"
     private let PAGES_FOLDER = "background_images"
+    private let PAGES_FOLDER_SMALL = "background_images_small"
     
     private let cachesDirectory = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask).first!
     
@@ -39,6 +40,7 @@ internal struct PDFPreprocessor {
             do {
                 try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
                 try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER), withIntermediateDirectories: false, attributes: nil)
+                try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER_SMALL), withIntermediateDirectories: false, attributes: nil)
                 let filePath = (path as NSString).stringByAppendingPathComponent(name)
                 fileManager.createFileAtPath(filePath, contents: pdf, attributes: nil)
             } catch let error as NSError {
@@ -68,13 +70,25 @@ internal struct PDFPreprocessor {
         UIImageJPEGRepresentation(page, 1.0)!.writeToFile(path, atomically: true)
     }
     
+    //saves page image to /pdfs/{id}/background_images/{page_num}.jpeg
+    private func savePDFPageImageSmall(pdfName: String, pageNumber: Int, page: UIImage) {
+        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER_SMALL).URLByAppendingPathComponent(String(pageNumber)).path else { fatalError() }
+        UIImageJPEGRepresentation(page, 1.0)!.writeToFile(path, atomically: true)
+    }
+    
     //reads page image from /pdfs/{id}/background_images/{page_num}.jpeg
     func getPDFPageImage(pdfName: String, page: Int) -> UIImage? {
         guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER).URLByAppendingPathComponent(String(page)).path else { fatalError() }
         return UIImage(named: path)
     }
     
-    private func imageFromPDFPage(page:CGPDFPageRef, frame:CGRect) -> UIImage {
+    //reads page image from /pdfs/{id}/background_images_small/{page_num}.jpeg
+    func getPDFPageImageSmall(pdfName: String, page: Int) -> UIImage? {
+        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER_SMALL).URLByAppendingPathComponent(String(page)).path else { fatalError() }
+        return UIImage(named: path)
+    }
+    
+    private func imageFromPDFPage(page: CGPDFPageRef, frame: CGRect) -> UIImage {
         // Determine the size of the PDF page.
         var pageRect = CGPDFPageGetBoxRect(page, CGPDFBox.MediaBox)
         let _PDFScale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
@@ -107,7 +121,7 @@ internal struct PDFPreprocessor {
     }
     
     //creates images from pdf pages in order to facilitate smooth scrolling
-    func preprocessPDF(name:String, completion: (success: Bool) -> Void) {
+    func preprocessPDF(name: String, completion: (success: Bool) -> Void) {
         let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
         var areImagesCreated = false
         dispatch_async(dispatch_get_global_queue(priority, 0)) {
@@ -126,6 +140,9 @@ internal struct PDFPreprocessor {
                 let PDFPage = CGPDFDocumentGetPage(thePDFDocRef, i)
                 let backgroundImageData = self.imageFromPDFPage(PDFPage!, frame: backgroundImageRect)
                 self.savePDFPageImage(name, pageNumber: i, page: backgroundImageData)
+                
+                let backgroundImageDataSmall = self.imageFromPDFPage(PDFPage!, frame: CGRectMake(0, 0, 240, 320))
+                self.savePDFPageImageSmall(name, pageNumber: i, page: backgroundImageDataSmall)
             }
             
             areImagesCreated = true

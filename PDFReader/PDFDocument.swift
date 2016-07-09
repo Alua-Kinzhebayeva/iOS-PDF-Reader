@@ -35,7 +35,7 @@ internal final class PDFDocument: NSObject, NSCoding {
     func allPageImages() -> [UIImage] {
         var images = [UIImage]()
         for index in 0..<pageCount.integerValue {
-            if let image = PDFPreprocessor.sharedInstance.getPDFPageImage(self.fileName, page: index + 1) {
+            if let image = PDFPreprocessor.sharedInstance.getPDFPageImageSmall(self.fileName, page: index + 1) {
                 images.append(image)
             }
         }
