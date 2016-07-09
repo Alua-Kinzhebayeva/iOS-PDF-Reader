@@ -14,10 +14,12 @@ internal struct PDFPreprocessor {
     private let PAGES_FOLDER = "background_images"
     private let STATUS_BAR_OFFSET: CGFloat = 20.0
     
+    private let cachesDirectory = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask).first!
+    
     static var sharedInstance = PDFPreprocessor()
     
     init() {
-        guard let path = documentsDirectory.URLByAppendingPathComponent(ROOT_FOLDER).path else { fatalError() }
+        guard let path = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).path else { fatalError() }
         let fileManager = NSFileManager.defaultManager()
         if !fileManager.fileExistsAtPath(path) {
             do {
@@ -30,7 +32,7 @@ internal struct PDFPreprocessor {
     
     //saves pdf to /pdfs/{id}/pdf_name.pdf
     func savePDF(name: String, pdf: NSData) {
-        guard let path = documentsDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name).path else { fatalError() }
+        guard let path = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name).path else { fatalError() }
         
         let fileManager = NSFileManager.defaultManager()
         
@@ -47,7 +49,7 @@ internal struct PDFPreprocessor {
     }
     
     func getPathToPdfDirectory(name: String) -> NSURL? {
-        let pathURL = documentsDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name)
+        let pathURL = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name)
         if let path = pathURL.path where NSFileManager.defaultManager().fileExistsAtPath(path) {
             return pathURL
         } else {
@@ -139,9 +141,5 @@ internal struct PDFPreprocessor {
                 completion(success:areImagesCreated)
             }
         }
-    }
-    
-    private var documentsDirectory: NSURL {
-        return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     }
 }

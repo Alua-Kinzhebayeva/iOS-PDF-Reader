@@ -16,24 +16,10 @@ internal final class PDFViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.view.autoresizesSubviews = true
-        self.view.autoresizingMask =  [.FlexibleHeight, .FlexibleWidth]
-        
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        let scrollDirection = UICollectionViewScrollDirection.Horizontal
-        layout.scrollDirection = scrollDirection
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0.0
         collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
-        collectionView!.pagingEnabled = false
         
         view.backgroundColor = UIColor.clearColor()
         collectionView.backgroundColor = UIColor.clearColor()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
@@ -45,10 +31,10 @@ internal final class PDFViewController: UIViewController {
     /// Returns page view
     private func pageView(page: Int, cell: UICollectionViewCell) -> UIScrollView {
         let pageTuple = document.getPage(page)
-        let scrollView = PDFPageView(frame: cell.bounds)
-        guard let pageRef = pageTuple.pageRef else { return scrollView }
-        guard let backgroundImage = pageTuple.backgroundImage else { return scrollView }
-        scrollView.setPDFPage(pageRef, backgroundImage: backgroundImage)
+        guard let pageRef = pageTuple.pageRef else { fatalError() }
+        guard let backgroundImage = pageTuple.backgroundImage else { fatalError() }
+        let scrollView = PDFPageView(frame: cell.bounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
+        
         currentPDFPage = scrollView
         let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
         doubleTapOne.numberOfTapsRequired = 2

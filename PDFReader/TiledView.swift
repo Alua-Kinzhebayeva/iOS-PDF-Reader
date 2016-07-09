@@ -50,8 +50,6 @@ internal final class TiledView: UIView {
     
     // Draw the CGPDFPageRef into the layer at the correct scale.
     override func drawLayer(layer: CALayer, inContext con: CGContext) {
-        guard let myScale = myScale else { fatalError() }
-        
         // Fill the background with white.
         CGContextSetRGBFillColor(con, 1.0, 1.0, 1.0, 1.0)
         CGContextFillRect(con, bounds)
