@@ -10,13 +10,16 @@ import UIKit
 
 internal final class StartViewController: UIViewController {
     var pdfDocument: PDFDocument?
+    @IBOutlet var startButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        startButton.enabled = false
         
         let tempPath = NSBundle.mainBundle().pathForResource("mongodb", ofType: "pdf")
         PDFDocument.createPDFDocument("mongodb.pdf", tempPath: tempPath!,completionHandler: { (success, pdfDocument) -> Void in
             self.pdfDocument = pdfDocument
+            self.startButton.enabled = true
         })
     }
     

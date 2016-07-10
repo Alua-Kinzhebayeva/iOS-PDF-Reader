@@ -34,6 +34,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="DTP-Tf-1KM"/>
+                    <connections>
+                        <outlet property="startButton" destination="gG0-25-KvZ" id="GFH-VB-HU7"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="saA-lo-nid" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
