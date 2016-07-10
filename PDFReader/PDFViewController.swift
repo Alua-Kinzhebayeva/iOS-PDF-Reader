@@ -9,6 +9,7 @@ import UIKit
 
 internal final class PDFViewController: UIViewController {
     @IBOutlet private var collectionView: UICollectionView!
+    @IBOutlet weak var thumbnailCollectionControllerContainer: UIView!
     
     var document: PDFDocument!
     private var currentPDFPage: PDFPageView!
@@ -54,7 +55,28 @@ internal final class PDFViewController: UIViewController {
         doubleTapOne.numberOfTapsRequired = 2
         doubleTapOne.cancelsTouchesInView = false
         scrollView.addGestureRecognizer(doubleTapOne)
+        
+        let singleTapOne = UITapGestureRecognizer(target: self, action:#selector(PDFViewController.handleSingleTap(_:)))
+        singleTapOne.numberOfTapsRequired = 1
+        singleTapOne.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(singleTapOne)
+        
         return scrollView
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return navigationController?.navigationBarHidden == true
+    }
+    
+    override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
+        return .Slide
+    }
+    
+    func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
+        UIView.animateWithDuration(0.3) {
+            self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
+            self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
+        }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

@@ -113,6 +113,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="xgz-br-S4l" id="4tX-Ot-xgt"/>
+                        <outlet property="thumbnailCollectionControllerContainer" destination="xpt-Eg-xUH" id="fNw-te-JNc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Olj-jR-VgF" userLabel="First Responder" sceneMemberID="firstResponder"/>
