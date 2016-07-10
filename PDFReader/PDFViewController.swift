@@ -49,6 +49,7 @@ internal final class PDFViewController: UIViewController {
         guard let pageRef = pageTuple.pageRef else { fatalError() }
         guard let backgroundImage = pageTuple.backgroundImage else { fatalError() }
         let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
+        scrollView.tag = page
         
         currentPDFPage = scrollView
         let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
@@ -73,9 +74,13 @@ internal final class PDFViewController: UIViewController {
     }
     
     func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3) {
+        UIView.animateWithDuration(0.3, animations: { 
             self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
             self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
+            }) { (completed) in
+                let indexPath = NSIndexPath(forRow: self.currentPageIndex, inSection: 0)
+                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                self.thumbnailCollectionController?.collectionView?.reloadData()
         }
     }
     
@@ -103,15 +108,19 @@ extension PDFViewController: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
-        cell.subviews.forEach({ $0.removeFromSuperview() })
-        cell.addSubview(pageView(indexPath.row, cellBounds: cell.bounds))
+        if let existingView = cell.subviews.flatMap({ $0 as? UIScrollView }).first where existingView.tag == indexPath.row {
+            
+        } else {
+            cell.subviews.forEach({ $0.removeFromSuperview() })
+            cell.addSubview(pageView(indexPath.row, cellBounds: cell.bounds))
+        }
         return cell
     }
 }
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSizeMake(collectionView.frame.size.width, collectionView.frame.size.height)
+        return collectionView.frame.size
     }
 }
 
