@@ -13,6 +13,7 @@ internal final class PDFViewController: UIViewController {
     var document: PDFDocument!
     private var currentPDFPage: PDFPageView!
     private var currentPageIndex: Int = 0
+    private var thumbnailCollectionController: PDFThumbnailCollectionViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +59,10 @@ internal final class PDFViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let controller = segue.destinationViewController as? PDFThumbnailCollectionViewController {
+            thumbnailCollectionController = controller
             controller.document = document
             controller.delegate = self
+            controller.currentPageIndex = currentPageIndex
         }
     }
 }
@@ -67,6 +70,7 @@ internal final class PDFViewController: UIViewController {
 extension PDFViewController: PDFThumbnailControllerDelegate {
     func didSelectIndexPath(indexPath: NSIndexPath) {
         collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: true)
+        thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }
 
@@ -90,7 +94,16 @@ extension PDFViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension PDFViewController: UIScrollViewDelegate {
+    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        updateCurrentPageIndex(scrollView)
+    }
+    
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        self.currentPageIndex =  Int(floor(collectionView.contentOffset.x / collectionView.bounds.size.width))
+        updateCurrentPageIndex(scrollView)
+    }
+    
+    private func updateCurrentPageIndex(scrollView: UIScrollView) {
+        self.currentPageIndex = Int(floor(collectionView.contentOffset.x / collectionView.bounds.size.width))
+        thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }

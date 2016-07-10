@@ -14,6 +14,18 @@ protocol PDFThumbnailControllerDelegate: class {
 
 internal final class PDFThumbnailCollectionViewController: UICollectionViewController {
     var document: PDFDocument!
+    
+    var currentPageIndex: Int = 0 {
+        didSet {
+            guard let collectionView = collectionView else { return }
+            let curentPageIndexPath = NSIndexPath(forRow: currentPageIndex, inSection: 0)
+            if !collectionView.indexPathsForVisibleItems().contains(curentPageIndexPath) {
+                collectionView.scrollToItemAtIndexPath(curentPageIndexPath, atScrollPosition: .CenteredHorizontally, animated: true)
+            }
+            collectionView.reloadData()
+        }
+    }
+    
     weak var delegate: PDFThumbnailControllerDelegate?
     
     private var pageImages: [UIImage]!
@@ -29,7 +41,13 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! PDFThumbnailCell
+        
         cell.imageView?.image = pageImages[indexPath.row]
+        if currentPageIndex == indexPath.row {
+            cell.alpha = 1.0
+        } else {
+            cell.alpha = 0.2
+        }
         return cell
     }
     
