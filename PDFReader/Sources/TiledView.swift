@@ -23,9 +23,17 @@ internal final class TiledView: UIView {
         levelsOfDetail and levelsOfDetailBias determine how the layer is rendered at different zoom levels. This only matters while the view is zooming, because once the the view is done zooming a new TiledPDFView is created at the correct size and scale.
         */
         let tiledLayer = self.layer as! CATiledLayer
-        tiledLayer.levelsOfDetail = 4
-        tiledLayer.levelsOfDetailBias = 3
-        tiledLayer.tileSize = CGSizeMake(512.0, 512.0)
+        tiledLayer.levelsOfDetail = 16
+        tiledLayer.levelsOfDetailBias = 15
+        
+        let mainScreen = UIScreen.mainScreen() // Main screen
+        let screenScale = mainScreen.scale // Main screen scale
+        let screenBounds = mainScreen.bounds // Main screen bounds
+        let w_pixels = screenBounds.size.width * screenScale
+        let h_pixels = screenBounds.size.height * screenScale
+        let max = ((w_pixels < h_pixels) ? h_pixels : w_pixels)
+        let sizeOfTiles = ((max < 512.0) ? 512.0 : 1024.0) as CGFloat
+        tiledLayer.tileSize = CGSizeMake(sizeOfTiles, sizeOfTiles);
     }
 
     required init?(coder aDecoder: NSCoder) {
