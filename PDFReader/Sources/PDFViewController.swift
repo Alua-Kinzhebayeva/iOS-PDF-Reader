@@ -143,7 +143,8 @@ extension PDFViewController: UIScrollViewDelegate {
     }
     
     private func updateCurrentPageIndex(scrollView: UIScrollView) {
-        self.currentPageIndex = Int(floor(collectionView.contentOffset.x / collectionView.bounds.size.width))
+        let collectionViewContentOffset = max(collectionView.contentOffset.x, 0)
+        self.currentPageIndex = Int(floor(collectionViewContentOffset / collectionView.bounds.size.width))
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }
