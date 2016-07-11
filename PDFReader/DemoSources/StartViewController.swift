@@ -16,8 +16,11 @@ internal final class StartViewController: UIViewController {
         super.viewDidLoad()
         startButton.enabled = false
         
-        let tempPath = NSBundle.mainBundle().pathForResource("mongodb", ofType: "pdf")
-        PDFDocument.createPDFDocument("mongodb.pdf", tempPath: tempPath!,completionHandler: { (success, pdfDocument) -> Void in
+        guard let pdfURL = NSBundle.mainBundle().URLForResource("apple", withExtension: "pdf") else {
+            fatalError("File could not be found")
+        }
+        
+        PDFDocument.createPDFDocument(pdfURL, completionHandler: { (success, pdfDocument) -> Void in
             self.pdfDocument = pdfDocument
             self.startButton.enabled = true
         })

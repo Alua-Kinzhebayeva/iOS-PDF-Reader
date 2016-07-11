@@ -49,8 +49,11 @@ public final class PDFDocument: NSObject, NSCoding {
     }
     
     /// Creates an object wrapper around actual pdf file
-    public class func createPDFDocument(fileName: String, tempPath: String, completionHandler: (success:Bool, pdfDocument:PDFDocument) -> Void) {
+    public class func createPDFDocument(tempURL: NSURL, completionHandler: (success:Bool, pdfDocument:PDFDocument) -> Void) {
         let preprocessor = PDFPreprocessor.sharedInstance
+        
+        guard let fileName = tempURL.lastPathComponent else { fatalError() }
+        guard let tempPath = tempURL.path else { fatalError() }
         
         if NSFileManager.defaultManager().fileExistsAtPath(tempPath) {
             let file = NSData(contentsOfFile: tempPath)
