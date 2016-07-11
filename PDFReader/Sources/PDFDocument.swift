@@ -9,26 +9,26 @@
 import CoreGraphics
 import UIKit
 
-internal final class PDFDocument: NSObject, NSCoding {
-    var pageCount: NSNumber!
+public final class PDFDocument: NSObject, NSCoding {
+    public var pageCount: NSNumber!
     var fileName: String!
     var fileURL: NSURL!
     var thePDFDocRef: CGPDFDocument!
     
     // MARK: NSCoding
-    @objc required init?(coder decoder: NSCoder) {
+    @objc required public init?(coder decoder: NSCoder) {
         pageCount = decoder.decodeObjectForKey("pageCount") as! NSNumber
         fileName = decoder.decodeObjectForKey("fileName") as! String
         fileURL = decoder.decodeObjectForKey("fileURL") as! NSURL
     }
     
-     @objc func encodeWithCoder(coder: NSCoder) {
+     @objc public func encodeWithCoder(coder: NSCoder) {
         coder.encodeObject(pageCount, forKey: "pageCount")
         coder.encodeObject(fileName, forKey: "fileName")
         coder.encodeObject(fileURL, forKey: "fileURL")
     }
     
-    init(fileName:String) {
+    private init(fileName:String) {
         self.fileName = fileName
     }
     
@@ -49,7 +49,7 @@ internal final class PDFDocument: NSObject, NSCoding {
     }
     
     /// Creates an object wrapper around actual pdf file
-    class func createPDFDocument(fileName: String, tempPath: String, completionHandler: (success:Bool, pdfDocument:PDFDocument) -> Void) {
+    public class func createPDFDocument(fileName: String, tempPath: String, completionHandler: (success:Bool, pdfDocument:PDFDocument) -> Void) {
         let preprocessor = PDFPreprocessor.sharedInstance
         
         if NSFileManager.defaultManager().fileExistsAtPath(tempPath) {
