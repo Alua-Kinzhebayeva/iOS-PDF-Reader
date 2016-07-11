@@ -1,24 +1,54 @@
 # iOS-PDF-Reader
 PDF Reader for iOS written in Swift
 
-# Example
-First use. Case when pdf has been just downloaded.
-```swift
-var tempPath = NSBundle.mainBundle().pathForResource("mongodb", ofType: "pdf")
-PDFDocument.createPDFDocument("mongodb.pdf", password: "", tempPath: tempPath!, deleteOriginalFile: false,completionHandler: { (success, pdfDocument) -> Void in
-            //once processing is done, a callback is called to perform potential UI updates
-            var rootViewController = PDFViewController(document: pdfDocument)
-            self.window?.rootViewController = rootViewController
-          })
+## Installation
+
+[CocoaPods]: http://cocoapods.org
+
+To install it, simply add the following line to your **Podfile**:
+
+```ruby
+pod 'PDFReader', :git => 'https://github.com/ranunez/iOS-PDF-Reader.git'
 ```
-Second and subsequent uses
+
+You will also need to make sure you're opting into using frameworks:
+
+```ruby
+use_frameworks!
+```
+
+Then run `pod install` with CocoaPods 1.0 or newer.
+
+## Usage
+
+### Option 1: Instantiate a PDFViewController and manually push it to an existing navigation controller
 ```swift
-var pdfDoc = PDFDocument.getPDFDocument("mongodb.pdf",password: "")
-var rootViewController = PDFViewController(document: pdfDoc)
+PDFDocument.createPDFDocument(documentURL, completionHandler: { (success, pdfDocument) -> Void in
+    let storyboard = UIStoryboard(name: "PDFReader", bundle: NSBundle(forClass: PDFViewController.self))
+    let controller = storyboard.instantiateInitialViewController() as! PDFViewController
+    controller.document = pdfDocument
+    controller.title = "Document"
+    self.navigationController?.pushViewController(controller, animated: true)
+})
+```
+
+### Option 2: Create a [Storyboard Referenece](https://developer.apple.com/library/ios/recipes/xcode_help-IB_storyboard/Chapters/AddSBReference.html) in an existing storyboard and present the PDFViewController
+```swift
+PDFDocument.createPDFDocument(pdfURL, completionHandler: { (success, pdfDocument) -> Void in
+    performSegueWithIdentifier("presentPDFReader", sender: pdfDocument)
+})
+
+...
+
+override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if let controller = segue.destinationViewController as? PDFViewController {
+        guard let pdfDocument = sender as? PDFDocument else { fatalError() }
+        controller.document = pdfDocument
+        controller.title = "Document"
+    }
+}
 ```
 # TODO
-- Handling PDFs with password
-- ThumbView at the page bottom
 - Displaying two pages in landscape orientation
 
 # Acknowledgements
