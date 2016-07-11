@@ -35,7 +35,7 @@ PDFDocument.createPDFDocument(documentURL, completionHandler: { (success, pdfDoc
 ### Option 2: Create a [Storyboard Referenece](https://developer.apple.com/library/ios/recipes/xcode_help-IB_storyboard/Chapters/AddSBReference.html) in an existing storyboard and present the PDFViewController
 ```swift
 PDFDocument.createPDFDocument(pdfURL, completionHandler: { (success, pdfDocument) -> Void in
-    performSegueWithIdentifier("presentPDFReader", sender: pdfDocument)
+    self.performSegueWithIdentifier("presentPDFReader", sender: pdfDocument)
 })
 
 ...
