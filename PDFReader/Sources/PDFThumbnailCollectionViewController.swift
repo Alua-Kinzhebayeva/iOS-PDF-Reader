@@ -51,11 +51,6 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
         return cell
     }
     
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: PDFThumbnailCell.cellWidth, height: PDFThumbnailCell.cellHeight)
     }
