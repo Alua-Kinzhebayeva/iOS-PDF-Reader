@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1419B1B21D309BF2008A5FAB /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1419B1B11D309BF2008A5FAB /* Storyboard.storyboard */; };
 		1419B1B41D309C33008A5FAB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1419B1B31D309C33008A5FAB /* StartViewController.swift */; };
 		1465884E1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */; };
 		146588501D31B88600149C87 /* PDFThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */; };
+		14A4EDE61D3368D700D5E424 /* PDFReader.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14A4EDE41D3368D700D5E424 /* PDFReader.storyboard */; };
+		14A4EDE71D3368D700D5E424 /* Demo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14A4EDE51D3368D700D5E424 /* Demo.storyboard */; };
+		14A4EDE91D33EB6F00D5E424 /* apple.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 14A4EDE81D33EB6F00D5E424 /* apple.pdf */; };
 		21DB49C21AE913C900CC19DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C11AE913C900CC19DC /* AppDelegate.swift */; };
 		21DB49C41AE913C900CC19DC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DB49C31AE913C900CC19DC /* PDFViewController.swift */; };
 		21DB49C91AE913C900CC19DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21DB49C81AE913C900CC19DC /* Images.xcassets */; };
@@ -23,10 +25,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1419B1B11D309BF2008A5FAB /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Storyboard.storyboard; path = Sources/Storyboard.storyboard; sourceTree = "<group>"; };
-		1419B1B31D309C33008A5FAB /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		1419B1B31D309C33008A5FAB /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StartViewController.swift; path = ../DemoSources/StartViewController.swift; sourceTree = "<group>"; };
 		1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
 		1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCell.swift; sourceTree = "<group>"; };
+		14A4EDE41D3368D700D5E424 /* PDFReader.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = PDFReader.storyboard; path = Sources/PDFReader.storyboard; sourceTree = "<group>"; };
+		14A4EDE51D3368D700D5E424 /* Demo.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Demo.storyboard; path = DemoSources/Demo.storyboard; sourceTree = "<group>"; };
+		14A4EDE81D33EB6F00D5E424 /* apple.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = apple.pdf; sourceTree = "<group>"; };
 		21DB49BC1AE913C900CC19DC /* PDFReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21DB49C01AE913C900CC19DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21DB49C11AE913C900CC19DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -70,7 +74,8 @@
 		21DB49BE1AE913C900CC19DC /* PDFReader */ = {
 			isa = PBXGroup;
 			children = (
-				1419B1B11D309BF2008A5FAB /* Storyboard.storyboard */,
+				14A4EDE41D3368D700D5E424 /* PDFReader.storyboard */,
+				14A4EDE51D3368D700D5E424 /* Demo.storyboard */,
 				21DB49C11AE913C900CC19DC /* AppDelegate.swift */,
 				21DB49C81AE913C900CC19DC /* Images.xcassets */,
 				21DB49CA1AE913C900CC19DC /* LaunchScreen.xib */,
@@ -83,6 +88,7 @@
 		21DB49BF1AE913C900CC19DC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				14A4EDE81D33EB6F00D5E424 /* apple.pdf */,
 				21DB49E31AE9142C00CC19DC /* mongodb.pdf */,
 				21DB49C01AE913C900CC19DC /* Info.plist */,
 			);
@@ -166,9 +172,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				21DB49E41AE9142C00CC19DC /* mongodb.pdf in Resources */,
-				1419B1B21D309BF2008A5FAB /* Storyboard.storyboard in Resources */,
+				14A4EDE61D3368D700D5E424 /* PDFReader.storyboard in Resources */,
+				14A4EDE91D33EB6F00D5E424 /* apple.pdf in Resources */,
 				21DB49CC1AE913C900CC19DC /* LaunchScreen.xib in Resources */,
 				21DB49C91AE913C900CC19DC /* Images.xcassets in Resources */,
+				14A4EDE71D3368D700D5E424 /* Demo.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
