@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G26a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="iqd-FA-oQ4">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
@@ -83,7 +82,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="xgz-br-S4l" id="4tX-Ot-xgt"/>
-                        <outlet property="thumbnailCollectionControllerContainer" destination="xpt-Eg-xUH" id="fNw-te-JNc"/>
+                        <outlet property="thumbnailCollectionControllerContainer" destination="spp-zz-ZXW" id="gmF-Th-YaD"/>
                         <outlet property="thumbnailCollectionControllerWidth" destination="AiN-T1-0xx" id="ccV-LP-TiX"/>
                     </connections>
                 </viewController>

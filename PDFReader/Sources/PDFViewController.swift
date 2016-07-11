@@ -82,7 +82,8 @@ public final class PDFViewController: UIViewController {
     }
     
     func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: { 
+        UIView.animateWithDuration(0.3, animations: {
+            self.collectionView.collectionViewLayout.invalidateLayout()
             self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
             self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
             }) { (completed) in
