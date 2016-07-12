@@ -51,18 +51,8 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
         return cell
     }
     
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        let numberOfPages = CGFloat(pageImages.count)
-        let cellSpacing = CGFloat(4.0)
-        let totalSpacing = (numberOfPages - 1.0) * cellSpacing
-        let currentScreenWidth = collectionView.bounds.size.width
-        let thumbnailWidth = (currentScreenWidth - totalSpacing) / numberOfPages
-        return CGSize(width: max(thumbnailWidth, 20.0), height: 56)
+        return CGSize(width: PDFThumbnailCell.cellWidth, height: PDFThumbnailCell.cellHeight)
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {

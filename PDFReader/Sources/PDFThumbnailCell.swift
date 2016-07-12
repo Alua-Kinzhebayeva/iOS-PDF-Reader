@@ -9,9 +9,8 @@
 import UIKit
 
 internal final class PDFThumbnailCell: UICollectionViewCell {
-    @IBOutlet var imageView: UIImageView?
+    static let cellWidth: CGFloat = 24
+    static let cellHeight: CGFloat = 44
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    @IBOutlet var imageView: UIImageView?
 }
