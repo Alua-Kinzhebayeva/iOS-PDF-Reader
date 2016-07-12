@@ -44,17 +44,16 @@ internal struct PDFPreprocessor {
     func savePDF(name: String, pdf: NSData) {
         guard let path = rootFolder.URLByAppendingPathComponent(name).path else { fatalError() }
         
-        let fileManager = NSFileManager.defaultManager()
-        if !fileManager.fileExistsAtPath(path) {
-            do {
-                try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
-                try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER), withIntermediateDirectories: false, attributes: nil)
-                try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER_SMALL), withIntermediateDirectories: false, attributes: nil)
-                let filePath = (path as NSString).stringByAppendingPathComponent(name)
-                fileManager.createFileAtPath(filePath, contents: pdf, attributes: nil)
-            } catch let error as NSError {
-                print("Failed to create dir: \(error.localizedDescription)")
-            }
+        do {
+            let fileManager = NSFileManager.defaultManager()
+            try fileManager.removeItemAtURL(rootFolder)
+            try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER), withIntermediateDirectories: false, attributes: nil)
+            try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER_SMALL), withIntermediateDirectories: false, attributes: nil)
+            let filePath = (path as NSString).stringByAppendingPathComponent(name)
+            fileManager.createFileAtPath(filePath, contents: pdf, attributes: nil)
+        } catch let error as NSError {
+            print("Failed to create dir: \(error.localizedDescription)")
         }
     }
     
