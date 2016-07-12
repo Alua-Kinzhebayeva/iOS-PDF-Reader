@@ -9,91 +9,34 @@
 import CoreGraphics
 import UIKit
 
-public final class PDFDocument: NSObject, NSCoding {
-    public var pageCount: NSNumber!
-    var fileName: String!
-    var fileURL: NSURL!
-    var thePDFDocRef: CGPDFDocument!
+public struct PDFDocument {
+    public let pageCount: Int
+    let fileName: String
+    let fileURL: NSURL
+    let thePDFDocRef: CGPDFDocument
+    let pdfPreprocessor = PDFPreprocessor()
     
-    // MARK: NSCoding
-    @objc required public init?(coder decoder: NSCoder) {
-        pageCount = decoder.decodeObjectForKey("pageCount") as! NSNumber
-        fileName = decoder.decodeObjectForKey("fileName") as! String
-        fileURL = decoder.decodeObjectForKey("fileURL") as! NSURL
-    }
-    
-     @objc public func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(pageCount, forKey: "pageCount")
-        coder.encodeObject(fileName, forKey: "fileName")
-        coder.encodeObject(fileURL, forKey: "fileURL")
-    }
-    
-    private init(fileName:String) {
-        self.fileName = fileName
-    }
-    
-    func allPageImages() -> [UIImage] {
-        var images = [UIImage]()
-        for index in 0..<pageCount.integerValue {
-            if let image = PDFPreprocessor.sharedInstance.getPDFPageImageSmall(self.fileName, page: index + 1) {
-                images.append(image)
-            }
-        }
-        return images
-    }
-    
-    func getPage(page: Int) -> (backgroundImage: UIImage?, pageRef: CGPDFPageRef?) {
-        let backgroundImage = PDFPreprocessor.sharedInstance.getPDFPageImage(self.fileName, page: page+1)
-        let pageRef = CGPDFDocumentGetPage(getPDFRef(), page + 1)
-        return (backgroundImage, pageRef)
-    }
-    
-    /// Creates an object wrapper around actual pdf file
-    public class func createPDFDocument(tempURL: NSURL, completionHandler: (success:Bool, pdfDocument:PDFDocument) -> Void) {
-        let preprocessor = PDFPreprocessor.sharedInstance
-        
+    init(tempURL: NSURL) {
         guard let fileName = tempURL.lastPathComponent else { fatalError() }
         guard let tempPath = tempURL.path else { fatalError() }
         
+        self.fileName = fileName
+        self.fileURL = pdfPreprocessor.fileFolderURL(fileName).URLByAppendingPathComponent(fileName)
+        
         if NSFileManager.defaultManager().fileExistsAtPath(tempPath) {
             let file = NSData(contentsOfFile: tempPath)
-            preprocessor.savePDF(fileName, pdf: file!)
+            pdfPreprocessor.savePDF(fileName, pdf: file!)
         }
         
-        let document = PDFDocument(fileName: fileName)
-        document.fileName = fileName
-        document.fileURL = preprocessor.getPathToPdfDirectory(fileName)?.URLByAppendingPathComponent(fileName)
+        let docURLRef = self.fileURL as CFURLRef
+        guard let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef) else { fatalError() }
+        self.thePDFDocRef = thePDFDocRef
+        pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef)
         
-        let docURLRef = document.fileURL as CFURLRef
-        if let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef) {
-            document.thePDFDocRef = thePDFDocRef
-            document.pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef)
-        }
-        
-        preprocessor.preprocessPDF(fileName, completion: { (success) -> Void in
-            document.saveDocument()
-            completionHandler(success: success, pdfDocument: document)
-        })
+        pdfPreprocessor.preprocessPDF(fileName)
     }
     
-    private class func archiveFilePath(fileName: String) -> NSURL? {
-        guard let pathToPDF = PDFPreprocessor.sharedInstance.getPathToPdfDirectory(fileName) else { return nil }
-        let achiveName = (fileName as NSString).stringByDeletingPathExtension.stringByAppendingString(".plist")
-        return pathToPDF.URLByAppendingPathComponent(achiveName)
-    }
-    
-    private func saveDocument() {
-        guard let archiveFilePath = PDFDocument.archiveFilePath(fileName)?.path else { return }
-        NSKeyedArchiver.archiveRootObject(self, toFile: archiveFilePath)
-    }
-    
-    private func getPDFRef()-> CGPDFDocument {
-        if thePDFDocRef == nil {
-            let dir = PDFPreprocessor.sharedInstance.getPathToPdfDirectory(fileName)
-            let file = dir?.URLByAppendingPathComponent(fileName).URLByAppendingPathComponent(fileName)
-            let docURLRef = file as! CFURLRef
-            thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)
-        }
-        return thePDFDocRef
+    func allPageImages() -> [UIImage] {
+        return (0..<pageCount).flatMap({ pdfPreprocessor.getPDFPageImageSmall(self.fileName, page: $0 + 1) })
     }
 }

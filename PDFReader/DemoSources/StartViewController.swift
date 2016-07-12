@@ -16,14 +16,19 @@ internal final class StartViewController: UIViewController {
         super.viewDidLoad()
         startButton.enabled = false
         
-        guard let pdfURL = NSBundle.mainBundle().URLForResource("apple", withExtension: "pdf") else {
+        guard let pdfURL = NSBundle.mainBundle().URLForResource("mongodb", withExtension: "pdf") else {
             fatalError("File could not be found")
         }
         
-        PDFDocument.createPDFDocument(pdfURL, completionHandler: { (success, pdfDocument) -> Void in
-            self.pdfDocument = pdfDocument
-            self.startButton.enabled = true
-        })
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.pdfDocument = PDFDocument(tempURL: pdfURL)
+            dispatch_async(dispatch_get_main_queue()) {
+                // update some UI
+                self.startButton.enabled = true
+            }
+        }
+        
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

@@ -21,7 +21,7 @@ public final class PDFViewController: UIViewController {
         super.viewDidLoad()
         collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
-        let numberOfPages = CGFloat(document.pageCount.floatValue)
+        let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(4.0)
         let totalSpacing = (numberOfPages - 1.0) * cellSpacing
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellWidth) + totalSpacing
@@ -53,9 +53,9 @@ public final class PDFViewController: UIViewController {
     
     /// Returns page view
     private func pageView(page: Int, cellBounds: CGRect) -> UIScrollView {
-        let pageTuple = document.getPage(page)
-        guard let pageRef = pageTuple.pageRef else { fatalError() }
-        guard let backgroundImage = pageTuple.backgroundImage else { fatalError() }
+        guard let backgroundImage = document.pdfPreprocessor.getPDFPageImage(document.fileName, page: page+1) else { fatalError() }
+        guard let pageRef = CGPDFDocumentGetPage(document.thePDFDocRef, page + 1) else { fatalError() }
+        
         let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
         scrollView.tag = page
         
@@ -112,7 +112,7 @@ extension PDFViewController: PDFThumbnailControllerDelegate {
 
 extension PDFViewController: UICollectionViewDataSource {
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return document.pageCount.integerValue
+        return document.pageCount
     }
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {

@@ -16,26 +16,35 @@ internal struct PDFPreprocessor {
     
     private let cachesDirectory = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask).first!
     
-    static var sharedInstance = PDFPreprocessor()
+    var rootFolder: NSURL {
+        return cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER)
+    }
     
-    init() {
-        guard let path = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).path else { fatalError() }
-        let fileManager = NSFileManager.defaultManager()
-        if !fileManager.fileExistsAtPath(path) {
-            do {
-                try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
-            } catch let error as NSError {
-                print(error)
-            }
-        }
+    func fileFolderURL(name: String) -> NSURL {
+        return rootFolder.URLByAppendingPathComponent(name)
+    }
+    
+    private func fileFolderImagesURL(name: String) -> NSURL {
+        return fileFolderURL(name).URLByAppendingPathComponent(PAGES_FOLDER)
+    }
+    
+    private func fileFolderImagesURL(name: String, page: Int) -> NSURL {
+        return fileFolderImagesURL(name).URLByAppendingPathComponent(String(page))
+    }
+    
+    private func fileFolderThumbnailImagesURL(name: String) -> NSURL {
+        return fileFolderURL(name).URLByAppendingPathComponent(PAGES_FOLDER_SMALL)
+    }
+    
+    private func fileFolderThumbnailImagesURL(name: String, page: Int) -> NSURL {
+        return fileFolderThumbnailImagesURL(name).URLByAppendingPathComponent(String(page))
     }
     
     //saves pdf to /pdfs/{id}/pdf_name.pdf
     func savePDF(name: String, pdf: NSData) {
-        guard let path = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name).path else { fatalError() }
+        guard let path = rootFolder.URLByAppendingPathComponent(name).path else { fatalError() }
         
         let fileManager = NSFileManager.defaultManager()
-        
         if !fileManager.fileExistsAtPath(path) {
             do {
                 try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
@@ -49,43 +58,34 @@ internal struct PDFPreprocessor {
         }
     }
     
-    func getPathToPdfDirectory(name: String) -> NSURL? {
-        let pathURL = cachesDirectory.URLByAppendingPathComponent(ROOT_FOLDER).URLByAppendingPathComponent(name)
-        if let path = pathURL.path where NSFileManager.defaultManager().fileExistsAtPath(path) {
-            return pathURL
-        } else {
-            return nil
-        }
-    }
-    
     //gets pdf from /pdfs/{id}/pdf_name.pdf
     func getPDF(name: String) -> NSData {
-        guard let path = getPathToPdfDirectory(name)?.URLByAppendingPathComponent(name).path else { fatalError() }
+        guard let path = fileFolderURL(name).URLByAppendingPathComponent(name).path else { fatalError() }
         return NSData(contentsOfFile: path)!
     }
     
     //saves page image to /pdfs/{id}/background_images/{page_num}.jpeg
     private func savePDFPageImage(pdfName: String, pageNumber: Int, page: UIImage) {
-        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER).URLByAppendingPathComponent(String(pageNumber)).path else { fatalError() }
-        UIImageJPEGRepresentation(page, 1.0)!.writeToFile(path, atomically: true)
+        let url = fileFolderImagesURL(pdfName, page: pageNumber)
+        UIImageJPEGRepresentation(page, 1.0)?.writeToURL(url, atomically: true)
     }
     
-    //saves page image to /pdfs/{id}/background_images/{page_num}.jpeg
+    //saves page image to /pdfs/{id}/background_images_small/{page_num}.jpeg
     private func savePDFPageImageSmall(pdfName: String, pageNumber: Int, page: UIImage) {
-        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER_SMALL).URLByAppendingPathComponent(String(pageNumber)).path else { fatalError() }
-        UIImageJPEGRepresentation(page, 1.0)!.writeToFile(path, atomically: true)
+        let url = fileFolderThumbnailImagesURL(pdfName, page: pageNumber)
+        UIImageJPEGRepresentation(page, 1.0)?.writeToURL(url, atomically: true)
     }
     
     //reads page image from /pdfs/{id}/background_images/{page_num}.jpeg
     func getPDFPageImage(pdfName: String, page: Int) -> UIImage? {
-        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER).URLByAppendingPathComponent(String(page)).path else { fatalError() }
-        return UIImage(named: path)
+        guard let path = fileFolderImagesURL(pdfName, page: page).path else { fatalError() }
+        return UIImage(contentsOfFile: path)
     }
     
     //reads page image from /pdfs/{id}/background_images_small/{page_num}.jpeg
     func getPDFPageImageSmall(pdfName: String, page: Int) -> UIImage? {
-        guard let path = getPathToPdfDirectory(pdfName)?.URLByAppendingPathComponent(PAGES_FOLDER_SMALL).URLByAppendingPathComponent(String(page)).path else { fatalError() }
-        return UIImage(named: path)
+        guard let path = fileFolderThumbnailImagesURL(pdfName, page: page).path else { fatalError() }
+        return UIImage(contentsOfFile: path)
     }
     
     private func imageFromPDFPage(page: CGPDFPageRef, frame: CGRect) -> UIImage {
@@ -121,36 +121,25 @@ internal struct PDFPreprocessor {
     }
     
     //creates images from pdf pages in order to facilitate smooth scrolling
-    func preprocessPDF(name: String, completion: (success: Bool) -> Void) {
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-        var areImagesCreated = false
-        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-            // create pdf page background images
-            guard let pathToPDF = self.getPathToPdfDirectory(name)?.URLByAppendingPathComponent(name).path else { fatalError() }
-            let fileURL = NSURL(fileURLWithPath: pathToPDF)
-            let docURLRef =  fileURL
+    func preprocessPDF(name: String) {
+        // create pdf page background images
+        guard let pathToPDF = self.fileFolderURL(name).URLByAppendingPathComponent(name).path else { fatalError() }
+        let fileURL = NSURL(fileURLWithPath: pathToPDF)
+        let docURLRef =  fileURL
+        
+        let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)
+        
+        let pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef) as Int
+        var backgroundImageRect = CGRectZero
+        backgroundImageRect.size = UIScreen.mainScreen().bounds.size
+        
+        for i in 1...pageCount {
+            let PDFPage = CGPDFDocumentGetPage(thePDFDocRef, i)
+            let backgroundImageData = self.imageFromPDFPage(PDFPage!, frame: backgroundImageRect)
+            self.savePDFPageImage(name, pageNumber: i, page: backgroundImageData)
             
-            let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef)
-            
-            let pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef) as Int
-            var backgroundImageRect = CGRectZero
-            backgroundImageRect.size = UIScreen.mainScreen().bounds.size
-
-            for i in 1...pageCount {
-                let PDFPage = CGPDFDocumentGetPage(thePDFDocRef, i)
-                let backgroundImageData = self.imageFromPDFPage(PDFPage!, frame: backgroundImageRect)
-                self.savePDFPageImage(name, pageNumber: i, page: backgroundImageData)
-                
-                let backgroundImageDataSmall = self.imageFromPDFPage(PDFPage!, frame: CGRectMake(0, 0, 240, 320))
-                self.savePDFPageImageSmall(name, pageNumber: i, page: backgroundImageDataSmall)
-            }
-            
-            areImagesCreated = true
-            
-            dispatch_async(dispatch_get_main_queue()) {
-                // update some UI
-                completion(success:areImagesCreated)
-            }
+            let backgroundImageDataSmall = self.imageFromPDFPage(PDFPage!, frame: CGRectMake(0, 0, 240, 320))
+            self.savePDFPageImageSmall(name, pageNumber: i, page: backgroundImageDataSmall)
         }
     }
 }
