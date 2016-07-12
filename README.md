@@ -23,8 +23,7 @@ Then run `pod install` with CocoaPods 1.0 or newer.
 
 ### Option 1: Instantiate a PDFViewController and manually push it to an existing navigation controller
 ```swift
-let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-dispatch_async(dispatch_get_global_queue(priority, 0)) {
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
     let pdfDocument = PDFDocument(tempURL: pdfURL)
     dispatch_async(dispatch_get_main_queue()) {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: NSBundle(forClass: PDFViewController.self))
@@ -38,8 +37,7 @@ dispatch_async(dispatch_get_global_queue(priority, 0)) {
 
 ### Option 2: Create a [Storyboard Referenece](https://developer.apple.com/library/ios/recipes/xcode_help-IB_storyboard/Chapters/AddSBReference.html) in an existing storyboard and present the PDFViewController
 ```swift
-let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-dispatch_async(dispatch_get_global_queue(priority, 0)) {
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
     self.pdfDocument = PDFDocument(tempURL: pdfURL)
     dispatch_async(dispatch_get_main_queue()) {
         self.performSegueWithIdentifier("presentPDFReader", sender: pdfDocument)
