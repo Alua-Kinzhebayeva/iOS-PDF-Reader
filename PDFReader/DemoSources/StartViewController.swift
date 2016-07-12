@@ -14,24 +14,24 @@ internal final class StartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        startButton.enabled = false
+        startButton.isEnabled = false
         
-        guard let pdfURL = NSBundle.mainBundle().URLForResource("mongodb", withExtension: "pdf") else {
+        guard let pdfURL = Bundle.main.urlForResource("mongodb", withExtension: "pdf") else {
             fatalError("File could not be found")
         }
         
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+        let priority = DispatchQueue.GlobalAttributes.qosDefault
+        DispatchQueue.global(attributes: priority).async {
             self.pdfDocument = PDFDocument(tempURL: pdfURL)
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 // update some UI
-                self.startButton.enabled = true
+                self.startButton.isEnabled = true
             }
         }
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         if let controller = segue.destinationViewController as? PDFViewController {
             controller.document = pdfDocument
             controller.title = pdfDocument?.fileName

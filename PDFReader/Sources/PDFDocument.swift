@@ -12,26 +12,26 @@ import UIKit
 public struct PDFDocument {
     public let pageCount: Int
     let fileName: String
-    let fileURL: NSURL
+    let fileURL: URL
     let thePDFDocRef: CGPDFDocument
     let pdfPreprocessor = PDFPreprocessor()
     
-    public init(tempURL: NSURL) {
+    public init(tempURL: URL) {
         guard let fileName = tempURL.lastPathComponent else { fatalError() }
         guard let tempPath = tempURL.path else { fatalError() }
         
         self.fileName = fileName
-        self.fileURL = pdfPreprocessor.fileFolderURL(fileName).URLByAppendingPathComponent(fileName)
+        self.fileURL = try! pdfPreprocessor.fileFolderURL(fileName).appendingPathComponent(fileName)
         
-        if NSFileManager.defaultManager().fileExistsAtPath(tempPath) {
-            let file = NSData(contentsOfFile: tempPath)
+        if FileManager.default.fileExists(atPath: tempPath) {
+            let file = try? Data(contentsOf: URL(fileURLWithPath: tempPath))
             pdfPreprocessor.savePDF(fileName, pdf: file!)
         }
         
-        let docURLRef = self.fileURL as CFURLRef
-        guard let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef) else { fatalError() }
+        let docURLRef = self.fileURL as CFURL
+        guard let thePDFDocRef = CGPDFDocument(docURLRef) else { fatalError() }
         self.thePDFDocRef = thePDFDocRef
-        pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef)
+        pageCount = thePDFDocRef.numberOfPages
         
         pdfPreprocessor.preprocessPDF(fileName)
     }

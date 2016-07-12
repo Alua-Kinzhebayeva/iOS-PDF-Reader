@@ -19,7 +19,7 @@ public final class PDFViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
+        collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
@@ -29,32 +29,32 @@ public final class PDFViewController: UIViewController {
         thumbnailCollectionControllerWidth.constant = width
     }
     
-    override public func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+    override public func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
         let newContentOffsetX = CGFloat(currentPageIndex) * collectionView.bounds.size.width
-        collectionView.contentOffset = CGPointMake(newContentOffsetX, collectionView.contentOffset.y)
+        collectionView.contentOffset = CGPoint(x: newContentOffsetX, y: collectionView.contentOffset.y)
         collectionView.collectionViewLayout.invalidateLayout()
     }
     
     @IBAction func print() {
         guard UIPrintInteractionController.isPrintingAvailable() else { return }
-        guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
+        guard UIPrintInteractionController.canPrint(document.fileURL) else { return }
         
         let printInfo = UIPrintInfo.printInfo()
-        printInfo.duplex = .LongEdge
-        printInfo.outputType = .General
+        printInfo.duplex = .longEdge
+        printInfo.outputType = .general
         printInfo.jobName = document.fileName
         
-        let printInteraction = UIPrintInteractionController.sharedPrintController()
+        let printInteraction = UIPrintInteractionController.shared()
         printInteraction.printInfo = printInfo
         printInteraction.printingItem = document.fileURL
         printInteraction.showsPageRange = true
-        printInteraction.presentAnimated(true, completionHandler: nil)
+        printInteraction.present(animated: true, completionHandler: nil)
     }
     
     /// Returns page view
-    private func pageView(page: Int, cellBounds: CGRect) -> UIScrollView {
+    private func pageView(_ page: Int, cellBounds: CGRect) -> UIScrollView {
         guard let backgroundImage = document.pdfPreprocessor.getPDFPageImage(document.fileName, page: page+1) else { fatalError() }
-        guard let pageRef = CGPDFDocumentGetPage(document.thePDFDocRef, page + 1) else { fatalError() }
+        guard let pageRef = document.thePDFDocRef.page(at: page + 1) else { fatalError() }
         
         let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
         scrollView.tag = page
@@ -74,26 +74,26 @@ public final class PDFViewController: UIViewController {
     }
     
     override public func prefersStatusBarHidden() -> Bool {
-        return navigationController?.navigationBarHidden == true
+        return navigationController?.isNavigationBarHidden == true
     }
     
     override public func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
-        return .Slide
+        return .slide
     }
     
-    func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func handleSingleTap(_ tapRecognizer: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.collectionView.collectionViewLayout.invalidateLayout()
-            self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
-            self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
+            self.thumbnailCollectionControllerContainer.isHidden = !self.thumbnailCollectionControllerContainer.isHidden
+            self.navigationController?.setNavigationBarHidden(self.navigationController?.isNavigationBarHidden == false, animated: true)
             }) { (completed) in
-                let indexPath = NSIndexPath(forRow: self.currentPageIndex, inSection: 0)
-                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                let indexPath = IndexPath(row: self.currentPageIndex, section: 0)
+                self.collectionView.reloadItems(at: [indexPath])
                 self.thumbnailCollectionController?.collectionView?.reloadData()
         }
     }
     
-    override public func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override public func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         if let controller = segue.destinationViewController as? PDFThumbnailCollectionViewController {
             thumbnailCollectionController = controller
             controller.document = document
@@ -104,45 +104,45 @@ public final class PDFViewController: UIViewController {
 }
 
 extension PDFViewController: PDFThumbnailControllerDelegate {
-    func didSelectIndexPath(indexPath: NSIndexPath) {
-        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: true)
+    func didSelectIndexPath(_ indexPath: IndexPath) {
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }
 
 extension PDFViewController: UICollectionViewDataSource {
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return document.pageCount
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
-        if let existingView = cell.subviews.flatMap({ $0 as? UIScrollView }).first where existingView.tag == indexPath.row {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "page", for: indexPath)
+        if let existingView = cell.subviews.flatMap({ $0 as? UIScrollView }).first where existingView.tag == (indexPath as NSIndexPath).row {
             
         } else {
             cell.subviews.forEach({ $0.removeFromSuperview() })
-            cell.addSubview(pageView(indexPath.row, cellBounds: cell.bounds))
+            cell.addSubview(pageView((indexPath as NSIndexPath).row, cellBounds: cell.bounds))
         }
         return cell
     }
 }
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return collectionView.frame.size
     }
 }
 
 extension PDFViewController: UIScrollViewDelegate {
-    public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         updateCurrentPageIndex(scrollView)
     }
     
-    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         updateCurrentPageIndex(scrollView)
     }
     
-    private func updateCurrentPageIndex(scrollView: UIScrollView) {
+    private func updateCurrentPageIndex(_ scrollView: UIScrollView) {
         let collectionViewContentOffset = max(collectionView.contentOffset.x, 0)
         self.currentPageIndex = Int(floor(collectionViewContentOffset / collectionView.bounds.size.width))
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
