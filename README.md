@@ -8,7 +8,7 @@ PDF Reader for iOS written in Swift
 To install it, simply add the following line to your **Podfile**:
 
 ```ruby
-pod 'PDFReader', :git => 'https://github.com/ranunez/iOS-PDF-Reader.git'
+pod 'PDFReader', :git => 'https://github.com/Alua-Kinzhebayeva/iOS-PDF-Reader.git'
 ```
 
 You will also need to make sure you're opting into using frameworks:
@@ -59,7 +59,3 @@ override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 # Acknowledgements
 
 inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alua-Kinzhebayeva/ios-pdf-reader/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
