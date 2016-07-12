@@ -83,6 +83,8 @@ internal final class PDFPageView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
     
+        customFrame = frame
+        
         // Center the image as it becomes smaller than the size of the screen.
     
         let boundsSize = bounds.size

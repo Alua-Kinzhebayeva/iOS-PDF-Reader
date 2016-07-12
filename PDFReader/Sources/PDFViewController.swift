@@ -86,11 +86,7 @@ public final class PDFViewController: UIViewController {
             self.collectionView.collectionViewLayout.invalidateLayout()
             self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
             self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
-            }) { (completed) in
-                let indexPath = NSIndexPath(forRow: self.currentPageIndex, inSection: 0)
-                self.collectionView.reloadItemsAtIndexPaths([indexPath])
-                self.thumbnailCollectionController?.collectionView?.reloadData()
-        }
+        })
     }
     
     override public func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
