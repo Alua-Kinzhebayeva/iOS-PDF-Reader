@@ -16,7 +16,7 @@ public struct PDFDocument {
     let thePDFDocRef: CGPDFDocument
     let pdfPreprocessor = PDFPreprocessor()
     
-    init(tempURL: NSURL) {
+    public init(tempURL: NSURL) {
         guard let fileName = tempURL.lastPathComponent else { fatalError() }
         guard let tempPath = tempURL.path else { fatalError() }
         
