@@ -9,8 +9,8 @@
 import UIKit
 
 internal final class PDFThumbnailCell: UICollectionViewCell {
-    static let cellWidth: CGFloat = 30
-    static let cellHeight: CGFloat = 56
+    static let cellWidth: CGFloat = 24
+    static let cellHeight: CGFloat = 44
     
     @IBOutlet var imageView: UIImageView?
 }

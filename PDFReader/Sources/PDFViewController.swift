@@ -22,7 +22,7 @@ public final class PDFViewController: UIViewController {
         collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         let numberOfPages = CGFloat(document.pageCount)
-        let cellSpacing = CGFloat(4.0)
+        let cellSpacing = CGFloat(2.0)
         let totalSpacing = (numberOfPages - 1.0) * cellSpacing
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellWidth) + totalSpacing
         let width = min(thumbnailWidth, view.bounds.size.width)
