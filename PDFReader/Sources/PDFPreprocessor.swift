@@ -42,16 +42,27 @@ internal struct PDFPreprocessor {
     
     //saves pdf to /pdfs/{id}/pdf_name.pdf
     func savePDF(name: String, pdf: NSData) {
-        guard let path = rootFolder.URLByAppendingPathComponent(name).path else { fatalError() }
+        
+        
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(rootFolder)
+        } catch let error as NSError {
+            print("Failed to remove dir: \(error.localizedDescription)")
+        }
         
         do {
             let fileManager = NSFileManager.defaultManager()
-            try fileManager.removeItemAtURL(rootFolder)
-            try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER), withIntermediateDirectories: false, attributes: nil)
-            try fileManager.createDirectoryAtPath((path as NSString).stringByAppendingPathComponent(PAGES_FOLDER_SMALL), withIntermediateDirectories: false, attributes: nil)
-            let filePath = (path as NSString).stringByAppendingPathComponent(name)
-            fileManager.createFileAtPath(filePath, contents: pdf, attributes: nil)
+            
+            let rootFolderWithNameURL = rootFolder.URLByAppendingPathComponent(name)
+            try fileManager.createDirectoryAtURL(rootFolderWithNameURL, withIntermediateDirectories: true, attributes: nil)
+            
+            let pagesFolderLargeURL = rootFolderWithNameURL.URLByAppendingPathComponent(PAGES_FOLDER)
+            try fileManager.createDirectoryAtURL(pagesFolderLargeURL, withIntermediateDirectories: false, attributes: nil)
+            
+            let pagesFolderSmallURL = rootFolderWithNameURL.URLByAppendingPathComponent(PAGES_FOLDER_SMALL)
+            try fileManager.createDirectoryAtURL(pagesFolderSmallURL, withIntermediateDirectories: false, attributes: nil)
+            
+            pdf.writeToURL(rootFolderWithNameURL.URLByAppendingPathComponent(name), atomically: true)
         } catch let error as NSError {
             print("Failed to create dir: \(error.localizedDescription)")
         }
