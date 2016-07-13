@@ -13,13 +13,12 @@ public final class PDFViewController: UIViewController {
     @IBOutlet private var thumbnailCollectionControllerWidth: NSLayoutConstraint!
     
     public var document: PDFDocument!
-    private var currentPDFPage: PDFPageView!
     private var currentPageIndex: Int = 0
     private var thumbnailCollectionController: PDFThumbnailCollectionViewController?
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "page")
+        collectionView!.registerClass(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
@@ -53,7 +52,6 @@ public final class PDFViewController: UIViewController {
         let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
         scrollView.tag = page
         
-        currentPDFPage = scrollView
         let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
         doubleTapOne.numberOfTapsRequired = 2
         doubleTapOne.cancelsTouchesInView = false
@@ -117,9 +115,9 @@ extension PDFViewController: UICollectionViewDataSource {
     }
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath) as! PDFPageCollectionViewCell
         let shouldReconstructCell: Bool
-        if let existingView = cell.subviews.flatMap({ $0 as? UIScrollView }).first where existingView.tag == indexPath.row {
+        if let existingView = cell.pageView, let pageIndex = cell.pageIndex where pageIndex == indexPath.row {
             if existingView.bounds == collectionView.bounds {
                 shouldReconstructCell = false
             } else {
@@ -130,9 +128,8 @@ extension PDFViewController: UICollectionViewDataSource {
         }
         
         if shouldReconstructCell {
-            let page = pageView(indexPath.row, cellBounds: cell.bounds)
-            cell.subviews.forEach({ $0.removeFromSuperview() })
-            cell.addSubview(page)
+            cell.pageView = pageView(indexPath.row, cellBounds: cell.bounds)
+            cell.pageIndex = indexPath.row
         }
         
         return cell
