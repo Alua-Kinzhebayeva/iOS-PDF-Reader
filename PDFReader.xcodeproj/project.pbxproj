@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14047AAC1D36084A000C22C7 /* PDFPageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14047AAB1D36084A000C22C7 /* PDFPageCollectionViewCell.swift */; };
 		1419B1B41D309C33008A5FAB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1419B1B31D309C33008A5FAB /* StartViewController.swift */; };
 		1465884E1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */; };
 		146588501D31B88600149C87 /* PDFThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14047AAB1D36084A000C22C7 /* PDFPageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPageCollectionViewCell.swift; sourceTree = "<group>"; };
 		1419B1B31D309C33008A5FAB /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StartViewController.swift; path = ../DemoSources/StartViewController.swift; sourceTree = "<group>"; };
 		1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
 		1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCell.swift; sourceTree = "<group>"; };
@@ -99,13 +101,14 @@
 			isa = PBXGroup;
 			children = (
 				21DB49E61AE9146200CC19DC /* PDFDocument.swift */,
+				14047AAB1D36084A000C22C7 /* PDFPageCollectionViewCell.swift */,
 				21DB49E71AE9146200CC19DC /* PDFPageView.swift */,
 				21DB49E81AE9146200CC19DC /* PDFPreprocessor.swift */,
+				1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */,
+				1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */,
 				21DB49C31AE913C900CC19DC /* PDFViewController.swift */,
 				1419B1B31D309C33008A5FAB /* StartViewController.swift */,
 				21DB49E91AE9146200CC19DC /* TiledView.swift */,
-				1465884D1D31B5CD00149C87 /* PDFThumbnailCollectionViewController.swift */,
-				1465884F1D31B88600149C87 /* PDFThumbnailCell.swift */,
 			);
 			name = PDFReader;
 			path = Sources;
@@ -187,6 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14047AAC1D36084A000C22C7 /* PDFPageCollectionViewCell.swift in Sources */,
 				21DB49C41AE913C900CC19DC /* PDFViewController.swift in Sources */,
 				1419B1B41D309C33008A5FAB /* StartViewController.swift in Sources */,
 				21DB49EC1AE9146200CC19DC /* PDFPageView.swift in Sources */,

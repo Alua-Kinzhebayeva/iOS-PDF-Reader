@@ -19,42 +19,23 @@ internal final class TiledView: UIView {
         leftPdfPage = newPage
         super.init(frame: frame)
         
-        /*
-        levelsOfDetail and levelsOfDetailBias determine how the layer is rendered at different zoom levels. This only matters while the view is zooming, because once the the view is done zooming a new TiledPDFView is created at the correct size and scale.
-        */
+        // levelsOfDetail and levelsOfDetailBias determine how the layer is
+        // rendered at different zoom levels. This only matters while the view 
+        // is zooming, because once the the view is done zooming a new TiledPDFView
+        // is created at the correct size and scale.
         let tiledLayer = self.layer as! CATiledLayer
         tiledLayer.levelsOfDetail = 16
         tiledLayer.levelsOfDetailBias = 15
-        
-        let mainScreen = UIScreen.mainScreen() // Main screen
-        let screenScale = mainScreen.scale // Main screen scale
-        let screenBounds = mainScreen.bounds // Main screen bounds
-        let w_pixels = screenBounds.size.width * screenScale
-        let h_pixels = screenBounds.size.height * screenScale
-        let max = ((w_pixels < h_pixels) ? h_pixels : w_pixels)
-        let sizeOfTiles = ((max < 512.0) ? 512.0 : 1024.0) as CGFloat
-        tiledLayer.tileSize = CGSizeMake(sizeOfTiles, sizeOfTiles);
+        tiledLayer.tileSize = CGSizeMake(512, 512)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        leftPdfPage = nil
-    }
-    
     override class func layerClass() -> AnyClass {
         return CATiledLayer.self
     }
-    
-    override func drawRect(r: CGRect) {
-        /*
-        UIView uses the existence of -drawRect: to determine if it should allow its CALayer to be invalidated, which would then lead to the layer creating a backing store and -drawLayer:inContext: being called.
-        Implementing an empty -drawRect: method allows UIKit to continue to implement this logic, while doing the real drawing work inside of -drawLayer:inContext:.
-        */
-    }
-    
     
     // Draw the CGPDFPageRef into the layer at the correct scale.
     override func drawLayer(layer: CALayer, inContext con: CGContext) {
@@ -71,5 +52,13 @@ internal final class TiledView: UIView {
         CGContextScaleCTM(con, myScale, myScale)
         CGContextDrawPDFPage(con, leftPdfPage)
         CGContextRestoreGState(con)
+    }
+    
+    // Stops drawLayer
+    deinit {
+        leftPdfPage = nil
+        layer.contents = nil
+        layer.delegate = nil
+        layer.removeFromSuperlayer()
     }
 }
