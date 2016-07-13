@@ -44,40 +44,12 @@ public final class PDFViewController: UIViewController {
         printInteraction.presentAnimated(true, completionHandler: nil)
     }
     
-    /// Returns page view
-    private func pageView(page: Int, cellBounds: CGRect) -> UIScrollView {
-        guard let backgroundImage = document.pdfPreprocessor.getPDFPageImage(document.fileName, page: page+1) else { fatalError() }
-        guard let pageRef = CGPDFDocumentGetPage(document.thePDFDocRef, page + 1) else { fatalError() }
-        
-        let scrollView = PDFPageView(frame: cellBounds, PDFPageRef: pageRef, backgroundImage: backgroundImage)
-        scrollView.tag = page
-        
-        let doubleTapOne = UITapGestureRecognizer(target: scrollView, action:#selector(PDFPageView.handleDoubleTap(_:)))
-        doubleTapOne.numberOfTapsRequired = 2
-        doubleTapOne.cancelsTouchesInView = false
-        scrollView.addGestureRecognizer(doubleTapOne)
-        
-        let singleTapOne = UITapGestureRecognizer(target: self, action:#selector(PDFViewController.handleSingleTap(_:)))
-        singleTapOne.numberOfTapsRequired = 1
-        singleTapOne.cancelsTouchesInView = false
-        scrollView.addGestureRecognizer(singleTapOne)
-        
-        return scrollView
-    }
-    
     override public func prefersStatusBarHidden() -> Bool {
         return navigationController?.navigationBarHidden == true
     }
     
     override public func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
         return .Slide
-    }
-    
-    func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
-            self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
-            self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
-        })
     }
     
     override public func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -116,23 +88,17 @@ extension PDFViewController: UICollectionViewDataSource {
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath) as! PDFPageCollectionViewCell
-        let shouldReconstructCell: Bool
-        if let existingView = cell.pageView, let pageIndex = cell.pageIndex where pageIndex == indexPath.row {
-            if existingView.bounds == collectionView.bounds {
-                shouldReconstructCell = false
-            } else {
-                shouldReconstructCell = true
-            }
-        } else {
-            shouldReconstructCell = true
-        }
-        
-        if shouldReconstructCell {
-            cell.pageView = pageView(indexPath.row, cellBounds: cell.bounds)
-            cell.pageIndex = indexPath.row
-        }
-        
+        cell.setup(indexPath.row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
         return cell
+    }
+}
+
+extension PDFViewController: PDFPageCollectionViewCellDelegate {
+    func handleSingleTap(cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
+        UIView.animateWithDuration(0.3, animations: {
+            self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
+            self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
+        })
     }
 }
 

@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+protocol PDFPageViewDelegate: class {
+    func handleSingleTap(pdfPageView: PDFPageView)
+}
+
 internal final class PDFPageView: UIScrollView {
     private let ZOOM_LEVELS = 2
     private let ZOOM_STEP = 2
@@ -26,9 +30,11 @@ internal final class PDFPageView: UIScrollView {
     private var customFrame: CGRect?
     private var zoomAmount: CGFloat?
     private var isAtMaximumZoom: Bool = false
+    private weak var pageViewDelegate: PDFPageViewDelegate?
     
-    init(frame: CGRect, PDFPageRef: CGPDFPageRef, backgroundImage: UIImage) {
+    init(frame: CGRect, PDFPageRef: CGPDFPageRef, backgroundImage: UIImage, pageViewDelegate: PDFPageViewDelegate?) {
         PDFPage = PDFPageRef
+        self.pageViewDelegate = pageViewDelegate
         
         // Determine the size of the PDF page.
         var pageRect = CGPDFPageGetBoxRect(PDFPage, CGPDFBox.MediaBox)
@@ -52,6 +58,16 @@ internal final class PDFPageView: UIScrollView {
         addSubview(backgroundImageView)
         sendSubviewToBack(backgroundImageView)
         addSubview(tiledPDFView)
+        
+        let doubleTapOne = UITapGestureRecognizer(target: self, action:#selector(PDFPageView.handleDoubleTap(_:)))
+        doubleTapOne.numberOfTapsRequired = 2
+        doubleTapOne.cancelsTouchesInView = false
+        addGestureRecognizer(doubleTapOne)
+        
+        let singleTapOne = UITapGestureRecognizer(target: self, action:#selector(PDFPageView.handleSingleTap(_:)))
+        singleTapOne.numberOfTapsRequired = 1
+        singleTapOne.cancelsTouchesInView = false
+        addGestureRecognizer(singleTapOne)
         
         bouncesZoom = false
         decelerationRate = UIScrollViewDecelerationRateFast
@@ -99,6 +115,10 @@ internal final class PDFPageView: UIScrollView {
         tiledPDFView.contentScaleFactor = 1.0
     }
     
+    func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
+        pageViewDelegate?.handleSingleTap(self)
+    }
+    
     func handleDoubleTap(tapRecognizer: UITapGestureRecognizer) {
         var newScale = zoomScale * CGFloat(ZOOM_STEP)
         if newScale >= maximumZoomScale {
@@ -110,7 +130,7 @@ internal final class PDFPageView: UIScrollView {
         backgroundImageView.hidden = false
     }
     
-    private func ZoomScaleThatFits(target: CGSize, source: CGSize) -> CGFloat {
+    private func zoomScaleThatFits(target: CGSize, source: CGSize) -> CGFloat {
         let w_scale = (target.width / source.width) as CGFloat
         let h_scale = (target.height / source.height) as CGFloat
         return ((w_scale < h_scale) ? w_scale : h_scale)
@@ -118,7 +138,7 @@ internal final class PDFPageView: UIScrollView {
     
     private func updateMinimumMaximumZoom(){
         let targetRect = CGRectInset(bounds, CONTENT_INSET, CONTENT_INSET)
-        let zoomScale = ZoomScaleThatFits(targetRect.size, source: bounds.size)
+        let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
         
         minimumZoomScale = zoomScale // Set the minimum and maximum zoom scales
         maximumZoomScale = zoomScale * CGFloat(ZOOM_LEVELS * ZOOM_LEVELS * ZOOM_LEVELS) // Max number of zoom levels
