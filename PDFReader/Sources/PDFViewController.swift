@@ -29,12 +29,6 @@ public final class PDFViewController: UIViewController {
         thumbnailCollectionControllerWidth.constant = width
     }
     
-    override public func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        let newContentOffsetX = CGFloat(currentPageIndex) * collectionView.bounds.size.width
-        collectionView.contentOffset = CGPointMake(newContentOffsetX, collectionView.contentOffset.y)
-        collectionView.collectionViewLayout.invalidateLayout()
-    }
-    
     @IBAction func print() {
         guard UIPrintInteractionController.isPrintingAvailable() else { return }
         guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
@@ -83,7 +77,6 @@ public final class PDFViewController: UIViewController {
     
     func handleSingleTap(tapRecognizer: UITapGestureRecognizer) {
         UIView.animateWithDuration(0.3, animations: {
-            self.collectionView.collectionViewLayout.invalidateLayout()
             self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
             self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
         })
@@ -96,6 +89,18 @@ public final class PDFViewController: UIViewController {
             controller.delegate = self
             controller.currentPageIndex = currentPageIndex
         }
+    }
+    
+    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animateAlongsideTransition({ (context) in
+            let currentIndexPath = NSIndexPath(forRow: self.currentPageIndex, inSection: 0)
+            self.collectionView.reloadItemsAtIndexPaths([currentIndexPath])
+            self.collectionView.scrollToItemAtIndexPath(currentIndexPath, atScrollPosition: .CenteredHorizontally, animated: false)
+            }) { (context) in
+                self.thumbnailCollectionController?.currentPageIndex = self.currentPageIndex
+        }
+        
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
     }
 }
 
@@ -113,12 +118,23 @@ extension PDFViewController: UICollectionViewDataSource {
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath)
+        let shouldReconstructCell: Bool
         if let existingView = cell.subviews.flatMap({ $0 as? UIScrollView }).first where existingView.tag == indexPath.row {
-            
+            if existingView.bounds == collectionView.bounds {
+                shouldReconstructCell = false
+            } else {
+                shouldReconstructCell = true
+            }
         } else {
-            cell.subviews.forEach({ $0.removeFromSuperview() })
-            cell.addSubview(pageView(indexPath.row, cellBounds: cell.bounds))
+            shouldReconstructCell = true
         }
+        
+        if shouldReconstructCell {
+            let page = pageView(indexPath.row, cellBounds: cell.bounds)
+            cell.subviews.forEach({ $0.removeFromSuperview() })
+            cell.addSubview(page)
+        }
+        
         return cell
     }
 }
@@ -139,8 +155,8 @@ extension PDFViewController: UIScrollViewDelegate {
     }
     
     private func updateCurrentPageIndex(scrollView: UIScrollView) {
-        let collectionViewContentOffset = max(collectionView.contentOffset.x, 0)
-        self.currentPageIndex = Int(floor(collectionViewContentOffset / collectionView.bounds.size.width))
+        let collectionViewContentOffset = max(scrollView.contentOffset.x, 0)
+        self.currentPageIndex = Int(floor(collectionViewContentOffset / scrollView.bounds.size.width))
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }

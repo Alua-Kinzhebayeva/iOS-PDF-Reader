@@ -64,21 +64,6 @@ internal final class PDFPageView: UIScrollView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if customFrame?.width != frame.width {
-            customFrame = frame
-            var pageRect = CGPDFPageGetBoxRect(PDFPage, CGPDFBox.MediaBox)
-            PDFScale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
-            pageRect.size = CGSizeMake(pageRect.size.width * PDFScale!, pageRect.size.height * PDFScale!)
-            let newTiledView = TiledView(frame: pageRect, scale: PDFScale!, newPage: PDFPage)
-            addSubview(newTiledView)
-            tiledPDFView.removeFromSuperview()
-            tiledPDFView = newTiledView
-            contentSize = tiledPDFView.bounds.size
-        }
-    }
-    
     // Use layoutSubviews to center the PDF page in the view.
     override func layoutSubviews() {
         super.layoutSubviews()
