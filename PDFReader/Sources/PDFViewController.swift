@@ -10,7 +10,9 @@ import UIKit
 public final class PDFViewController: UIViewController {
     @IBOutlet private var collectionView: UICollectionView!
     @IBOutlet private weak var thumbnailCollectionControllerContainer: UIView!
+    @IBOutlet private var thumbnailCollectionControllerHeight: NSLayoutConstraint!
     @IBOutlet private var thumbnailCollectionControllerWidth: NSLayoutConstraint!
+    @IBOutlet var thumbnailCollectionControllerBottom: NSLayoutConstraint!
     
     public var document: PDFDocument!
     private var currentPageIndex: Int = 0
@@ -94,10 +96,23 @@ extension PDFViewController: UICollectionViewDataSource {
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
+    private var isThumbnailControllerShown: Bool {
+        return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
+    }
+    
+    private func hideThumbnailController(shouldHide: Bool) {
+        if shouldHide {
+            self.thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
+        } else {
+            self.thumbnailCollectionControllerBottom.constant = 0
+        }
+    }
+    
     func handleSingleTap(cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
-        UIView.animateWithDuration(0.3, animations: {
-            self.thumbnailCollectionControllerContainer.hidden = !self.thumbnailCollectionControllerContainer.hidden
-            self.navigationController?.setNavigationBarHidden(self.navigationController?.navigationBarHidden == false, animated: true)
+        let shouldHide = !isThumbnailControllerShown
+        UIView.animateWithDuration(0.25, animations: {
+            self.hideThumbnailController(shouldHide)
+            self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
         })
     }
 }
