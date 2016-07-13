@@ -109,17 +109,11 @@ extension PDFViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension PDFViewController: UIScrollViewDelegate {
-    public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        updateCurrentPageIndex(scrollView)
-    }
-    
-    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        updateCurrentPageIndex(scrollView)
-    }
-    
-    private func updateCurrentPageIndex(scrollView: UIScrollView) {
-        let collectionViewContentOffset = max(scrollView.contentOffset.x, 0)
-        self.currentPageIndex = Int(floor(collectionViewContentOffset / scrollView.bounds.size.width))
-        thumbnailCollectionController?.currentPageIndex = currentPageIndex
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        let updatedPageIndex = Int(floor(max(scrollView.contentOffset.x, 0) / scrollView.bounds.size.width))
+        if updatedPageIndex != currentPageIndex {
+            currentPageIndex = updatedPageIndex
+            thumbnailCollectionController?.currentPageIndex = currentPageIndex
+        }
     }
 }
