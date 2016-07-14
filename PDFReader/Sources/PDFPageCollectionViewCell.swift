@@ -27,7 +27,7 @@ internal final class PDFPageCollectionViewCell: UICollectionViewCell {
     private weak var pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?
     
     func setup(indexPathRow: Int, collectionViewBounds: CGRect, document: PDFDocument, pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?) {
-        guard let backgroundImage = document.pdfPreprocessor.getPDFPageImage(document.fileName, page: indexPathRow + 1) else { fatalError() }
+        let backgroundImage = document.pdfPreprocessor.getPDFPageImage(document.fileName, page: indexPathRow + 1, document: document.thePDFDocRef)
         guard let pageRef = CGPDFDocumentGetPage(document.thePDFDocRef, indexPathRow + 1) else { fatalError() }
         
         self.pageCollectionViewCellDelegate = pageCollectionViewCellDelegate
