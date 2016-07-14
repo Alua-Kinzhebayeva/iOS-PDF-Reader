@@ -17,26 +17,18 @@ public struct PDFDocument {
     let pdfPreprocessor = PDFPreprocessor()
     
     public init(tempURL: NSURL) {
+        self.fileURL = tempURL
         guard let fileName = tempURL.lastPathComponent else { fatalError() }
-        guard let tempPath = tempURL.path else { fatalError() }
-        
         self.fileName = fileName
-        self.fileURL = pdfPreprocessor.fileFolderURL(fileName).URLByAppendingPathComponent(fileName)
         
-        if NSFileManager.defaultManager().fileExistsAtPath(tempPath) {
-            let file = NSData(contentsOfFile: tempPath)
-            pdfPreprocessor.savePDF(fileName, pdf: file!)
-        }
-        
-        let docURLRef = self.fileURL as CFURLRef
-        guard let thePDFDocRef = CGPDFDocumentCreateWithURL(docURLRef) else { fatalError() }
+        guard let thePDFDocRef = CGPDFDocumentCreateWithURL(tempURL) else { fatalError() }
         self.thePDFDocRef = thePDFDocRef
         pageCount = CGPDFDocumentGetNumberOfPages(thePDFDocRef)
         
-        pdfPreprocessor.preprocessPDF(fileName)
+        pdfPreprocessor.preprocessPDF(fileName, fileURL: tempURL)
     }
     
     func allPageImages() -> [UIImage] {
-        return (0..<pageCount).flatMap({ pdfPreprocessor.getPDFPageImageSmall(self.fileName, page: $0 + 1) })
+        return (0..<pageCount).flatMap({ pdfPreprocessor.getPDFPageImage(self.fileName, page: $0 + 1, document: thePDFDocRef) })
     }
 }

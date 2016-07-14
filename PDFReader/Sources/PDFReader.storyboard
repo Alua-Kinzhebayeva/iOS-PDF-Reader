@@ -46,21 +46,11 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="682-21-z4p"/>
-                                    <constraint firstItem="xpt-Eg-xUH" firstAttribute="leading" secondItem="spp-zz-ZXW" secondAttribute="leading" id="SkP-64-DOV"/>
                                     <constraint firstItem="xpt-Eg-xUH" firstAttribute="centerX" secondItem="spp-zz-ZXW" secondAttribute="centerX" id="YB7-sL-P9s"/>
                                     <constraint firstItem="xpt-Eg-xUH" firstAttribute="top" secondItem="spp-zz-ZXW" secondAttribute="top" id="iXL-4Y-BaN"/>
                                     <constraint firstAttribute="height" constant="44" id="pqu-BB-m1z"/>
                                     <constraint firstAttribute="bottom" secondItem="xpt-Eg-xUH" secondAttribute="bottom" id="u5r-8L-Ro4"/>
-                                    <constraint firstAttribute="trailing" secondItem="xpt-Eg-xUH" secondAttribute="trailing" id="uQu-9P-tdv"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="682-21-z4p"/>
-                                        <exclude reference="SkP-64-DOV"/>
-                                        <exclude reference="uQu-9P-tdv"/>
-                                    </mask>
-                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -85,7 +75,9 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="collectionView" destination="xgz-br-S4l" id="4tX-Ot-xgt"/>
+                        <outlet property="thumbnailCollectionControllerBottom" destination="8cX-bN-oYQ" id="izz-Un-BB6"/>
                         <outlet property="thumbnailCollectionControllerContainer" destination="spp-zz-ZXW" id="gmF-Th-YaD"/>
+                        <outlet property="thumbnailCollectionControllerHeight" destination="pqu-BB-m1z" id="0NE-JL-KJc"/>
                         <outlet property="thumbnailCollectionControllerWidth" destination="AiN-T1-0xx" id="ccV-LP-TiX"/>
                     </connections>
                 </viewController>

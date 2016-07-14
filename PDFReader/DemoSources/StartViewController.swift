@@ -28,7 +28,6 @@ internal final class StartViewController: UIViewController {
                 self.startButton.enabled = true
             }
         }
-        
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
