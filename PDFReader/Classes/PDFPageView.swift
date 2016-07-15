@@ -139,7 +139,7 @@ internal final class PDFPageView: UIScrollView {
         let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
         
         minimumZoomScale = zoomScale // Set the minimum and maximum zoom scales
-        maximumZoomScale = zoomScale * CGFloat(ZOOM_LEVELS * ZOOM_LEVELS * ZOOM_LEVELS) // Max number of zoom levels
+        maximumZoomScale = zoomScale * CGFloat(ZOOM_LEVELS * ZOOM_LEVELS) // Max number of zoom levels
         zoomAmount = (maximumZoomScale - minimumZoomScale) / CGFloat(ZOOM_LEVELS)
     }
     
