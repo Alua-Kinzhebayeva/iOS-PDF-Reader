@@ -16,7 +16,6 @@ protocol PDFPageViewDelegate: class {
 internal final class PDFPageView: UIScrollView {
     private let ZOOM_LEVELS = 2
     private let ZOOM_STEP = 2
-    private let CONTENT_INSET: CGFloat = 2
     
     /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
     private let backgroundImageView: UIImageView
@@ -40,7 +39,6 @@ internal final class PDFPageView: UIScrollView {
         
         // Determine the size of the PDF page.
         var pageRect = CGPDFPageGetBoxRect(PDFPage, CGPDFBox.MediaBox)
-        
         PDFScale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
         pageRect.size = CGSizeMake(pageRect.size.width * PDFScale!, pageRect.size.height * PDFScale!)
         
@@ -137,7 +135,7 @@ internal final class PDFPageView: UIScrollView {
     }
     
     private func updateMinimumMaximumZoom(){
-        let targetRect = CGRectInset(bounds, CONTENT_INSET, CONTENT_INSET)
+        let targetRect = CGRectInset(bounds, 0, 0)
         let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
         
         minimumZoomScale = zoomScale // Set the minimum and maximum zoom scales
