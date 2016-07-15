@@ -80,7 +80,7 @@ public final class PDFViewController: UIViewController {
 
 extension PDFViewController: PDFThumbnailControllerDelegate {
     func didSelectIndexPath(indexPath: NSIndexPath) {
-        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: true)
+        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }
