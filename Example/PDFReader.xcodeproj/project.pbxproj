@@ -14,7 +14,6 @@
 		14E62A251D3981610064776C /* mongodb.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 14E62A221D3981610064776C /* mongodb.pdf */; };
 		14E62A281D3981700064776C /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E62A261D3981700064776C /* StartViewController.swift */; };
 		14E62A291D3981700064776C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E62A271D3981700064776C /* AppDelegate.swift */; };
-		14E62A2D1D3981D60064776C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 14E62A2C1D3981D60064776C /* Info.plist */; };
 		FCC2A00F1D8FA3FA76401EE3 /* Pods_PDFReader_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B092B553A40900ECE38AC2CB /* Pods_PDFReader_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -174,7 +173,6 @@
 			files = (
 				14E62A231D3981610064776C /* Images.xcassets in Resources */,
 				14E62A1E1D39815A0064776C /* LaunchScreen.xib in Resources */,
-				14E62A2D1D3981D60064776C /* Info.plist in Resources */,
 				14E62A1D1D39815A0064776C /* Main.storyboard in Resources */,
 				14E62A251D3981610064776C /* mongodb.pdf in Resources */,
 				14E62A241D3981610064776C /* apple.pdf in Resources */,
