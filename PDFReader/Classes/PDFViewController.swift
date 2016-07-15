@@ -121,13 +121,13 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return collectionView.frame.size
+        return CGSizeMake(collectionView.frame.size.width - 1, collectionView.frame.size.height)
     }
 }
 
 extension PDFViewController: UIScrollViewDelegate {
     public func scrollViewDidScroll(scrollView: UIScrollView) {
-        let updatedPageIndex = Int(floor(max(scrollView.contentOffset.x, 0) / scrollView.bounds.size.width))
+        let updatedPageIndex = Int(round(max(scrollView.contentOffset.x, 0) / scrollView.bounds.size.width))
         if updatedPageIndex != currentPageIndex {
             currentPageIndex = updatedPageIndex
             thumbnailCollectionController?.currentPageIndex = currentPageIndex
