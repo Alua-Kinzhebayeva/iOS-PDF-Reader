@@ -150,7 +150,7 @@ internal final class PDFPageView: UIScrollView {
         }
     }
     
-    private func zoomRectForScale(scale: CGFloat, zoomPoint:CGPoint) -> CGRect {
+    private func zoomRectForScale(scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
         //Normalize current content size back to content scale of 1.0f
         var contentSize = CGSize()
         contentSize.width = (self.contentSize.width / zoomScale)
