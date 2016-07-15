@@ -63,13 +63,7 @@
                             <constraint firstAttribute="trailing" secondItem="spp-zz-ZXW" secondAttribute="trailing" id="kwc-Rl-No8"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="kYU-BQ-9om">
-                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="pMA-yG-2Ln">
-                            <connections>
-                                <action selector="print" destination="iqd-FA-oQ4" id="5en-HD-tzm"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="kYU-BQ-9om"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>

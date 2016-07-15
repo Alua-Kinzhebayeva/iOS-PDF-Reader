@@ -15,6 +15,10 @@ public final class PDFViewController: UIViewController {
     @IBOutlet private var thumbnailCollectionControllerBottom: NSLayoutConstraint!
     
     public var document: PDFDocument!
+    
+    // Image used to override the default action button image
+    public var actionButtonImage: UIImage?
+    
     private var currentPageIndex: Int = 0
     private var thumbnailCollectionController: PDFThumbnailCollectionViewController?
     
@@ -23,6 +27,14 @@ public final class PDFViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         collectionView!.registerClass(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
+        
+        let actionButton: UIBarButtonItem
+        if let actionButtonImage = actionButtonImage {
+            actionButton = UIBarButtonItem(image: actionButtonImage, style: .Plain, target: self, action: #selector(print))
+        } else {
+            actionButton = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(print))
+        }
+        navigationItem.rightBarButtonItem = actionButton
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
@@ -61,7 +73,7 @@ public final class PDFViewController: UIViewController {
         super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
     }
     
-    @IBAction private func print() {
+    func print() {
         guard UIPrintInteractionController.isPrintingAvailable() else { return }
         guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
         
