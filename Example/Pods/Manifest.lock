@@ -1,0 +1,16 @@
+PODS:
+  - PDFReader (1.0.0)
+
+DEPENDENCIES:
+  - PDFReader (from `../`)
+
+EXTERNAL SOURCES:
+  PDFReader:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  PDFReader: 7f31a579f395aa3ea08b14786f6f98c4175555b8
+
+PODFILE CHECKSUM: d85f21a21b53f7fbb4afdc4f886380d34ca8e2c8
+
+COCOAPODS: 1.0.1

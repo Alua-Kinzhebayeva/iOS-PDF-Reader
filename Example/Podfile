@@ -1,0 +1,5 @@
+use_frameworks!
+
+target 'PDFReader_Example' do
+  pod 'PDFReader', :path => '../'
+end
