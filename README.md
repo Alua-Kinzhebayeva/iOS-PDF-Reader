@@ -12,7 +12,7 @@ PDF Reader for iOS written in Swift
 To install it, simply add the following line to your **Podfile**:
 
 ```ruby
-pod 'PDFReader', '1.0.0'
+pod 'PDFReader'
 ```
 
 You will also need to make sure you're opting into using frameworks:
