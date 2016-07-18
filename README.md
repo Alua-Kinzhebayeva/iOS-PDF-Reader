@@ -1,9 +1,9 @@
 # iOS-PDF-Reader
 PDF Reader for iOS written in Swift
 
-<img src="https://raw.githubusercontent.com/ranunez/iOS-PDF-Reader/master/Screenshot1.png" alt="Example" style="width: 690px;" />
+<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot1.png" alt="Example" style="width: 690px;" />
 
-<img src="https://raw.githubusercontent.com/ranunez/iOS-PDF-Reader/master/Screenshot2.png" alt="Example" style="width: 690px;" />
+<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot2.png" alt="Example" style="width: 690px;" />
 
 ## Installation
 
