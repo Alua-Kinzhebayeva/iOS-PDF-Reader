@@ -9,18 +9,30 @@
 import CoreGraphics
 import UIKit
 
+/// PDF Document on the system to be interacted with
 public struct PDFDocument {
+    /// Number of pages document contains
     public let pageCount: Int
+    
+    /// Name of the file stored in the file system
     public let fileName: String
+    
     let fileURL: NSURL
     let coreDocument: CGPDFDocument
     
-    public init(tempURL: NSURL) {
-        self.fileURL = tempURL
-        guard let fileName = tempURL.lastPathComponent else { fatalError() }
+    /**
+     Returns a newly initialized document which is located on the file system.
+     
+     - parameter fileURL: the file URL where the `.pdf` document exists on the file system
+     
+     - returns: A newly initialized `PDFDocument`.
+     */
+    public init(fileURL: NSURL) {
+        self.fileURL = fileURL
+        guard let fileName = fileURL.lastPathComponent else { fatalError() }
         self.fileName = fileName
         
-        guard let coreDocument = CGPDFDocumentCreateWithURL(tempURL) else { fatalError() }
+        guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
         self.coreDocument = coreDocument
         pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
         
