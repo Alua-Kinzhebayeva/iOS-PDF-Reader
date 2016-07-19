@@ -14,8 +14,7 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>bplist00_WebMainResource	
-^WebResourceURL_WebResourceData_WebResourceMIMEType_WebResourceTextEncodingName_WebResourceFrameName_Qhttps://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/LICENSEO&lt;html&gt;&lt;head&gt;&lt;style type="text/css"&gt;&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre style="word-wrap: break-word; white-space: pre-wrap;"&gt;The MIT License (MIT)
+			<string>The MIT License (MIT)
 
 Copyright (c) 2015 Alua-Kinzhebayeva
 
@@ -36,8 +35,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;Ztext/plainUUTF-8P</string>
+</string>
 			<key>Title</key>
 			<string>PDFReader</string>
 			<key>Type</key>
