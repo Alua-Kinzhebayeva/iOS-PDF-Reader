@@ -1,4 +1,8 @@
 # iOS-PDF-Reader
+[![Version](https://img.shields.io/cocoapods/v/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
+[![License](https://img.shields.io/cocoapods/l/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
+[![Platform](https://img.shields.io/cocoapods/p/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
+
 PDF Reader for iOS written in Swift
 
 <img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot1.png" alt="Example" style="width: 690px;" />
