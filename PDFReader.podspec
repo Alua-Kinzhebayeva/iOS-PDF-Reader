@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = "PDFReader"
-  s.version               = "1.0.1"
+  s.version               = "1.0.2"
   s.license               = { :type => "MIT" }
   s.homepage              = "https://github.com/Alua-Kinzhebayeva/iOS-PDF-Reader"
   s.author                = { "Alua Kinzhebayeva" => "alua.kinzhebayeva@gmail.com" }
