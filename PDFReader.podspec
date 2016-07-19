@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.summary               = "PDF Reader for iOS written in Swift"
   s.source                = { :git => "https://github.com/Alua-Kinzhebayeva/iOS-PDF-Reader.git", :tag => s.version.to_s }
   s.ios.deployment_target = "9.0"
-  s.source_files          = "PDFReader/Classes/*.swift"
-  s.resources             = "PDFReader/Assets/*.storyboard"
+  s.source_files          = "Sources/Classes/*.swift"
+  s.resources             = "Sources/Assets/*.storyboard"
   s.requires_arc          = true
 end
