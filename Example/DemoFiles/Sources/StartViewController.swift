@@ -24,7 +24,7 @@ internal final class StartViewController: UIViewController {
         guard let documentURL = NSBundle.mainBundle().URLForResource(name, withExtension: "pdf") else {
             fatalError("File could not be found")
         }
-        return PDFDocument(tempURL: documentURL)
+        return PDFDocument(fileURL: documentURL)
     }
     
     private func showDocument(document: PDFDocument) {
