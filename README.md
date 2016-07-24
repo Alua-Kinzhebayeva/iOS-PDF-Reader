@@ -31,7 +31,7 @@ Then run `pod install` with CocoaPods 1.0 or newer.
 
 ```swift
 let documentURL = NSBundle.mainBundle().URLForResource("Cupcakes", withExtension: "pdf")!
-let document = PDFDocument(tempURL: documentURL)
+let document = PDFDocument(fileURL: documentURL)
 
 let storyboard = UIStoryboard(name: "PDFReader", bundle: NSBundle(forClass: PDFViewController.self))
 let controller = storyboard.instantiateInitialViewController() as! PDFViewController
