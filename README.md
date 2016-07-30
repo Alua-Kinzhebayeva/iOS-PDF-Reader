@@ -5,14 +5,21 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 PDF Reader for iOS written in Swift
+* Fast and lightweight
+* Thumbnail bar on the bottom to navigate to a specific page
+* Print button on the top right
 
 <img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot1.png" alt="Example" style="width: 690px;" />
 
 <img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot2.png" alt="Example" style="width: 690px;" />
 
+## Requirements
+
+- iOS 9.0+
+
 ## Installation
 
-[CocoaPods]: http://cocoapods.org
+### CocoaPods
 
 To install it, simply add the following line to your **Podfile**:
 
@@ -28,6 +35,16 @@ use_frameworks!
 
 Then run `pod install` with CocoaPods 1.0 or newer.
 
+### Carthage
+
+To install it, simply add the following line to your **Cartfile**:
+
+```ogdl
+github "Alamofire/Alamofire" ~> 3.4
+```
+
+Run `carthage update` to build the framework and drag the built `PDFReader.framework` into your Xcode project.
+
 ## Usage
 
 ```swift
@@ -40,9 +57,13 @@ controller.document = document
 controller.title = document.fileName
 navigationController?.pushViewController(controller, animated: true)
 ```
-# TODO
-- Displaying two pages in landscape orientation
+## Customizations
 
-# Acknowledgements
+Customize the action button image of the right menu bar item
+```swift
+controller.actionButtonImage = UIImage(named: "printButtonImage")
+```
+
+## Acknowledgements
 
 inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
