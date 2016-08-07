@@ -40,7 +40,7 @@ Then run `pod install` with CocoaPods 1.0 or newer.
 To install it, simply add the following line to your **Cartfile**:
 
 ```ogdl
-github "Alamofire/Alamofire" ~> 3.4
+github "Alua-Kinzhebayeva/iOS-PDF-Reader"
 ```
 
 Run `carthage update` to build the framework and drag the built `PDFReader.framework` into your Xcode project.
