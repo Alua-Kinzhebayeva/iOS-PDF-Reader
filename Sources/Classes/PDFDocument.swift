@@ -20,48 +20,34 @@ public struct PDFDocument {
     let fileURL: NSURL
     let coreDocument: CGPDFDocument
     var password: String?
-    /**
-     Returns a newly initialized document which is located on the file system.
-     
-     - parameter fileURL: the file URL where the `.pdf` document exists on the file system
-     
-     - returns: A newly initialized `PDFDocument`.
-     */
-    public init(fileURL: NSURL) {
-        self.fileURL = fileURL
-        guard let fileName = fileURL.lastPathComponent else { fatalError() }
-        self.fileName = fileName
-        
-        guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
-        self.coreDocument = coreDocument
-        self.pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
-        self.loadPages()
-    }
+
 
     /**
      Returns a newly initialized document which is located on the file system.
      
      - parameter fileURL: the file URL where the locked `.pdf` document exists on the file system
-     - parameter password: password for the locked odf
+     - optional parameter password: password for the locked pdf
      - returns: A newly initialized `PDFDocument`.
      */
     
-    public init(fileURL: NSURL, password: String) {
+    public init(fileURL: NSURL, password: String? = nil) {
         self.fileURL = fileURL
         guard let fileName = fileURL.lastPathComponent else { fatalError() }
         self.fileName = fileName
         
         guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
         
-        // Try a blank password first, per Apple's Quartz PDF example
-        if CGPDFDocumentIsEncrypted(coreDocument) == true &&
-            CGPDFDocumentUnlockWithPassword(coreDocument, "") == false {
-            // Nope, now let's try the provided password to unlock the PDF
-            if let cPasswordString = password.cStringUsingEncoding(NSUTF8StringEncoding) {
-                if CGPDFDocumentUnlockWithPassword(coreDocument, cPasswordString) == false {
-                    print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
+        if let pwd = password as String? {
+            // Try a blank password first, per Apple's Quartz PDF example
+            if CGPDFDocumentIsEncrypted(coreDocument) == true &&
+                CGPDFDocumentUnlockWithPassword(coreDocument, "") == false {
+                // Nope, now let's try the provided password to unlock the PDF
+                if let cPasswordString = pwd.cStringUsingEncoding(NSUTF8StringEncoding) {
+                    if CGPDFDocumentUnlockWithPassword(coreDocument, cPasswordString) == false {
+                        print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
+                    }
+                    self.password = pwd
                 }
-                self.password = password
             }
         }
         
