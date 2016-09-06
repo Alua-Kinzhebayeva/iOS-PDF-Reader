@@ -79,7 +79,7 @@ public final class PDFViewController: UIViewController {
     func print() {
         guard UIPrintInteractionController.isPrintingAvailable() else { return }
         guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
-        guard document.password == nil else {return }
+        guard document.password == nil else { return }
         let printInfo = UIPrintInfo.printInfo()
         printInfo.duplex = .LongEdge
         printInfo.outputType = .General
