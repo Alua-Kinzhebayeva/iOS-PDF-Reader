@@ -19,7 +19,7 @@ public struct PDFDocument {
     
     let fileURL: NSURL
     let coreDocument: CGPDFDocument
-    
+    var password: String?
     /**
      Returns a newly initialized document which is located on the file system.
      
@@ -34,9 +34,44 @@ public struct PDFDocument {
         
         guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
         self.coreDocument = coreDocument
-        pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
+        self.pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
+        self.loadPages()
+    }
+
+    /**
+     Returns a newly initialized document which is located on the file system.
+     
+     - parameter fileURL: the file URL where the locked `.pdf` document exists on the file system
+     - parameter password: password for the locked odf
+     - returns: A newly initialized `PDFDocument`.
+     */
+    
+    public init(fileURL: NSURL, password: String) {
+        self.fileURL = fileURL
+        guard let fileName = fileURL.lastPathComponent else { fatalError() }
+        self.fileName = fileName
         
-        for pageNumber in 1...pageCount {
+        guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
+        
+        // Try a blank password first, per Apple's Quartz PDF example
+        if CGPDFDocumentIsEncrypted(coreDocument) == true &&
+            CGPDFDocumentUnlockWithPassword(coreDocument, "") == false {
+            // Nope, now let's try the provided password to unlock the PDF
+            if let cPasswordString = password.cStringUsingEncoding(NSUTF8StringEncoding) {
+                if CGPDFDocumentUnlockWithPassword(coreDocument, cPasswordString) == false {
+                    print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
+                }
+                self.password = password
+            }
+        }
+        
+        self.coreDocument = coreDocument
+        self.pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
+        self.loadPages()
+    }
+    
+    func loadPages() {
+        for pageNumber in 1...self.pageCount {
             let backgroundImage = self.imageFromPDFPage(pageNumber)
             PDFViewController.images.setObject(backgroundImage, forKey: pageNumber)
         }
