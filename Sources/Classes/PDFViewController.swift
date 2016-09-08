@@ -113,11 +113,11 @@ extension PDFViewController: UICollectionViewDataSource {
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
-    private var isThumbnailControllerShown: Bool {
+    fileprivate var isThumbnailControllerShown: Bool {
         return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
     }
     
-    private func hideThumbnailController(_ shouldHide: Bool) {
+    fileprivate func hideThumbnailController(_ shouldHide: Bool) {
         if shouldHide {
             self.thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
         } else {

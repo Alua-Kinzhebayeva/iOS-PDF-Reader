@@ -21,14 +21,14 @@ internal final class StartViewController: UIViewController {
     }
     
     fileprivate func document(_ name: String) -> PDFDocument {
-        guard let documentURL = Bundle.mainBundle().URLForResource(name, withExtension: "pdf") else {
+        guard let documentURL = Bundle.main.url(forResource: name, withExtension: "pdf") else {
             fatalError("File could not be found")
         }
         return PDFDocument(fileURL: documentURL)
     }
     
     fileprivate func showDocument(_ document: PDFDocument) {
-        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(forClass: PDFViewController.self))
+        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
         controller.title = document.fileName

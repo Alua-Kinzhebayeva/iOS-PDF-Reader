@@ -11,8 +11,8 @@ import UIKit
 import QuartzCore
 
 internal final class TiledView: UIView {
-    private var leftPdfPage: CGPDFPage?
-    private let myScale: CGFloat
+    fileprivate var leftPdfPage: CGPDFPage?
+    fileprivate let myScale: CGFloat
    
     init(frame:CGRect, scale: CGFloat, newPage: CGPDFPage) {
         myScale = scale

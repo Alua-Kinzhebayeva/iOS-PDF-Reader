@@ -14,21 +14,21 @@ protocol PDFPageViewDelegate: class {
 }
 
 internal final class PDFPageView: UIScrollView {
-    private let ZOOM_LEVELS = 2
-    private let ZOOM_STEP = 2
+    fileprivate let ZOOM_LEVELS = 2
+    fileprivate let ZOOM_STEP = 2
     
     /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
-    private let backgroundImageView: UIImageView
+    fileprivate let backgroundImageView: UIImageView
     
-    private let PDFPage: CGPDFPage
+    fileprivate let PDFPage: CGPDFPage
     
     /// The TiledPDFView that is currently front most.
     fileprivate var tiledPDFView: TiledView!
     
     fileprivate var PDFScale: CGFloat?
-    private var zoomAmount: CGFloat?
-    private var isAtMaximumZoom: Bool = false
-    private weak var pageViewDelegate: PDFPageViewDelegate?
+    fileprivate var zoomAmount: CGFloat?
+    fileprivate var isAtMaximumZoom: Bool = false
+    fileprivate weak var pageViewDelegate: PDFPageViewDelegate?
     
     init(frame: CGRect, document: PDFDocument, pageNumber: Int, pageViewDelegate: PDFPageViewDelegate?) {
         let backgroundImage = document.getPDFPageImage(pageNumber + 1)
@@ -128,13 +128,13 @@ internal final class PDFPageView: UIScrollView {
         backgroundImageView.isHidden = false
     }
     
-    private func zoomScaleThatFits(_ target: CGSize, source: CGSize) -> CGFloat {
+    fileprivate func zoomScaleThatFits(_ target: CGSize, source: CGSize) -> CGFloat {
         let w_scale = (target.width / source.width) as CGFloat
         let h_scale = (target.height / source.height) as CGFloat
         return ((w_scale < h_scale) ? w_scale : h_scale)
     }
     
-    private func updateMinimumMaximumZoom(){
+    fileprivate func updateMinimumMaximumZoom(){
         let targetRect = bounds.insetBy(dx: 0, dy: 0)
         let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
         
@@ -143,14 +143,14 @@ internal final class PDFPageView: UIScrollView {
         zoomAmount = (maximumZoomScale - minimumZoomScale) / CGFloat(ZOOM_LEVELS)
     }
     
-    private func zoomReset() {
+    fileprivate func zoomReset() {
         PDFScale = 1
         if zoomScale > minimumZoomScale {
             zoomScale = minimumZoomScale
         }
     }
     
-    private func zoomRectForScale(_ scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
+    fileprivate func zoomRectForScale(_ scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
         //Normalize current content size back to content scale of 1.0f
         var contentSize = CGSize()
         contentSize.width = (self.contentSize.width / zoomScale)
