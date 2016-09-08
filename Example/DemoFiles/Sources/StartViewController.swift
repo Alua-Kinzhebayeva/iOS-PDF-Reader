@@ -10,25 +10,25 @@ import UIKit
 import PDFReader
 
 internal final class StartViewController: UIViewController {
-    @IBAction private func showSmallPDFDocument() {
+    @IBAction fileprivate func showSmallPDFDocument() {
         let smallPDFDocumentName = "apple"
         showDocument(document(smallPDFDocumentName))
     }
     
-    @IBAction private func showLargePDFDocument() {
+    @IBAction fileprivate func showLargePDFDocument() {
         let smallPDFDocumentName = "mongodb"
         showDocument(document(smallPDFDocumentName))
     }
     
-    private func document(name: String) -> PDFDocument {
-        guard let documentURL = NSBundle.mainBundle().URLForResource(name, withExtension: "pdf") else {
+    fileprivate func document(_ name: String) -> PDFDocument {
+        guard let documentURL = Bundle.mainBundle().URLForResource(name, withExtension: "pdf") else {
             fatalError("File could not be found")
         }
         return PDFDocument(fileURL: documentURL)
     }
     
-    private func showDocument(document: PDFDocument) {
-        let storyboard = UIStoryboard(name: "PDFReader", bundle: NSBundle(forClass: PDFViewController.self))
+    fileprivate func showDocument(_ document: PDFDocument) {
+        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(forClass: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
         controller.title = document.fileName

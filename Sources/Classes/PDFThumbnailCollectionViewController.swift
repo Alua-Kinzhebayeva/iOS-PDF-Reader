@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PDFThumbnailControllerDelegate: class {
-    func didSelectIndexPath(indexPath: NSIndexPath)
+    func didSelectIndexPath(_ indexPath: IndexPath)
 }
 
 internal final class PDFThumbnailCollectionViewController: UICollectionViewController {
@@ -18,9 +18,9 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     var currentPageIndex: Int = 0 {
         didSet {
             guard let collectionView = collectionView else { return }
-            let curentPageIndexPath = NSIndexPath(forRow: currentPageIndex, inSection: 0)
-            if !collectionView.indexPathsForVisibleItems().contains(curentPageIndexPath) {
-                collectionView.scrollToItemAtIndexPath(curentPageIndexPath, atScrollPosition: .CenteredHorizontally, animated: true)
+            let curentPageIndexPath = IndexPath(row: currentPageIndex, section: 0)
+            if !collectionView.indexPathsForVisibleItems.contains(curentPageIndexPath) {
+                collectionView.scrollToItem(at: curentPageIndexPath, at: .centeredHorizontally, animated: true)
             }
             collectionView.reloadData()
         }
@@ -35,15 +35,15 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
         pageImages = document.allPageImages()
     }
 
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return pageImages?.count ?? 0
     }
 
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! PDFThumbnailCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PDFThumbnailCell
         
-        cell.imageView?.image = pageImages[indexPath.row]
-        if currentPageIndex == indexPath.row {
+        cell.imageView?.image = pageImages[(indexPath as NSIndexPath).row]
+        if currentPageIndex == (indexPath as NSIndexPath).row {
             cell.alpha = 1.0
         } else {
             cell.alpha = 0.2
@@ -51,11 +51,11 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         return CGSize(width: PDFThumbnailCell.cellWidth, height: PDFThumbnailCell.cellHeight)
     }
     
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.didSelectIndexPath(indexPath)
     }
 }
