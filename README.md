@@ -9,9 +9,9 @@ PDF Reader for iOS written in Swift
 * Thumbnail bar on the bottom to navigate to a specific page
 * Print button on the top right
 
-<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot1.png" alt="Example" style="width: 690px;" />
+<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshots/Screenshot1.png" alt="Example" style="width: 690px;" />
 
-<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshot2.png" alt="Example" style="width: 690px;" />
+<img src="https://raw.githubusercontent.com/Alua-Kinzhebayeva/iOS-PDF-Reader/master/Screenshots/Screenshot2.png" alt="Example" style="width: 690px;" />
 
 ## Requirements
 

@@ -50,7 +50,7 @@ internal final class TiledView: UIView {
     
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         CGContextScaleCTM(con, myScale, myScale)
-        CGContextDrawPDFPage(con, leftPdfPage)
+        CGContextDrawPDFPage(con, leftPdfPage!)
         CGContextRestoreGState(con)
     }
     

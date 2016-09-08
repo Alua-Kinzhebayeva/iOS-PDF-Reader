@@ -58,8 +58,9 @@ public struct PDFDocument {
     
     func loadPages() {
         for pageNumber in 1...self.pageCount {
-            let backgroundImage = self.imageFromPDFPage(pageNumber)
-            PDFViewController.images.setObject(backgroundImage, forKey: pageNumber)
+            if let backgroundImage = self.imageFromPDFPage(pageNumber) {
+                PDFViewController.images.setObject(backgroundImage, forKey: pageNumber)
+            }
         }
     }
     
@@ -67,18 +68,18 @@ public struct PDFDocument {
         return (0..<pageCount).flatMap({ getPDFPageImage($0 + 1) })
     }
     
-    func getPDFPageImage(pageNumber: Int) -> UIImage {
+    func getPDFPageImage(pageNumber: Int) -> UIImage? {
         if let image = PDFViewController.images.objectForKey(pageNumber) as? UIImage {
             return image
         } else {
-            let image = self.imageFromPDFPage(pageNumber)
+            guard let image = self.imageFromPDFPage(pageNumber) else { return nil }
             PDFViewController.images.setObject(image, forKey: pageNumber)
             return image
         }
     }
     
-    private func imageFromPDFPage(pageNumber: Int) -> UIImage {
-        let page = CGPDFDocumentGetPage(coreDocument, pageNumber)
+    private func imageFromPDFPage(pageNumber: Int) -> UIImage? {
+        guard let page = CGPDFDocumentGetPage(coreDocument, pageNumber) else { return nil }
         // Determine the size of the PDF page.
         var pageRect = CGPDFPageGetBoxRect(page, CGPDFBox.MediaBox)
         let scalingConstant: CGFloat = 240
@@ -89,11 +90,11 @@ public struct PDFDocument {
          Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
          */
         UIGraphicsBeginImageContextWithOptions(pageRect.size, true, 1.0)
-        let context = UIGraphicsGetCurrentContext()
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
         
         // First fill the background with white.
         CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0)
-        CGContextFillRect(context,pageRect)
+        CGContextFillRect(context, pageRect)
         
         CGContextSaveGState(context)
         // Flip the context so that the PDF page is rendered right side up.
@@ -108,6 +109,6 @@ public struct PDFDocument {
         let backgroundImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return backgroundImage
+        return backgroundImage!
     }
 }
