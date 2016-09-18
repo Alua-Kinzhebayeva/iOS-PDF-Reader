@@ -64,6 +64,11 @@ Customize the action button image of the right menu bar item
 controller.actionButtonImage = UIImage(named: "printButtonImage")
 ```
 
+Customize the action button by replacing the UIBarButtonItem displayed with your own
+```swift
+controller.actionButton = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(myController.sharePDF(_:)))
+```     
+
 ## Acknowledgements
 
 inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
