@@ -28,7 +28,7 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     
     weak var delegate: PDFThumbnailControllerDelegate?
     
-    fileprivate var pageImages: [UIImage]!
+    private var pageImages: [UIImage]!
     
     override func viewDidLoad() {
         super.viewDidLoad()

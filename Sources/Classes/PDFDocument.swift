@@ -75,7 +75,7 @@ public struct PDFDocument {
         }
     }
     
-    fileprivate func imageFromPDFPage(_ pageNumber: Int) -> UIImage? {
+    private func imageFromPDFPage(_ pageNumber: Int) -> UIImage? {
         guard let page = coreDocument.page(at: pageNumber) else { return nil }
         // Determine the size of the PDF page.
         var pageRect = page.getBoxRect(CGPDFBox.mediaBox)

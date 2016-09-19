@@ -13,8 +13,8 @@ public final class PDFViewController: UIViewController {
     @IBOutlet fileprivate var collectionView: UICollectionView!
     @IBOutlet fileprivate weak var thumbnailCollectionControllerContainer: UIView!
     @IBOutlet fileprivate var thumbnailCollectionControllerHeight: NSLayoutConstraint!
-    @IBOutlet fileprivate var thumbnailCollectionControllerWidth: NSLayoutConstraint!
     @IBOutlet fileprivate var thumbnailCollectionControllerBottom: NSLayoutConstraint!
+    @IBOutlet private var thumbnailCollectionControllerWidth: NSLayoutConstraint!
     
     /// PDF document that should be displayed
     public var document: PDFDocument!
@@ -117,11 +117,11 @@ extension PDFViewController: UICollectionViewDataSource {
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
-    fileprivate var isThumbnailControllerShown: Bool {
+    private var isThumbnailControllerShown: Bool {
         return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
     }
     
-    fileprivate func hideThumbnailController(_ shouldHide: Bool) {
+    private func hideThumbnailController(_ shouldHide: Bool) {
         if shouldHide {
             self.thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
         } else {

@@ -14,21 +14,22 @@ protocol PDFPageViewDelegate: class {
 }
 
 internal final class PDFPageView: UIScrollView {
-    fileprivate let ZOOM_LEVELS = 2
-    fileprivate let ZOOM_STEP = 2
-    
-    /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
-    fileprivate let backgroundImageView: UIImageView
-    
-    fileprivate let PDFPage: CGPDFPage
-    
     /// The TiledPDFView that is currently front most.
     fileprivate var tiledPDFView: TiledView!
     
     fileprivate var PDFScale: CGFloat?
-    fileprivate var zoomAmount: CGFloat?
-    fileprivate var isAtMaximumZoom: Bool = false
-    fileprivate weak var pageViewDelegate: PDFPageViewDelegate?
+    
+    private let ZOOM_LEVELS = 2
+    private let ZOOM_STEP = 2
+    
+    /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
+    private let backgroundImageView: UIImageView
+    
+    private let PDFPage: CGPDFPage
+    
+    private var zoomAmount: CGFloat?
+    private var isAtMaximumZoom: Bool = false
+    private weak var pageViewDelegate: PDFPageViewDelegate?
     
     init(frame: CGRect, document: PDFDocument, pageNumber: Int, pageViewDelegate: PDFPageViewDelegate?) {
         let backgroundImage = document.getPDFPageImage(pageNumber + 1)
@@ -106,10 +107,9 @@ internal final class PDFPageView: UIScrollView {
         tiledPDFView.frame = frameToCenter
         backgroundImageView.frame = frameToCenter
     
-        /*
-        To handle the interaction between CATiledLayer and high resolution screens, set the tiling view's contentScaleFactor to 1.0.
-        If this step were omitted, the content scale factor would be 2.0 on high resolution screens, which would cause the CATiledLayer to ask for tiles of the wrong scale.
-        */
+        // To handle the interaction between CATiledLayer and high resolution screens, set the 
+        // tiling view's contentScaleFactor to 1.0. If this step were omitted, the content scale factor 
+        // would be 2.0 on high resolution screens, which would cause the CATiledLayer to ask for tiles of the wrong scale.
         tiledPDFView.contentScaleFactor = 1.0
     }
     
@@ -128,13 +128,13 @@ internal final class PDFPageView: UIScrollView {
         backgroundImageView.isHidden = false
     }
     
-    fileprivate func zoomScaleThatFits(_ target: CGSize, source: CGSize) -> CGFloat {
+    private func zoomScaleThatFits(_ target: CGSize, source: CGSize) -> CGFloat {
         let w_scale = (target.width / source.width) as CGFloat
         let h_scale = (target.height / source.height) as CGFloat
         return ((w_scale < h_scale) ? w_scale : h_scale)
     }
     
-    fileprivate func updateMinimumMaximumZoom(){
+    private func updateMinimumMaximumZoom(){
         let targetRect = bounds.insetBy(dx: 0, dy: 0)
         let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
         
@@ -143,14 +143,14 @@ internal final class PDFPageView: UIScrollView {
         zoomAmount = (maximumZoomScale - minimumZoomScale) / CGFloat(ZOOM_LEVELS)
     }
     
-    fileprivate func zoomReset() {
+    private func zoomReset() {
         PDFScale = 1
         if zoomScale > minimumZoomScale {
             zoomScale = minimumZoomScale
         }
     }
     
-    fileprivate func zoomRectForScale(_ scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
+    private func zoomRectForScale(_ scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
         //Normalize current content size back to content scale of 1.0f
         var contentSize = CGSize()
         contentSize.width = (self.contentSize.width / zoomScale)
@@ -179,20 +179,16 @@ internal final class PDFPageView: UIScrollView {
 }
 
 extension PDFPageView: UIScrollViewDelegate {
-    /**
-     A UIScrollView delegate callback, called when the user starts zooming.
-     Return the current TiledPDFView.
-     */
+    /// A UIScrollView delegate callback, called when the user starts zooming.
+    /// Return the current TiledPDFView.
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         // Create the TiledPDFView based on the size of the PDF page and scale it to fit the view.
         return tiledPDFView
     }
     
-    /**
-     A UIScrollView delegate callback, called when the user stops zooming.
-     When the user stops zooming, create a new Tiled
-     PDFView based on the new zoom level and draw it on top of the old TiledPDFView.
-     */
+    /// A UIScrollView delegate callback, called when the user stops zooming.
+    /// When the user stops zooming, create a new Tiled
+    /// PDFView based on the new zoom level and draw it on top of the old TiledPDFView.
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         PDFScale = scale
     }
