@@ -1,5 +1,5 @@
 PODS:
-  - PDFReader (1.1.0)
+  - PDFReader (2.0.0)
 
 DEPENDENCIES:
   - PDFReader (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  PDFReader: 11475fe7bf87a47ddca9f942c2c5c5ea475f0424
+  PDFReader: 3b0a57602a028379945172fc64f5d2a4275f6782
 
 PODFILE CHECKSUM: d85f21a21b53f7fbb4afdc4f886380d34ca8e2c8
 

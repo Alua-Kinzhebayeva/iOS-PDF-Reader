@@ -11,8 +11,8 @@ import UIKit
 import QuartzCore
 
 internal final class TiledView: UIView {
-    private var leftPdfPage: CGPDFPage?
-    private let myScale: CGFloat
+    fileprivate var leftPdfPage: CGPDFPage?
+    fileprivate let myScale: CGFloat
    
     init(frame:CGRect, scale: CGFloat, newPage: CGPDFPage) {
         myScale = scale
@@ -26,32 +26,32 @@ internal final class TiledView: UIView {
         let tiledLayer = self.layer as! CATiledLayer
         tiledLayer.levelsOfDetail = 16
         tiledLayer.levelsOfDetailBias = 15
-        tiledLayer.tileSize = CGSizeMake(1024, 1024)
+        tiledLayer.tileSize = CGSize(width: 1024, height: 1024)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override class func layerClass() -> AnyClass {
+    override class var layerClass : AnyClass {
         return CATiledLayer.self
     }
     
     // Draw the CGPDFPage into the layer at the correct scale.
-    override func drawLayer(layer: CALayer, inContext con: CGContext) {
+    override func draw(_ layer: CALayer, in con: CGContext) {
         // Fill the background with white.
-        CGContextSetRGBFillColor(con, 1.0, 1.0, 1.0, 1.0)
-        CGContextFillRect(con, bounds)
+        con.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        con.fill(bounds)
     
-        CGContextSaveGState(con)
+        con.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
-        CGContextTranslateCTM(con, 0.0, bounds.size.height)
-        CGContextScaleCTM(con, 1.0, -1.0)
+        con.translateBy(x: 0.0, y: bounds.size.height)
+        con.scaleBy(x: 1.0, y: -1.0)
     
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
-        CGContextScaleCTM(con, myScale, myScale)
-        CGContextDrawPDFPage(con, leftPdfPage!)
-        CGContextRestoreGState(con)
+        con.scaleBy(x: myScale, y: myScale)
+        con.drawPDFPage(leftPdfPage!)
+        con.restoreGState()
     }
     
     // Stops drawLayer

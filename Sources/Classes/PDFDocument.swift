@@ -17,7 +17,7 @@ public struct PDFDocument {
     /// Name of the file stored in the file system
     public let fileName: String
     
-    let fileURL: NSURL
+    let fileURL: URL
     let coreDocument: CGPDFDocument
     var password: String?
 
@@ -30,20 +30,20 @@ public struct PDFDocument {
      - returns: A newly initialized `PDFDocument`.
      */
     
-    public init(fileURL: NSURL, password: String? = nil) {
+    public init(fileURL: URL, password: String? = nil) {
         self.fileURL = fileURL
-        guard let fileName = fileURL.lastPathComponent else { fatalError() }
+        let fileName = fileURL.lastPathComponent
         self.fileName = fileName
         
-        guard let coreDocument = CGPDFDocumentCreateWithURL(fileURL) else { fatalError() }
+        guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { fatalError() }
         
         if let pwd = password as String? {
             // Try a blank password first, per Apple's Quartz PDF example
-            if CGPDFDocumentIsEncrypted(coreDocument) == true &&
-                CGPDFDocumentUnlockWithPassword(coreDocument, "") == false {
+            if coreDocument.isEncrypted == true &&
+                coreDocument.unlockWithPassword("") == false {
                 // Nope, now let's try the provided password to unlock the PDF
-                if let cPasswordString = pwd.cStringUsingEncoding(NSUTF8StringEncoding) {
-                    if CGPDFDocumentUnlockWithPassword(coreDocument, cPasswordString) == false {
+                if let cPasswordString = pwd.cString(using: String.Encoding.utf8) {
+                    if coreDocument.unlockWithPassword(cPasswordString) == false {
                         print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
                     }
                     self.password = pwd
@@ -52,14 +52,14 @@ public struct PDFDocument {
         }
         
         self.coreDocument = coreDocument
-        self.pageCount = CGPDFDocumentGetNumberOfPages(coreDocument)
+        self.pageCount = coreDocument.numberOfPages
         self.loadPages()
     }
     
     func loadPages() {
         for pageNumber in 1...self.pageCount {
             if let backgroundImage = self.imageFromPDFPage(pageNumber) {
-                PDFViewController.images.setObject(backgroundImage, forKey: pageNumber)
+                PDFViewController.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
             }
         }
     }
@@ -68,23 +68,23 @@ public struct PDFDocument {
         return (0..<pageCount).flatMap({ getPDFPageImage($0 + 1) })
     }
     
-    func getPDFPageImage(pageNumber: Int) -> UIImage? {
-        if let image = PDFViewController.images.objectForKey(pageNumber) as? UIImage {
+    func getPDFPageImage(_ pageNumber: Int) -> UIImage? {
+        if let image = PDFViewController.images.object(forKey: NSNumber(value: pageNumber)) {
             return image
         } else {
             guard let image = self.imageFromPDFPage(pageNumber) else { return nil }
-            PDFViewController.images.setObject(image, forKey: pageNumber)
+            PDFViewController.images.setObject(image, forKey: NSNumber(value: pageNumber))
             return image
         }
     }
     
-    private func imageFromPDFPage(pageNumber: Int) -> UIImage? {
-        guard let page = CGPDFDocumentGetPage(coreDocument, pageNumber) else { return nil }
+    fileprivate func imageFromPDFPage(_ pageNumber: Int) -> UIImage? {
+        guard let page = coreDocument.page(at: pageNumber) else { return nil }
         // Determine the size of the PDF page.
-        var pageRect = CGPDFPageGetBoxRect(page, CGPDFBox.MediaBox)
+        var pageRect = page.getBoxRect(CGPDFBox.mediaBox)
         let scalingConstant: CGFloat = 240
         let pdfScale = min(scalingConstant/pageRect.size.width, scalingConstant/pageRect.size.height)
-        pageRect.size = CGSizeMake(pageRect.size.width * pdfScale, pageRect.size.height * pdfScale)
+        pageRect.size = CGSize(width: pageRect.size.width * pdfScale, height: pageRect.size.height * pdfScale)
         
         /*
          Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
@@ -93,18 +93,18 @@ public struct PDFDocument {
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
         
         // First fill the background with white.
-        CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0)
-        CGContextFillRect(context, pageRect)
+        context.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        context.fill(pageRect)
         
-        CGContextSaveGState(context)
+        context.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
-        CGContextTranslateCTM(context, 0.0, pageRect.size.height)
-        CGContextScaleCTM(context, 1.0, -1.0)
+        context.translateBy(x: 0.0, y: pageRect.size.height)
+        context.scaleBy(x: 1.0, y: -1.0)
         
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
-        CGContextScaleCTM(context, pdfScale, pdfScale)
-        CGContextDrawPDFPage(context, page)
-        CGContextRestoreGState(context)
+        context.scaleBy(x: pdfScale, y: pdfScale)
+        context.drawPDFPage(page)
+        context.restoreGState()
         
         let backgroundImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

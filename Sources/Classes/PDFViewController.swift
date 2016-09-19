@@ -10,11 +10,11 @@ import UIKit
 
 /// Controller that is able to interact and navigate through pages of a `PDFDocument`
 public final class PDFViewController: UIViewController {
-    @IBOutlet private var collectionView: UICollectionView!
-    @IBOutlet private weak var thumbnailCollectionControllerContainer: UIView!
-    @IBOutlet private var thumbnailCollectionControllerHeight: NSLayoutConstraint!
-    @IBOutlet private var thumbnailCollectionControllerWidth: NSLayoutConstraint!
-    @IBOutlet private var thumbnailCollectionControllerBottom: NSLayoutConstraint!
+    @IBOutlet fileprivate var collectionView: UICollectionView!
+    @IBOutlet fileprivate weak var thumbnailCollectionControllerContainer: UIView!
+    @IBOutlet fileprivate var thumbnailCollectionControllerHeight: NSLayoutConstraint!
+    @IBOutlet fileprivate var thumbnailCollectionControllerWidth: NSLayoutConstraint!
+    @IBOutlet fileprivate var thumbnailCollectionControllerBottom: NSLayoutConstraint!
     
     /// PDF document that should be displayed
     public var document: PDFDocument!
@@ -22,20 +22,20 @@ public final class PDFViewController: UIViewController {
     /// Image used to override the default action button image
     public var actionButtonImage: UIImage?
     
-    private var currentPageIndex: Int = 0
-    private var thumbnailCollectionController: PDFThumbnailCollectionViewController?
+    fileprivate var currentPageIndex: Int = 0
+    fileprivate var thumbnailCollectionController: PDFThumbnailCollectionViewController?
     
-    static let images = NSCache()
+    static let images = NSCache<NSNumber,UIImage>()
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        collectionView!.registerClass(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
+        collectionView!.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         let actionButton: UIBarButtonItem
         if let actionButtonImage = actionButtonImage {
-            actionButton = UIBarButtonItem(image: actionButtonImage, style: .Plain, target: self, action: #selector(print))
+            actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: self, action: #selector(print))
         } else {
-            actionButton = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(print))
+            actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(print))
         }
         navigationItem.rightBarButtonItem = actionButton
         
@@ -47,16 +47,16 @@ public final class PDFViewController: UIViewController {
         thumbnailCollectionControllerWidth.constant = width
     }
     
-    override public func prefersStatusBarHidden() -> Bool {
-        return navigationController?.navigationBarHidden == true
+    override public var prefersStatusBarHidden : Bool {
+        return navigationController?.isNavigationBarHidden == true
     }
     
-    override public func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
-        return .Slide
+    override public var preferredStatusBarUpdateAnimation : UIStatusBarAnimation {
+        return .slide
     }
     
-    override public func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let controller = segue.destinationViewController as? PDFThumbnailCollectionViewController {
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let controller = segue.destination as? PDFThumbnailCollectionViewController {
             thumbnailCollectionController = controller
             controller.document = document
             controller.delegate = self
@@ -64,60 +64,60 @@ public final class PDFViewController: UIViewController {
         }
     }
     
-    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animateAlongsideTransition({ (context) in
-            let currentIndexPath = NSIndexPath(forRow: self.currentPageIndex, inSection: 0)
-            self.collectionView.reloadItemsAtIndexPaths([currentIndexPath])
-            self.collectionView.scrollToItemAtIndexPath(currentIndexPath, atScrollPosition: .CenteredHorizontally, animated: false)
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (context) in
+            let currentIndexPath = IndexPath(row: self.currentPageIndex, section: 0)
+            self.collectionView.reloadItems(at: [currentIndexPath])
+            self.collectionView.scrollToItem(at: currentIndexPath, at: .centeredHorizontally, animated: false)
             }) { (context) in
                 self.thumbnailCollectionController?.currentPageIndex = self.currentPageIndex
         }
         
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+        super.viewWillTransition(to: size, with: coordinator)
     }
     
     func print() {
-        guard UIPrintInteractionController.isPrintingAvailable() else { return }
-        guard UIPrintInteractionController.canPrintURL(document.fileURL) else { return }
+        guard UIPrintInteractionController.isPrintingAvailable else { return }
+        guard UIPrintInteractionController.canPrint(document.fileURL) else { return }
         guard document.password == nil else { return }
         let printInfo = UIPrintInfo.printInfo()
-        printInfo.duplex = .LongEdge
-        printInfo.outputType = .General
+        printInfo.duplex = .longEdge
+        printInfo.outputType = .general
         printInfo.jobName = document.fileName
         
-        let printInteraction = UIPrintInteractionController.sharedPrintController()
+        let printInteraction = UIPrintInteractionController.shared
         printInteraction.printInfo = printInfo
         printInteraction.printingItem = document.fileURL
         printInteraction.showsPageRange = true
-        printInteraction.presentAnimated(true, completionHandler: nil)
+        printInteraction.present(animated: true, completionHandler: nil)
     }
 }
 
 extension PDFViewController: PDFThumbnailControllerDelegate {
-    func didSelectIndexPath(indexPath: NSIndexPath) {
-        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
+    func didSelectIndexPath(_ indexPath: IndexPath) {
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
         thumbnailCollectionController?.currentPageIndex = currentPageIndex
     }
 }
 
 extension PDFViewController: UICollectionViewDataSource {
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return document.pageCount
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("page", forIndexPath: indexPath) as! PDFPageCollectionViewCell
-        cell.setup(indexPath.row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "page", for: indexPath) as! PDFPageCollectionViewCell
+        cell.setup((indexPath as NSIndexPath).row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
         return cell
     }
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
-    private var isThumbnailControllerShown: Bool {
+    fileprivate var isThumbnailControllerShown: Bool {
         return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
     }
     
-    private func hideThumbnailController(shouldHide: Bool) {
+    fileprivate func hideThumbnailController(_ shouldHide: Bool) {
         if shouldHide {
             self.thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
         } else {
@@ -125,9 +125,9 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
         }
     }
     
-    func handleSingleTap(cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
+    func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
         let shouldHide = !isThumbnailControllerShown
-        UIView.animateWithDuration(0.25, animations: {
+        UIView.animate(withDuration: 0.25, animations: {
             self.hideThumbnailController(shouldHide)
             self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
         })
@@ -135,13 +135,13 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
 }
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSizeMake(collectionView.frame.size.width - 1, collectionView.frame.size.height)
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.size.width - 1, height: collectionView.frame.size.height)
     }
 }
 
 extension PDFViewController: UIScrollViewDelegate {
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let updatedPageIndex = Int(round(max(scrollView.contentOffset.x, 0) / scrollView.bounds.size.width))
         if updatedPageIndex != currentPageIndex {
             currentPageIndex = updatedPageIndex

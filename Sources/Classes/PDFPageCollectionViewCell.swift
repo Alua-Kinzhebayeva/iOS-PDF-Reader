@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PDFPageCollectionViewCellDelegate: class {
-    func handleSingleTap(cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView)
+    func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView)
 }
 
 internal final class PDFPageCollectionViewCell: UICollectionViewCell {
@@ -24,9 +24,9 @@ internal final class PDFPageCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    private weak var pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?
+    fileprivate weak var pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?
     
-    func setup(indexPathRow: Int, collectionViewBounds: CGRect, document: PDFDocument, pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?) {
+    func setup(_ indexPathRow: Int, collectionViewBounds: CGRect, document: PDFDocument, pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?) {
         self.pageCollectionViewCellDelegate = pageCollectionViewCellDelegate
         pageView = PDFPageView(frame: bounds, document: document, pageNumber: indexPathRow, pageViewDelegate: self)
         pageIndex = indexPathRow
@@ -34,7 +34,7 @@ internal final class PDFPageCollectionViewCell: UICollectionViewCell {
 }
 
 extension PDFPageCollectionViewCell: PDFPageViewDelegate {
-    func handleSingleTap(pdfPageView: PDFPageView) {
+    func handleSingleTap(_ pdfPageView: PDFPageView) {
         pageCollectionViewCellDelegate?.handleSingleTap(self, pdfPageView: pdfPageView)
     }
 }
