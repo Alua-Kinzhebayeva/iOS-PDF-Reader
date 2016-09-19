@@ -19,36 +19,33 @@ public struct PDFDocument {
     
     let fileURL: URL
     let coreDocument: CGPDFDocument
-    var password: String?
-
-
-    /**
-     Returns a newly initialized document which is located on the file system.
-     
-     - parameter fileURL: the file URL where the locked `.pdf` document exists on the file system
-     - optional parameter password: password for the locked pdf
-     - returns: A newly initialized `PDFDocument`.
-     */
+    let password: String?
     
+    /// Returns a newly initialized document which is located on the file system.
+    ///
+    /// - parameter fileURL:  the file URL where the locked `.pdf` document exists on the file system
+    /// - parameter password: password for the locked pdf
+    ///
+    /// - returns: A newly initialized `PDFDocument`.
     public init(fileURL: URL, password: String? = nil) {
         self.fileURL = fileURL
-        let fileName = fileURL.lastPathComponent
-        self.fileName = fileName
+        self.fileName = fileURL.lastPathComponent
         
         guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { fatalError() }
         
-        if let pwd = password as String? {
+        if let password = password, let cPasswordString = password.cString(using: String.Encoding.utf8) {
             // Try a blank password first, per Apple's Quartz PDF example
-            if coreDocument.isEncrypted == true &&
-                coreDocument.unlockWithPassword("") == false {
+            if coreDocument.isEncrypted == true && coreDocument.unlockWithPassword("") == false {
                 // Nope, now let's try the provided password to unlock the PDF
-                if let cPasswordString = pwd.cString(using: String.Encoding.utf8) {
-                    if coreDocument.unlockWithPassword(cPasswordString) == false {
-                        print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
-                    }
-                    self.password = pwd
+                if coreDocument.unlockWithPassword(cPasswordString) == false {
+                    print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
                 }
+                self.password = password
+            } else {
+                self.password = nil
             }
+        } else {
+            self.password = nil
         }
         
         self.coreDocument = coreDocument
