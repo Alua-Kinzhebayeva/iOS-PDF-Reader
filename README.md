@@ -48,10 +48,10 @@ Run `carthage update` to build the framework and drag the built `PDFReader.frame
 ## Usage
 
 ```swift
-let documentURL = NSBundle.mainBundle().URLForResource("Cupcakes", withExtension: "pdf")!
+let documentURL = Bundle.main.url(forResource: "Cupcakes", withExtension: "pdf")!
 let document = PDFDocument(fileURL: documentURL)
-
-let storyboard = UIStoryboard(name: "PDFReader", bundle: NSBundle(forClass: PDFViewController.self))
+    
+let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
 let controller = storyboard.instantiateInitialViewController() as! PDFViewController
 controller.document = document
 controller.title = document.fileName
@@ -66,9 +66,9 @@ controller.actionButtonImage = UIImage(named: "printButtonImage")
 
 Customize the action button by replacing the UIBarButtonItem displayed with your own
 ```swift
-controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(myController.sharePDF(_:)))
+controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(MyController.sharePDF))
 ```        
 
 ## Acknowledgements
 
-inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
+Inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
