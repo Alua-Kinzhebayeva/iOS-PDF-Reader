@@ -33,11 +33,11 @@ public struct PDFDocument {
         
         guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { fatalError() }
         
-        if let password = password, let cPasswordString = password.cString(using: String.Encoding.utf8) {
+        if let password = password, let cPasswordString = password.cString(using: .utf8) {
             // Try a blank password first, per Apple's Quartz PDF example
-            if coreDocument.isEncrypted == true && coreDocument.unlockWithPassword("") == false {
+            if coreDocument.isEncrypted && !coreDocument.unlockWithPassword("") {
                 // Nope, now let's try the provided password to unlock the PDF
-                if coreDocument.unlockWithPassword(cPasswordString) == false {
+                if !coreDocument.unlockWithPassword(cPasswordString) {
                     print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
                 }
                 self.password = password
