@@ -104,9 +104,9 @@ public struct PDFDocument {
         context.drawPDFPage(page)
         context.restoreGState()
         
-        let backgroundImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        defer { UIGraphicsEndImageContext() }
+        guard let backgroundImage = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
         
-        return backgroundImage!
+        return backgroundImage
     }
 }
