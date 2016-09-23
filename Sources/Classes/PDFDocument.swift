@@ -55,30 +55,31 @@ public struct PDFDocument {
     
     func loadPages() {
         for pageNumber in 1...self.pageCount {
-            if let backgroundImage = self.imageFromPDFPage(pageNumber) {
+            if let backgroundImage = self.imageFromPDFPage(at: pageNumber) {
                 PDFViewController.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
             }
         }
     }
     
     var allPageImages: [UIImage] {
-        return (0..<pageCount).flatMap{ getPDFPageImage($0 + 1) }
+        return (0..<pageCount).flatMap{ getPDFPageImage(at: $0 + 1) }
     }
     
-    func getPDFPageImage(_ pageNumber: Int) -> UIImage? {
+    func getPDFPageImage(at pageNumber: Int) -> UIImage? {
         if let image = PDFViewController.images.object(forKey: NSNumber(value: pageNumber)) {
             return image
         } else {
-            guard let image = self.imageFromPDFPage(pageNumber) else { return nil }
+            guard let image = self.imageFromPDFPage(at: pageNumber) else { return nil }
             PDFViewController.images.setObject(image, forKey: NSNumber(value: pageNumber))
             return image
         }
     }
     
-    private func imageFromPDFPage(_ pageNumber: Int) -> UIImage? {
+    private func imageFromPDFPage(at pageNumber: Int) -> UIImage? {
         guard let page = coreDocument.page(at: pageNumber) else { return nil }
+        
         // Determine the size of the PDF page.
-        var pageRect = page.getBoxRect(CGPDFBox.mediaBox)
+        var pageRect = page.getBoxRect(.mediaBox)
         let scalingConstant: CGFloat = 240
         let pdfScale = min(scalingConstant/pageRect.size.width, scalingConstant/pageRect.size.height)
         pageRect.size = CGSize(width: pageRect.size.width * pdfScale, height: pageRect.size.height * pdfScale)
@@ -86,17 +87,17 @@ public struct PDFDocument {
         /*
          Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
          */
-        UIGraphicsBeginImageContextWithOptions(pageRect.size, true, 1.0)
+        UIGraphicsBeginImageContextWithOptions(pageRect.size, true, 1)
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
         
         // First fill the background with white.
-        context.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        context.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
         context.fill(pageRect)
         
         context.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
-        context.translateBy(x: 0.0, y: pageRect.size.height)
-        context.scaleBy(x: 1.0, y: -1.0)
+        context.translateBy(x: 0, y: pageRect.size.height)
+        context.scaleBy(x: 1, y: -1)
         
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         context.scaleBy(x: pdfScale, y: pdfScale)
