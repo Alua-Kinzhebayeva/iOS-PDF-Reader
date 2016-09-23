@@ -28,11 +28,11 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     
     weak var delegate: PDFThumbnailControllerDelegate?
     
-    private var pageImages: [UIImage]!
+    private var pageImages: [UIImage]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pageImages = document.allPageImages()
+        pageImages = document.allPageImages
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -42,12 +42,9 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PDFThumbnailCell
         
-        cell.imageView?.image = pageImages[(indexPath as NSIndexPath).row]
-        if currentPageIndex == (indexPath as NSIndexPath).row {
-            cell.alpha = 1.0
-        } else {
-            cell.alpha = 0.2
-        }
+        cell.imageView?.image = pageImages?[(indexPath as NSIndexPath).row]
+        cell.alpha = currentPageIndex == (indexPath as NSIndexPath).row ? 1 : 0.2
+        
         return cell
     }
     

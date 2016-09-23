@@ -23,10 +23,10 @@ internal final class TiledView: UIView {
         // rendered at different zoom levels. This only matters while the view 
         // is zooming, because once the the view is done zooming a new TiledPDFView
         // is created at the correct size and scale.
-        let tiledLayer = self.layer as! CATiledLayer
-        tiledLayer.levelsOfDetail = 16
-        tiledLayer.levelsOfDetailBias = 15
-        tiledLayer.tileSize = CGSize(width: 1024, height: 1024)
+        let tiledLayer = self.layer as? CATiledLayer
+        tiledLayer?.levelsOfDetail = 16
+        tiledLayer?.levelsOfDetailBias = 15
+        tiledLayer?.tileSize = CGSize(width: 1024, height: 1024)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -40,13 +40,13 @@ internal final class TiledView: UIView {
     // Draw the CGPDFPage into the layer at the correct scale.
     override func draw(_ layer: CALayer, in con: CGContext) {
         // Fill the background with white.
-        con.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        con.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
         con.fill(bounds)
     
         con.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
-        con.translateBy(x: 0.0, y: bounds.size.height)
-        con.scaleBy(x: 1.0, y: -1.0)
+        con.translateBy(x: 0, y: bounds.size.height)
+        con.scaleBy(x: 1, y: -1)
     
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         con.scaleBy(x: myScale, y: myScale)
