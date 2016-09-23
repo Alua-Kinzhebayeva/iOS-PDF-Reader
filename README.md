@@ -71,4 +71,4 @@ controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: 
 
 ## Acknowledgements
 
-inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
+Inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
