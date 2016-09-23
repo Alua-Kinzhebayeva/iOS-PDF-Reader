@@ -16,11 +16,10 @@ internal final class PDFPageCollectionViewCell: UICollectionViewCell {
     var pageIndex: Int?
     var pageView: PDFPageView? {
         didSet {
-            subviews.forEach({ $0.removeFromSuperview() })
+            subviews.forEach{ $0.removeFromSuperview() }
             if let pageView = pageView {
                 addSubview(pageView)
             }
-            
         }
     }
     
