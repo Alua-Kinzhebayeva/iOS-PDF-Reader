@@ -61,8 +61,8 @@ public struct PDFDocument {
         }
     }
     
-    func allPageImages() -> [UIImage] {
-        return (0..<pageCount).flatMap({ getPDFPageImage($0 + 1) })
+    var allPageImages: [UIImage] {
+        return (0..<pageCount).flatMap{ getPDFPageImage($0 + 1) }
     }
     
     func getPDFPageImage(_ pageNumber: Int) -> UIImage? {

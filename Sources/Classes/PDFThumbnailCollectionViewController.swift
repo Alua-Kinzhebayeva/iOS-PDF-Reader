@@ -32,7 +32,7 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pageImages = document.allPageImages()
+        pageImages = document.allPageImages
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
