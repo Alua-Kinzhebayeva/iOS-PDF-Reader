@@ -1,6 +1,6 @@
 {
   "name": "PDFReader",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": {
     "type": "MIT"
   },
@@ -11,7 +11,7 @@
   "summary": "PDF Reader for iOS written in Swift",
   "source": {
     "git": "https://github.com/Alua-Kinzhebayeva/iOS-PDF-Reader.git",
-    "tag": "2.0.0"
+    "tag": "2.0.1"
   },
   "platforms": {
     "ios": "9.0"

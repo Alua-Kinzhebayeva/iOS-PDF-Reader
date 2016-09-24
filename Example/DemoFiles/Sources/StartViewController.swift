@@ -28,10 +28,7 @@ internal final class StartViewController: UIViewController {
     }
     
     fileprivate func showDocument(_ document: PDFDocument) {
-        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
-        let controller = storyboard.instantiateInitialViewController() as! PDFViewController
-        controller.document = document
-        controller.title = document.fileName
+        let controller = PDFViewController.createNew(with: document)
         navigationController?.pushViewController(controller, animated: true)
     }
 
