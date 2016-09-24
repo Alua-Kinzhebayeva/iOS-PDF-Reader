@@ -31,7 +31,7 @@ public final class PDFViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        collectionView!.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
+        collectionView?.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         if actionButton == nil {
             if let actionButtonImage = actionButtonImage {
@@ -41,7 +41,7 @@ public final class PDFViewController: UIViewController {
             }
         }
         
-        navigationItem.rightBarButtonItem = actionButton!
+        navigationItem.rightBarButtonItem = actionButton
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
@@ -69,11 +69,11 @@ public final class PDFViewController: UIViewController {
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { (context) in
+        coordinator.animate(alongsideTransition: { context in
             let currentIndexPath = IndexPath(row: self.currentPageIndex, section: 0)
             self.collectionView.reloadItems(at: [currentIndexPath])
             self.collectionView.scrollToItem(at: currentIndexPath, at: .centeredHorizontally, animated: false)
-            }) { (context) in
+            }) { context in
                 self.thumbnailCollectionController?.currentPageIndex = self.currentPageIndex
         }
         
@@ -111,7 +111,7 @@ extension PDFViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "page", for: indexPath) as! PDFPageCollectionViewCell
-        cell.setup((indexPath as NSIndexPath).row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
+        cell.setup(indexPath.row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
         return cell
     }
 }
@@ -122,19 +122,15 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
     }
     
     private func hideThumbnailController(_ shouldHide: Bool) {
-        if shouldHide {
-            self.thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
-        } else {
-            self.thumbnailCollectionControllerBottom.constant = 0
-        }
+        self.thumbnailCollectionControllerBottom.constant = shouldHide ? -thumbnailCollectionControllerHeight.constant : 0
     }
     
     func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
         let shouldHide = !isThumbnailControllerShown
-        UIView.animate(withDuration: 0.25, animations: {
+        UIView.animate(withDuration: 0.25) {
             self.hideThumbnailController(shouldHide)
             self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
-        })
+        }
     }
 }
 
