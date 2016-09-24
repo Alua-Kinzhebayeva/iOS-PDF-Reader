@@ -7,6 +7,16 @@
 
 import UIKit
 
+extension PDFViewController {
+    class func createNew(with document: PDFDocument) -> PDFViewController {
+        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
+        let controller = storyboard.instantiateInitialViewController() as! PDFViewController
+        controller.document = document
+        controller.title = document.fileName
+        
+        return controller
+    }
+}
 
 /// Controller that is able to interact and navigate through pages of a `PDFDocument`
 public final class PDFViewController: UIViewController {
