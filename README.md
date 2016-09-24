@@ -51,11 +51,8 @@ Run `carthage update` to build the framework and drag the built `PDFReader.frame
 let documentURL = Bundle.main.url(forResource: "Cupcakes", withExtension: "pdf")!
 let document = PDFDocument(fileURL: documentURL)
     
-let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
-let controller = storyboard.instantiateInitialViewController() as! PDFViewController
-controller.document = document
-controller.title = document.fileName
-navigationController?.pushViewController(controller, animated: true)
+let readerController = PDFViewController.createNew(with: document)
+navigationController?.pushViewController(readerController, animated: true)
 ```
 ## Customizations
 
