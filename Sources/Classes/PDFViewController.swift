@@ -8,7 +8,7 @@
 import UIKit
 
 extension PDFViewController {
-    class func createNew(with document: PDFDocument) -> PDFViewController {
+    public class func createNew(with document: PDFDocument) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
