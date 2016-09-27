@@ -8,9 +8,10 @@
 
 import UIKit
 
+/// An individual thumbnail in the collection view
 internal final class PDFThumbnailCell: UICollectionViewCell {
-    static let cellWidth: CGFloat = 24
-    static let cellHeight: CGFloat = 44
+    /// Preferred size of each cell
+    static let cellSize = CGSize(width: 24, height: 44)
     
     @IBOutlet var imageView: UIImageView?
 }

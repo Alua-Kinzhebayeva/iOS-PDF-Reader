@@ -8,13 +8,18 @@
 
 import UIKit
 
+/// Delegate that is informed of important interaction events with the current thumbnail collection view
 protocol PDFThumbnailControllerDelegate: class {
+    /// User has tapped on thumbnail
     func didSelectIndexPath(_ indexPath: IndexPath)
 }
 
+/// Bottom collection of thumbnails that the user can interact with
 internal final class PDFThumbnailCollectionViewController: UICollectionViewController {
+    /// Current document being displayed
     var document: PDFDocument!
     
+    /// Current page index being displayed
     var currentPageIndex: Int = 0 {
         didSet {
             guard let collectionView = collectionView else { return }
@@ -26,8 +31,10 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
         }
     }
     
+    /// Calls actions when certain cells have been interacted with
     weak var delegate: PDFThumbnailControllerDelegate?
     
+    /// Small thumbnail image representations of the pdf pages
     private var pageImages: [UIImage]?
     
     override func viewDidLoad() {
@@ -42,14 +49,14 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PDFThumbnailCell
         
-        cell.imageView?.image = pageImages?[(indexPath as NSIndexPath).row]
-        cell.alpha = currentPageIndex == (indexPath as NSIndexPath).row ? 1 : 0.2
+        cell.imageView?.image = pageImages?[indexPath.row]
+        cell.alpha = currentPageIndex == indexPath.row ? 1 : 0.2
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
-        return CGSize(width: PDFThumbnailCell.cellWidth, height: PDFThumbnailCell.cellHeight)
+        return PDFThumbnailCell.cellSize
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

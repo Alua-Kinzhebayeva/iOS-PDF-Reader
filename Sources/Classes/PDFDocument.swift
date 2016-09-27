@@ -17,8 +17,13 @@ public struct PDFDocument {
     /// Name of the file stored in the file system
     public let fileName: String
     
+    /// file url where this document resides
     let fileURL: URL
+    
+    /// Core Graphics representation of the document
     let coreDocument: CGPDFDocument
+    
+    /// Password of the document
     let password: String?
     
     /// Returns a newly initialized document which is located on the file system.
@@ -27,11 +32,11 @@ public struct PDFDocument {
     /// - parameter password: password for the locked pdf
     ///
     /// - returns: A newly initialized `PDFDocument`.
-    public init(fileURL: URL, password: String? = nil) {
+    public init?(fileURL: URL, password: String? = nil) {
         self.fileURL = fileURL
         self.fileName = fileURL.lastPathComponent
         
-        guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { fatalError() }
+        guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { return nil }
         
         if let password = password, let cPasswordString = password.cString(using: .utf8) {
             // Try a blank password first, per Apple's Quartz PDF example
@@ -53,6 +58,7 @@ public struct PDFDocument {
         self.loadPages()
     }
     
+    /// Extracts image representations of each page and stores them in the cache
     func loadPages() {
         for pageNumber in 1...self.pageCount {
             if let backgroundImage = self.imageFromPDFPage(at: pageNumber) {
@@ -61,11 +67,17 @@ public struct PDFDocument {
         }
     }
     
+    /// Image representations of all the document pages
     var allPageImages: [UIImage] {
-        return (0..<pageCount).flatMap{ getPDFPageImage(at: $0 + 1) }
+        return (0..<pageCount).flatMap{ pdfPageImage(at: $0 + 1) }
     }
     
-    func getPDFPageImage(at pageNumber: Int) -> UIImage? {
+    /// Image representation of the document page, first looking at the cache, calculates otherwise
+    ///
+    /// - parameter pageNumber: page number index of the page
+    ///
+    /// - returns: Image representation of the document page
+    func pdfPageImage(at pageNumber: Int) -> UIImage? {
         if let image = PDFViewController.images.object(forKey: NSNumber(value: pageNumber)) {
             return image
         } else {
@@ -75,6 +87,11 @@ public struct PDFDocument {
         }
     }
     
+    /// Grabs the raw image representation of the document page from the document reference
+    ///
+    /// - parameter pageNumber: page number index of the page
+    ///
+    /// - returns: Image representation of the document page
     private func imageFromPDFPage(at pageNumber: Int) -> UIImage? {
         guard let page = coreDocument.page(at: pageNumber) else { return nil }
         
@@ -84,9 +101,7 @@ public struct PDFDocument {
         let pdfScale = min(scalingConstant/pageRect.size.width, scalingConstant/pageRect.size.height)
         pageRect.size = CGSize(width: pageRect.size.width * pdfScale, height: pageRect.size.height * pdfScale)
         
-        /*
-         Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
-         */
+        // Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
         UIGraphicsBeginImageContextWithOptions(pageRect.size, true, 1)
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
         

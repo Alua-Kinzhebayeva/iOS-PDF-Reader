@@ -6,15 +6,23 @@
 //  Copyright (c) 2015 AK. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import QuartzCore
 
+/// Tiled representation of a portion of a rendered pdf page
 internal final class TiledView: UIView {
+    /// Page of the PDF to be tiled
     private var leftPdfPage: CGPDFPage?
+    
+    /// Current PDF scale
     private let myScale: CGFloat
    
-    init(frame:CGRect, scale: CGFloat, newPage: CGPDFPage) {
+    /// Initializes a fresh tiled view
+    ///
+    /// - parameter frame:   desired frame of the tiled view
+    /// - parameter scale:   scale factor
+    /// - parameter newPage: new page representation
+    init(frame: CGRect, scale: CGFloat, newPage: CGPDFPage) {
         myScale = scale
         leftPdfPage = newPage
         super.init(frame: frame)
@@ -39,6 +47,7 @@ internal final class TiledView: UIView {
     
     // Draw the CGPDFPage into the layer at the correct scale.
     override func draw(_ layer: CALayer, in con: CGContext) {
+        guard let leftPdfPage = leftPdfPage else { return }
         // Fill the background with white.
         con.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
         con.fill(bounds)
@@ -50,7 +59,7 @@ internal final class TiledView: UIView {
     
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         con.scaleBy(x: myScale, y: myScale)
-        con.drawPDFPage(leftPdfPage!)
+        con.drawPDFPage(leftPdfPage)
         con.restoreGState()
     }
     

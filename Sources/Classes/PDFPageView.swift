@@ -6,42 +6,56 @@
 //  Copyright (c) 2015 AK. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
+/// Delegate that is informed of important interaction events with the current `PDFPageView`
 protocol PDFPageViewDelegate: class {
+    /// User has tapped on the page view
     func handleSingleTap(_ pdfPageView: PDFPageView)
 }
 
+/// An interactable page of a document
 internal final class PDFPageView: UIScrollView {
     /// The TiledPDFView that is currently front most.
     fileprivate var tiledPDFView: TiledView
     
-    fileprivate var PDFScale: CGFloat
+    /// Current scale of the scrolling view
+    fileprivate var scale: CGFloat
     
-    private let ZOOM_LEVELS = 2
-    private let ZOOM_STEP = 2
+    /// Number of zoom levels possible when double tapping
+    private let zoomLevels: CGFloat = 2
     
     /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
     private let backgroundImageView: UIImageView
     
-    private let PDFPage: CGPDFPage
+    /// Page reference being displayed
+    private let pdfPage: CGPDFPage
     
+    /// Current amount being zoomed
     private var zoomAmount: CGFloat?
-    private var isAtMaximumZoom: Bool = false
+    
+    /// Delegate that is informed of important interaction events
     private weak var pageViewDelegate: PDFPageViewDelegate?
     
+    /// Instantiates a scrollable page view
+    ///
+    /// - parameter frame:            frame of the view
+    /// - parameter document:         document to be displayed
+    /// - parameter pageNumber:       specific page number of the document to display
+    /// - parameter pageViewDelegate: delegate notified of any important interaction events
+    ///
+    /// - returns: a freshly initialized page view
     init(frame: CGRect, document: PDFDocument, pageNumber: Int, pageViewDelegate: PDFPageViewDelegate?) {
-        let backgroundImage = document.getPDFPageImage(at: pageNumber + 1)
+        let backgroundImage = document.pdfPageImage(at: pageNumber + 1)
         guard let pageRef = document.coreDocument.page(at: pageNumber + 1) else { fatalError() }
         
-        PDFPage = pageRef
+        pdfPage = pageRef
         self.pageViewDelegate = pageViewDelegate
         
         // Determine the size of the PDF page.
-        var pageRect = PDFPage.getBoxRect(.mediaBox)
-        PDFScale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
-        pageRect.size = CGSize(width: pageRect.size.width * PDFScale, height: pageRect.size.height * PDFScale)
+        var pageRect = pdfPage.getBoxRect(.mediaBox)
+        scale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
+        pageRect.size = CGSize(width: pageRect.size.width * scale, height: pageRect.size.height * scale)
         
         guard !pageRect.isEmpty else { fatalError() }
         
@@ -49,12 +63,21 @@ internal final class PDFPageView: UIScrollView {
         backgroundImageView.frame = pageRect
         
         // Create the TiledPDFView based on the size of the PDF page and scale it to fit the view.
-        tiledPDFView = TiledView(frame: pageRect, scale: PDFScale, newPage: PDFPage)
+        tiledPDFView = TiledView(frame: pageRect, scale: scale, newPage: pdfPage)
         
         super.init(frame: frame)
         
-        updateMinimumMaximumZoom()
-        zoomReset()
+        let targetRect = bounds.insetBy(dx: 0, dy: 0)
+        var zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
+        
+        minimumZoomScale = zoomScale // Set the minimum and maximum zoom scales
+        maximumZoomScale = zoomScale * (zoomLevels * zoomLevels) // Max number of zoom levels
+        zoomAmount = (maximumZoomScale - minimumZoomScale) / zoomLevels
+        
+        scale = 1
+        if zoomScale > minimumZoomScale {
+            zoomScale = minimumZoomScale
+        }
         
         addSubview(backgroundImageView)
         sendSubview(toBack: backgroundImageView)
@@ -112,12 +135,14 @@ internal final class PDFPageView: UIScrollView {
         tiledPDFView.contentScaleFactor = 1
     }
     
+    /// Notifies the delegate that a single tap was performed
     func handleSingleTap(_ tapRecognizer: UITapGestureRecognizer) {
         pageViewDelegate?.handleSingleTap(self)
     }
     
+    /// Zooms in and out accordingly, based on the current zoom level
     func handleDoubleTap(_ tapRecognizer: UITapGestureRecognizer) {
-        var newScale = zoomScale * CGFloat(ZOOM_STEP)
+        var newScale = zoomScale * zoomLevels
         if newScale >= maximumZoomScale {
             newScale = minimumZoomScale
         }
@@ -127,53 +152,40 @@ internal final class PDFPageView: UIScrollView {
         backgroundImageView.isHidden = false
     }
     
+    
+    /// Calculates the zoom scale given a target size and a source size
+    ///
+    /// - parameter target: size of the target rect
+    /// - parameter source: size of the source rect
+    ///
+    /// - returns: the zoom scale of the target in relation to the source
     private func zoomScaleThatFits(_ target: CGSize, source: CGSize) -> CGFloat {
-        let w_scale = (target.width / source.width) as CGFloat
-        let h_scale = (target.height / source.height) as CGFloat
-        return ((w_scale < h_scale) ? w_scale : h_scale)
+        let widthScale = target.width / source.width
+        let heightScale = target.height / source.height
+        return (widthScale < heightScale) ? widthScale : heightScale
     }
     
-    private func updateMinimumMaximumZoom(){
-        let targetRect = bounds.insetBy(dx: 0, dy: 0)
-        let zoomScale = zoomScaleThatFits(targetRect.size, source: bounds.size)
-        
-        minimumZoomScale = zoomScale // Set the minimum and maximum zoom scales
-        maximumZoomScale = zoomScale * CGFloat(ZOOM_LEVELS * ZOOM_LEVELS) // Max number of zoom levels
-        zoomAmount = (maximumZoomScale - minimumZoomScale) / CGFloat(ZOOM_LEVELS)
-    }
-    
-    private func zoomReset() {
-        PDFScale = 1
-        if zoomScale > minimumZoomScale {
-            zoomScale = minimumZoomScale
-        }
-    }
-    
+    /// Calculates the new zoom rect given a desired scale and a point to zoom on
+    ///
+    /// - parameter scale:     desired scale to zoom to
+    /// - parameter zoomPoint: the reference point to zoom on
+    ///
+    /// - returns: a new zoom rect
     private func zoomRectForScale(_ scale: CGFloat, zoomPoint: CGPoint) -> CGRect {
-        //Normalize current content size back to content scale of 1.0f
-        var contentSize = CGSize()
-        contentSize.width = (self.contentSize.width / zoomScale)
-        contentSize.height = (self.contentSize.height / zoomScale)
+        // Normalize current content size back to content scale of 1.0f
+        let updatedContentSize = CGSize(width: contentSize.width/zoomScale, height: contentSize.height/zoomScale)
     
-        //translate the zoom point to relative to the content rect
-        let x = (zoomPoint.x / bounds.size.width) * contentSize.width
-        let y = (zoomPoint.y / bounds.size.height) * contentSize.height
+        let translatedZoomPoint = CGPoint(x: (zoomPoint.x / bounds.size.width) * updatedContentSize.width,
+                                          y: (zoomPoint.y / bounds.size.height) * updatedContentSize.height)
     
-        let translatedZoomPoint = CGPoint(x: x,y: y)
+        // derive the size of the region to zoom to
+        let zoomSize = CGSize(width: bounds.size.width / scale, height: bounds.size.height / scale)
     
-        //derive the size of the region to zoom to
-        var zoomSize = CGSize()
-        zoomSize.width = bounds.size.width / scale
-        zoomSize.height = bounds.size.height / scale
-    
-        //offset the zoom rect so the actual zoom point is in the middle of the rectangle
-        var zoomRect = CGRect()
-        zoomRect.origin.x = translatedZoomPoint.x - zoomSize.width / 2.0
-        zoomRect.origin.y = translatedZoomPoint.y - zoomSize.height / 2.0
-        zoomRect.size.width = zoomSize.width
-        zoomRect.size.height = zoomSize.height
-    
-        return zoomRect
+        // offset the zoom rect so the actual zoom point is in the middle of the rectangle
+        return CGRect(x: translatedZoomPoint.x - zoomSize.width / 2.0,
+                      y: translatedZoomPoint.y - zoomSize.height / 2.0,
+                      width: zoomSize.width,
+                      height: zoomSize.height)
     }
 }
 
@@ -189,6 +201,6 @@ extension PDFPageView: UIScrollViewDelegate {
     /// When the user stops zooming, create a new Tiled
     /// PDFView based on the new zoom level and draw it on top of the old TiledPDFView.
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        PDFScale = scale
+        self.scale = scale
     }
 }
