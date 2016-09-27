@@ -49,22 +49,42 @@ Run `carthage update` to build the framework and drag the built `PDFReader.frame
 
 ```swift
 let documentURL = Bundle.main.url(forResource: "Cupcakes", withExtension: "pdf")!
-let document = PDFDocument(fileURL: documentURL)
-    
+let document = PDFDocument(fileURL: documentURL)!
+
 let readerController = PDFViewController.createNew(with: document)
 navigationController?.pushViewController(readerController, animated: true)
 ```
+
 ## Customizations
 
-Customize the action button image of the right menu bar item
+#### Controller Title
 ```swift
-controller.actionButtonImage = UIImage(named: "printButtonImage")
+PDFViewController.createNew(with: document, title: "Favorite Cupcakes")
 ```
 
-Customize the action button by replacing the UIBarButtonItem displayed with your own
+#### Action Button Image and Action
+
+##### Available Action Styles
+
 ```swift
-controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(MyController.sharePDF))
-```        
+/// Action button style
+public enum ActionStyle {
+    /// Brings up a print modal allowing user to print current PDF
+    case print
+
+    /// Brings up an activity sheet to share or open PDF in another app
+    case activitySheet
+
+    /// Performs a custom action
+    case customAction((Void) -> ())
+}
+```
+
+```swift
+let actionButtonImage = UIImage(named: "cupcakeActionButtonImage")
+PDFViewController.createNew(with: document, title: "Favorite Cupcakes", actionButtonImage: actionButtonImage, actionStyle: .activitySheet)
+
+```      
 
 ## Acknowledgements
 
