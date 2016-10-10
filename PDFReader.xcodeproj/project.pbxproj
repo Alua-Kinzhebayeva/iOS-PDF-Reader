@@ -16,6 +16,13 @@
 		14083FF41D4A956E00909913 /* PDFThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14083FEC1D4A956E00909913 /* PDFThumbnailCollectionViewController.swift */; };
 		14083FF51D4A956E00909913 /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14083FED1D4A956E00909913 /* PDFViewController.swift */; };
 		14083FF61D4A956E00909913 /* TiledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14083FEE1D4A956E00909913 /* TiledView.swift */; };
+		146D370F1DAB7E23004EEFA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146D370E1DAB7E23004EEFA5 /* AppDelegate.swift */; };
+		146D37141DAB7E23004EEFA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 146D37121DAB7E23004EEFA5 /* Main.storyboard */; };
+		146D37161DAB7E23004EEFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 146D37151DAB7E23004EEFA5 /* Assets.xcassets */; };
+		146D37191DAB7E23004EEFA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 146D37171DAB7E23004EEFA5 /* LaunchScreen.storyboard */; };
+		146D371F1DAB7EDF004EEFA5 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146D371E1DAB7EDF004EEFA5 /* StartViewController.swift */; };
+		146D37231DAB7F0F004EEFA5 /* apple.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 146D37211DAB7F0F004EEFA5 /* apple.pdf */; };
+		146D37241DAB7F0F004EEFA5 /* mongodb.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 146D37221DAB7F0F004EEFA5 /* mongodb.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,10 +37,26 @@
 		14083FEC1D4A956E00909913 /* PDFThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
 		14083FED1D4A956E00909913 /* PDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		14083FEE1D4A956E00909913 /* TiledView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiledView.swift; sourceTree = "<group>"; };
+		146D370C1DAB7E23004EEFA5 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		146D370E1DAB7E23004EEFA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		146D37131DAB7E23004EEFA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		146D37151DAB7E23004EEFA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		146D37181DAB7E23004EEFA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		146D371A1DAB7E23004EEFA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		146D371E1DAB7EDF004EEFA5 /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		146D37211DAB7F0F004EEFA5 /* apple.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = apple.pdf; sourceTree = "<group>"; };
+		146D37221DAB7F0F004EEFA5 /* mongodb.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = mongodb.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		14083FD51D4A953900909913 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		146D37091DAB7E23004EEFA5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -47,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				14083FDB1D4A953900909913 /* PDFReader */,
+				146D370D1DAB7E23004EEFA5 /* Demo */,
 				14083FDA1D4A953900909913 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				14083FD91D4A953900909913 /* PDFReader.framework */,
+				146D370C1DAB7E23004EEFA5 /* Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +125,30 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		146D370D1DAB7E23004EEFA5 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				146D37201DAB7F0F004EEFA5 /* ExamplePDFs */,
+				146D371E1DAB7EDF004EEFA5 /* StartViewController.swift */,
+				146D370E1DAB7E23004EEFA5 /* AppDelegate.swift */,
+				146D37121DAB7E23004EEFA5 /* Main.storyboard */,
+				146D37151DAB7E23004EEFA5 /* Assets.xcassets */,
+				146D37171DAB7E23004EEFA5 /* LaunchScreen.storyboard */,
+				146D371A1DAB7E23004EEFA5 /* Info.plist */,
+			);
+			name = Demo;
+			path = PDFReader/Demo;
+			sourceTree = "<group>";
+		};
+		146D37201DAB7F0F004EEFA5 /* ExamplePDFs */ = {
+			isa = PBXGroup;
+			children = (
+				146D37211DAB7F0F004EEFA5 /* apple.pdf */,
+				146D37221DAB7F0F004EEFA5 /* mongodb.pdf */,
+			);
+			path = ExamplePDFs;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -132,18 +181,41 @@
 			productReference = 14083FD91D4A953900909913 /* PDFReader.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		146D370B1DAB7E23004EEFA5 /* Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 146D371D1DAB7E23004EEFA5 /* Build configuration list for PBXNativeTarget "Demo" */;
+			buildPhases = (
+				146D37081DAB7E23004EEFA5 /* Sources */,
+				146D37091DAB7E23004EEFA5 /* Frameworks */,
+				146D370A1DAB7E23004EEFA5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Demo;
+			productName = Demo;
+			productReference = 146D370C1DAB7E23004EEFA5 /* Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		14083FD01D4A953900909913 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = mytrus;
 				TargetAttributes = {
 					14083FD81D4A953900909913 = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
+					};
+					146D370B1DAB7E23004EEFA5 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = HC9R4J3HM5;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -153,6 +225,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 14083FCF1D4A953900909913;
 			productRefGroup = 14083FDA1D4A953900909913 /* Products */;
@@ -160,6 +233,7 @@
 			projectRoot = "";
 			targets = (
 				14083FD81D4A953900909913 /* PDFReader */,
+				146D370B1DAB7E23004EEFA5 /* Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -170,6 +244,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				14083FEF1D4A956E00909913 /* PDFReader.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		146D370A1DAB7E23004EEFA5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				146D37191DAB7E23004EEFA5 /* LaunchScreen.storyboard in Resources */,
+				146D37161DAB7E23004EEFA5 /* Assets.xcassets in Resources */,
+				146D37141DAB7E23004EEFA5 /* Main.storyboard in Resources */,
+				146D37241DAB7F0F004EEFA5 /* mongodb.pdf in Resources */,
+				146D37231DAB7F0F004EEFA5 /* apple.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,7 +276,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		146D37081DAB7E23004EEFA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				146D370F1DAB7E23004EEFA5 /* AppDelegate.swift in Sources */,
+				146D371F1DAB7EDF004EEFA5 /* StartViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		146D37121DAB7E23004EEFA5 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				146D37131DAB7E23004EEFA5 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		146D37171DAB7E23004EEFA5 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				146D37181DAB7E23004EEFA5 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		14083FDF1D4A953900909913 /* Debug */ = {
@@ -327,6 +441,41 @@
 			};
 			name = Release;
 		};
+		146D371B1DAB7E23004EEFA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = HC9R4J3HM5;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFReader/Demo/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mytrus.Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		146D371C1DAB7E23004EEFA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = HC9R4J3HM5;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFReader/Demo/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mytrus.Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -344,6 +493,15 @@
 			buildConfigurations = (
 				14083FE21D4A953900909913 /* Debug */,
 				14083FE31D4A953900909913 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		146D371D1DAB7E23004EEFA5 /* Build configuration list for PBXNativeTarget "Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				146D371B1DAB7E23004EEFA5 /* Debug */,
+				146D371C1DAB7E23004EEFA5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
