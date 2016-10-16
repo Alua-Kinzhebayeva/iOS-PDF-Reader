@@ -85,19 +85,18 @@ public final class PDFViewController: UIViewController {
     fileprivate var actionButton: UIBarButtonItem?
     
     /// Background color to apply to both the view and the collectionView.
-    var backgroundColor: UIColor = UIColor(red: 236/255, green: 239/255, blue: 241/255, alpha: 1) {
-        didSet {
-            view.backgroundColor = backgroundColor
-            collectionView.backgroundColor = backgroundColor
+    public var backgroundColor: UIColor? {
+        get {
+            return collectionView.backgroundColor
+        } set (color) {
+            view.backgroundColor = color
+            collectionView.backgroundColor = color
         }
     }
     
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = backgroundColor
-        
-        collectionView.backgroundColor = backgroundColor
         collectionView.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         navigationItem.rightBarButtonItem = actionButton
