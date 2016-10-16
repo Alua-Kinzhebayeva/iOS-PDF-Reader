@@ -84,9 +84,18 @@ public final class PDFViewController: UIViewController {
     /// UIBarButtonItem used to override the default action button
     fileprivate var actionButton: UIBarButtonItem?
     
+    /// Background color to apply to the collectionView.
+    public var backgroundColor: UIColor? = .lightGray {
+        didSet {
+            collectionView?.backgroundColor = backgroundColor
+        }
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
-        collectionView?.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
+    
+        collectionView.backgroundColor = backgroundColor
+        collectionView.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         navigationItem.rightBarButtonItem = actionButton
         

@@ -62,6 +62,11 @@ navigationController?.pushViewController(readerController, animated: true)
 PDFViewController.createNew(with: document, title: "Favorite Cupcakes")
 ```
 
+#### Background Color
+```swift
+controller.backgroundColor = .white
+```
+
 #### Action Button Image and Action
 
 ##### Available Action Styles
