@@ -64,7 +64,7 @@ PDFViewController.createNew(with: document, title: "Favorite Cupcakes")
 
 #### Background Color
 ```swift
-controller.setBackgroundColor(to: UIColor.white)
+controller.backgroundColor = .white
 ```
 
 #### Action Button Image and Action
