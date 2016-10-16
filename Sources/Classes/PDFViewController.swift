@@ -84,8 +84,17 @@ public final class PDFViewController: UIViewController {
     /// UIBarButtonItem used to override the default action button
     fileprivate var actionButton: UIBarButtonItem?
     
+    /// Default background color applied both to the view and the collectionView.
+    fileprivate var defaultBackgroundColor: UIColor {
+        return UIColor(red: 236/255, green: 239/255, blue: 241/255, alpha: 1)
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = defaultBackgroundColor
+        
+        collectionView?.backgroundColor = defaultBackgroundColor
         collectionView?.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         navigationItem.rightBarButtonItem = actionButton
@@ -163,6 +172,15 @@ public final class PDFViewController: UIViewController {
     }
 }
 
+//MARK: Customization
+extension PDFViewController {
+    public func setBackgroundColor(to color: UIColor) {
+        collectionView?.backgroundColor = color
+        self.view.backgroundColor = color
+    }
+}
+
+//MARK: Delegates
 extension PDFViewController: PDFThumbnailControllerDelegate {
     func didSelectIndexPath(_ indexPath: IndexPath) {
         collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
