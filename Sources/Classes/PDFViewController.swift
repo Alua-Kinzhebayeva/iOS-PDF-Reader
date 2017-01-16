@@ -16,7 +16,7 @@ extension PDFViewController {
     /// - parameter actionStyle:       sytle of the action button
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -27,6 +27,8 @@ extension PDFViewController {
         } else {
             controller.title = document.fileName
         }
+        
+        controller.backButton = backButton
         
         if let actionButtonImage = actionButtonImage {
             controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
@@ -84,6 +86,9 @@ public final class PDFViewController: UIViewController {
     /// UIBarButtonItem used to override the default action button
     fileprivate var actionButton: UIBarButtonItem?
     
+    /// Backbutton used in case of being overrridden
+    fileprivate var backButton: UIBarButtonItem?
+    
     /// Background color to apply to the collectionView.
     public var backgroundColor: UIColor? = .lightGray {
         didSet {
@@ -98,6 +103,9 @@ public final class PDFViewController: UIViewController {
         collectionView.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         navigationItem.rightBarButtonItem = actionButton
+        if let backItem = backButton {
+            navigationItem.leftBarButtonItem = backItem
+        }
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
