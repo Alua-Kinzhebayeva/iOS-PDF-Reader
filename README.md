@@ -91,6 +91,16 @@ PDFViewController.createNew(with: document, title: "Favorite Cupcakes", actionBu
 
 ```      
 
+#### Override the default backbutton
+
+```swift
+/// Create a button to override the default behavior of the backbutton.  In the below example we create a cancel button which will call our myCancelFunc method on tap.
+let myBackButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action:  #selector(self.myCancelFunc(_:)))
+/// Provide your button to createNew using the backButton parameter.  The PDFViewController will then use your button instead of the default backbutton.
+PDFViewController.createNew(with: document, title: "Favorite Cupcakes", backButton: myBackButton)
+
+```
+
 ## Acknowledgements
 
 Inspired by PDF Reader https://github.com/vfr/Reader and Apple's example on TiledScrollView
