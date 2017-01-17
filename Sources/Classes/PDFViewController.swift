@@ -14,6 +14,7 @@ extension PDFViewController {
     /// - parameter title:             title that displays on the navigation bar on the PDFViewController; if nil, uses document's filename
     /// - parameter actionButtonImage: image of the action button; if nil, uses the default action system item image
     /// - parameter actionStyle:       sytle of the action button
+    /// - parameter backButton:        button to override the default controller back button
     ///
     /// - returns: a `PDFViewController`
     public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil) -> PDFViewController {
@@ -86,7 +87,7 @@ public final class PDFViewController: UIViewController {
     /// UIBarButtonItem used to override the default action button
     fileprivate var actionButton: UIBarButtonItem?
     
-    /// Backbutton used in case of being overrridden
+    /// Backbutton used to override the default back button
     fileprivate var backButton: UIBarButtonItem?
     
     /// Background color to apply to the collectionView.
