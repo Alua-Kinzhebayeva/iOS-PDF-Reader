@@ -31,6 +31,16 @@ internal final class StartViewController: UIViewController {
         }
     }
     
+    /// Displays an insanely large sized PDF document
+    @IBAction fileprivate func showInsanelyLargePDFDocument() {
+        let insanelyLargePDFDocumentName = "javaScript"
+        if let doc = document(insanelyLargePDFDocumentName) {
+            showDocument(doc)
+        } else {
+            print("Document named \(insanelyLargePDFDocumentName) not found in the file system")
+        }
+    }
+    
     /// Initializes a document with the name of the pdf in the file system
     ///
     /// - parameter name: name of the pdf in the file system

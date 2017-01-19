@@ -18,6 +18,7 @@
 		14083FF61D4A956E00909913 /* TiledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14083FEE1D4A956E00909913 /* TiledView.swift */; };
 		1456DCC81E2AA9A8001C3793 /* PDFReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14083FD91D4A953900909913 /* PDFReader.framework */; };
 		1456DCC91E2AA9A8001C3793 /* PDFReader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 14083FD91D4A953900909913 /* PDFReader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		146B85301E306460005F427E /* javaScript.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 146B852E1E30633A005F427E /* javaScript.pdf */; };
 		146D370F1DAB7E23004EEFA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146D370E1DAB7E23004EEFA5 /* AppDelegate.swift */; };
 		146D37141DAB7E23004EEFA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 146D37121DAB7E23004EEFA5 /* Main.storyboard */; };
 		146D37161DAB7E23004EEFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 146D37151DAB7E23004EEFA5 /* Assets.xcassets */; };
@@ -63,6 +64,7 @@
 		14083FEC1D4A956E00909913 /* PDFThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
 		14083FED1D4A956E00909913 /* PDFViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		14083FEE1D4A956E00909913 /* TiledView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiledView.swift; sourceTree = "<group>"; };
+		146B852E1E30633A005F427E /* javaScript.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = javaScript.pdf; sourceTree = "<group>"; };
 		146D370C1DAB7E23004EEFA5 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		146D370E1DAB7E23004EEFA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		146D37131DAB7E23004EEFA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 		146D37201DAB7F0F004EEFA5 /* ExamplePDFs */ = {
 			isa = PBXGroup;
 			children = (
+				146B852E1E30633A005F427E /* javaScript.pdf */,
 				146D37211DAB7F0F004EEFA5 /* apple.pdf */,
 				146D37221DAB7F0F004EEFA5 /* mongodb.pdf */,
 			);
@@ -284,6 +287,7 @@
 				146D37191DAB7E23004EEFA5 /* LaunchScreen.storyboard in Resources */,
 				146D37161DAB7E23004EEFA5 /* Assets.xcassets in Resources */,
 				146D37141DAB7E23004EEFA5 /* Main.storyboard in Resources */,
+				146B85301E306460005F427E /* javaScript.pdf in Resources */,
 				146D37241DAB7F0F004EEFA5 /* mongodb.pdf in Resources */,
 				146D37231DAB7F0F004EEFA5 /* apple.pdf in Resources */,
 			);
