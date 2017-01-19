@@ -40,8 +40,10 @@ internal final class PDFPageCollectionViewCell: UICollectionViewCell {
     /// - parameter pageCollectionViewCellDelegate: delegate informed of important events
     func setup(_ indexPathRow: Int, collectionViewBounds: CGRect, document: PDFDocument, pageCollectionViewCellDelegate: PDFPageCollectionViewCellDelegate?) {
         self.pageCollectionViewCellDelegate = pageCollectionViewCellDelegate
-        pageView = PDFPageView(frame: bounds, document: document, pageNumber: indexPathRow, pageViewDelegate: self)
-        pageIndex = indexPathRow
+        document.pdfPageImage(at: indexPathRow + 1) { (backgroundImage) in
+            pageView = PDFPageView(frame: bounds, document: document, pageNumber: indexPathRow, backgroundImage: backgroundImage, pageViewDelegate: self)
+            pageIndex = indexPathRow
+        }
     }
 }
 

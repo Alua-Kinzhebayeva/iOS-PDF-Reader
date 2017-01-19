@@ -45,11 +45,11 @@ internal final class PDFPageView: UIScrollView {
     /// - parameter frame:            frame of the view
     /// - parameter document:         document to be displayed
     /// - parameter pageNumber:       specific page number of the document to display
+    /// - parameter backgroundImage:  background image of the page to display while rendering
     /// - parameter pageViewDelegate: delegate notified of any important interaction events
     ///
     /// - returns: a freshly initialized page view
-    init(frame: CGRect, document: PDFDocument, pageNumber: Int, pageViewDelegate: PDFPageViewDelegate?) {
-        let backgroundImage = document.pdfPageImage(at: pageNumber + 1)
+    init(frame: CGRect, document: PDFDocument, pageNumber: Int, backgroundImage: UIImage?, pageViewDelegate: PDFPageViewDelegate?) {
         guard let pageRef = document.coreDocument.page(at: pageNumber + 1) else { fatalError() }
         
         pdfPage = pageRef
