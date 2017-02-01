@@ -67,9 +67,6 @@ public final class PDFViewController: UIViewController {
     /// Width of the thumbnail bar (used to resize on rotation events)
     @IBOutlet private var thumbnailCollectionControllerWidth: NSLayoutConstraint!
     
-    /// Image cache with the page index and and image of the page
-    static let images = NSCache<NSNumber,UIImage>()
-    
     /// PDF document that should be displayed
     fileprivate var document: PDFDocument!
     

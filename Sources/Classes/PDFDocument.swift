@@ -26,6 +26,9 @@ public struct PDFDocument {
     /// Password of the document
     let password: String?
     
+    /// Image cache with the page index and and image of the page
+    let images = NSCache<NSNumber, UIImage>()
+    
     /// Returns a newly initialized document which is located on the file system.
     ///
     /// - parameter fileURL:  the file URL where the locked `.pdf` document exists on the file system
@@ -64,7 +67,7 @@ public struct PDFDocument {
             for pageNumber in 1...self.pageCount {
                 self.imageFromPDFPage(at: pageNumber, callback: { backgroundImage in
                     guard let backgroundImage = backgroundImage else { return }
-                    PDFViewController.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
+                    self.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
                 })
             }
         }
@@ -94,7 +97,7 @@ public struct PDFDocument {
     ///
     /// - returns: Image representation of the document page
     func pdfPageImage(at pageNumber: Int, callback: (UIImage?) -> Void) {
-        if let image = PDFViewController.images.object(forKey: NSNumber(value: pageNumber)) {
+        if let image = images.object(forKey: NSNumber(value: pageNumber)) {
             callback(image)
         } else {
             imageFromPDFPage(at: pageNumber, callback: { image in
@@ -103,7 +106,7 @@ public struct PDFDocument {
                     return
                 }
                 
-                PDFViewController.images.setObject(image, forKey: NSNumber(value: pageNumber))
+                images.setObject(image, forKey: NSNumber(value: pageNumber))
                 callback(image)
             })
         }
