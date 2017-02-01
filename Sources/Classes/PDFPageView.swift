@@ -100,6 +100,8 @@ internal final class PDFPageView: UIScrollView {
         singleTapOne.cancelsTouchesInView = false
         addGestureRecognizer(singleTapOne)
         
+        singleTapOne.require(toFail: doubleTapOne)
+        
         bouncesZoom = false
         decelerationRate = UIScrollViewDecelerationRateFast
         delegate = self
