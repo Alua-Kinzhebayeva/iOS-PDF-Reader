@@ -198,11 +198,6 @@ extension PDFViewController: UICollectionViewDataSource {
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
-    /// Whether or not the thumbnail controller is currently being displayed
-    private var isThumbnailControllerShown: Bool {
-        return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
-    }
-    
     /// Toggles the hiding/showing of the thumbnail controller
     ///
     /// - parameter shouldHide: whether or not the controller show hide
@@ -211,7 +206,12 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
     }
     
     func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
-        let shouldHide = !isThumbnailControllerShown
+        var shouldHide: Bool {
+            guard let isNavigationBarHidden = navigationController?.isNavigationBarHidden else {
+                return false
+            }
+            return !isNavigationBarHidden
+        }
         UIView.animate(withDuration: 0.25) {
             self.hideThumbnailController(shouldHide)
             self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
