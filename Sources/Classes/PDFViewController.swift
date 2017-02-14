@@ -94,6 +94,17 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    public var scrollDirection: UICollectionViewScrollDirection = .horizontal {
+        didSet {
+            if collectionView == nil {  // if the user of the controller is trying to change the scrollDiecton before it
+                _ = view                // is on the sceen, we need to show it ofscreen to access it's collectionView.
+            }
+            if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = scrollDirection
+            }
+        }
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
     
