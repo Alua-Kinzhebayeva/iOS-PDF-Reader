@@ -145,6 +145,10 @@ public final class PDFViewController: UIViewController {
         return .slide
     }
     
+    public override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return thumbnailsEnabled
+    }
+    
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let controller = segue.destination as? PDFThumbnailCollectionViewController {
             thumbnailCollectionController = controller
