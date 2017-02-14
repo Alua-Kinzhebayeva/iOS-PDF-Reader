@@ -94,6 +94,7 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    /// Slides horizontally (from left to right, default) or vertically (from top to bottom)
     public var scrollDirection: UICollectionViewScrollDirection = .horizontal {
         didSet {
             if collectionView == nil {  // if the user of the controller is trying to change the scrollDiecton before it
