@@ -56,7 +56,7 @@ public final class PDFViewController: UIViewController {
     }
     
     /// Collection veiw where all the pdf pages are rendered
-    @IBOutlet fileprivate var collectionView: UICollectionView!
+    @IBOutlet public var collectionView: UICollectionView!
     
     /// Height of the thumbnail bar (used to hide/show)
     @IBOutlet fileprivate var thumbnailCollectionControllerHeight: NSLayoutConstraint!
