@@ -94,6 +94,30 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    /// Set this to `false` if you don't want to load the thumbnails strip.
+    fileprivate var thumbnailsEnabled = true {
+        didSet {
+            if thumbnailCollectionControllerHeight == nil {
+                _ = view
+            }
+            if !thumbnailsEnabled {
+                thumbnailCollectionControllerHeight.constant = 0
+            }
+        }
+    }
+    
+    /// Slides horizontally (from left to right, default) or vertically (from top to bottom)
+    public var scrollDirection: UICollectionViewScrollDirection = .horizontal {
+        didSet {
+            if collectionView == nil {  // if the user of the controller is trying to change the scrollDiecton before it
+                _ = view                // is on the sceen, we need to show it ofscreen to access it's collectionView.
+            }
+            if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = scrollDirection
+            }
+        }
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
     
