@@ -17,7 +17,7 @@ extension PDFViewController {
     /// - parameter backButton:        button to override the default controller back button
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, thumbnailsEnabled: Bool? = true) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -30,6 +30,7 @@ extension PDFViewController {
         }
         
         controller.backButton = backButton
+        controller.thumbnailsEnabled = thumbnailsEnabled!
         
         if let actionButtonImage = actionButtonImage {
             controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
@@ -94,6 +95,30 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    /// Set this to `false` if you don't want to load the thumbnails strip.
+    fileprivate var thumbnailsEnabled = true {
+        didSet {
+            if thumbnailCollectionControllerHeight == nil {
+                _ = view
+            }
+            if !thumbnailsEnabled {
+                thumbnailCollectionControllerHeight.constant = 0
+            }
+        }
+    }
+    
+    /// Slides horizontally (from left to right, default) or vertically (from top to bottom)
+    public var scrollDirection: UICollectionViewScrollDirection = .horizontal {
+        didSet {
+            if collectionView == nil {  // if the user of the controller is trying to change the scrollDiecton before it
+                _ = view                // is on the sceen, we need to show it ofscreen to access it's collectionView.
+            }
+            if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = scrollDirection
+            }
+        }
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
     
@@ -119,6 +144,10 @@ public final class PDFViewController: UIViewController {
     
     override public var preferredStatusBarUpdateAnimation : UIStatusBarAnimation {
         return .slide
+    }
+    
+    public override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return thumbnailsEnabled
     }
     
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -198,11 +227,6 @@ extension PDFViewController: UICollectionViewDataSource {
 }
 
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
-    /// Whether or not the thumbnail controller is currently being displayed
-    private var isThumbnailControllerShown: Bool {
-        return thumbnailCollectionControllerBottom.constant == -thumbnailCollectionControllerHeight.constant
-    }
-    
     /// Toggles the hiding/showing of the thumbnail controller
     ///
     /// - parameter shouldHide: whether or not the controller show hide
@@ -211,7 +235,12 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
     }
     
     func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
-        let shouldHide = !isThumbnailControllerShown
+        var shouldHide: Bool {
+            guard let isNavigationBarHidden = navigationController?.isNavigationBarHidden else {
+                return false
+            }
+            return !isNavigationBarHidden
+        }
         UIView.animate(withDuration: 0.25) {
             self.hideThumbnailController(shouldHide)
             self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
