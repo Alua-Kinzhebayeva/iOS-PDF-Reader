@@ -138,11 +138,11 @@ public final class PDFViewController: UIViewController {
         thumbnailCollectionControllerWidth.constant = width
     }
     
-    override public var prefersStatusBarHidden : Bool {
+    override public var prefersStatusBarHidden: Bool {
         return navigationController?.isNavigationBarHidden == true
     }
     
-    override public var preferredStatusBarUpdateAnimation : UIStatusBarAnimation {
+    override public var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
     
