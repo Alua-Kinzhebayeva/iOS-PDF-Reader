@@ -149,7 +149,7 @@ public final class PDFViewController: UIViewController {
     }
     
     public override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        return thumbnailsEnabled
+        return isThumbnailsEnabled
     }
     
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
