@@ -58,6 +58,7 @@ internal final class StartViewController: UIViewController {
     fileprivate func showDocument(_ document: PDFDocument) {
         let image = UIImage(named: "")
         let controller = PDFViewController.createNew(with: document, title: "", actionButtonImage: image, actionStyle: .activitySheet)
+        // controller.scrollDirection = .vertical // use this to scroll from top to bottom instead of left to right
         navigationController?.pushViewController(controller, animated: true)
     }
 
