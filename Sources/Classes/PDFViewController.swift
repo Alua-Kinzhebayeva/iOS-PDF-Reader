@@ -17,7 +17,7 @@ extension PDFViewController {
     /// - parameter backButton:        button to override the default controller back button
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, thumbnailsEnabled: Bool? = true) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, thumbnailsEnabled: Bool = true) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -30,7 +30,7 @@ extension PDFViewController {
         }
         
         controller.backButton = backButton
-        controller.thumbnailsEnabled = thumbnailsEnabled!
+        controller.thumbnailsEnabled = thumbnailsEnabled
         
         if let actionButtonImage = actionButtonImage {
             controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
