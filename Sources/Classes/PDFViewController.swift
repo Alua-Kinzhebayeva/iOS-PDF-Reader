@@ -231,7 +231,7 @@ extension PDFViewController: UICollectionViewDataSource {
 extension PDFViewController: PDFPageCollectionViewCellDelegate {
     /// Toggles the hiding/showing of the thumbnail controller
     ///
-    /// - parameter shouldHide: whether or not the controller show hide
+    /// - parameter shouldHide: whether or not the controller should hide the thumbnail controller
     private func hideThumbnailController(_ shouldHide: Bool) {
         self.thumbnailCollectionControllerBottom.constant = shouldHide ? -thumbnailCollectionControllerHeight.constant : 0
     }
