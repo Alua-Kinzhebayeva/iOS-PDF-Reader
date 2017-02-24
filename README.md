@@ -104,8 +104,7 @@ PDFViewController.createNew(with: document, title: "Favorite Cupcakes", backButt
 #### Do not load the thumbnails in the controller
 
 ```swift
-// You can also pass true to this parameter but not passing anything works as true — it's the default value
-let controller = PDFViewController.createNew(with: document, thumbnailsEnabled: false)
+let controller = PDFViewController.createNew(with: document, isThumbnailsEnabled: false)
 ```
 
 
