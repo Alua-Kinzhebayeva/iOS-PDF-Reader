@@ -10,14 +10,16 @@ import UIKit
 extension PDFViewController {
     /// Initializes a new `PDFViewController`
     ///
-    /// - parameter document:          PDF document to be displayed
-    /// - parameter title:             title that displays on the navigation bar on the PDFViewController; if nil, uses document's filename
-    /// - parameter actionButtonImage: image of the action button; if nil, uses the default action system item image
-    /// - parameter actionStyle:       sytle of the action button
-    /// - parameter backButton:        button to override the default controller back button
+    /// - parameter document:            PDF document to be displayed
+    /// - parameter title:               title that displays on the navigation bar on the PDFViewController; 
+    ///                                  if nil, uses document's filename
+    /// - parameter actionButtonImage:   image of the action button; if nil, uses the default action system item image
+    /// - parameter actionStyle:         sytle of the action button
+    /// - parameter backButton:          button to override the default controller back button
+    /// - parameter isThumbnailsEnabled: whether or not the thumbnails bar should be enabled
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, thumbnailsEnabled: Bool = true) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -30,7 +32,7 @@ extension PDFViewController {
         }
         
         controller.backButton = backButton
-        controller.thumbnailsEnabled = thumbnailsEnabled
+        controller.isThumbnailsEnabled = isThumbnailsEnabled
         
         if let actionButtonImage = actionButtonImage {
             controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
@@ -57,7 +59,7 @@ public final class PDFViewController: UIViewController {
     }
     
     /// Collection veiw where all the pdf pages are rendered
-    @IBOutlet fileprivate var collectionView: UICollectionView!
+    @IBOutlet public var collectionView: UICollectionView!
     
     /// Height of the thumbnail bar (used to hide/show)
     @IBOutlet fileprivate var thumbnailCollectionControllerHeight: NSLayoutConstraint!
@@ -95,13 +97,13 @@ public final class PDFViewController: UIViewController {
         }
     }
     
-    /// Set this to `false` if you don't want to load the thumbnails strip.
-    fileprivate var thumbnailsEnabled = true {
+    /// Whether or not the thumbnails bar should be enabled
+    fileprivate var isThumbnailsEnabled = true {
         didSet {
             if thumbnailCollectionControllerHeight == nil {
                 _ = view
             }
-            if !thumbnailsEnabled {
+            if !isThumbnailsEnabled {
                 thumbnailCollectionControllerHeight.constant = 0
             }
         }
@@ -138,16 +140,16 @@ public final class PDFViewController: UIViewController {
         thumbnailCollectionControllerWidth.constant = width
     }
     
-    override public var prefersStatusBarHidden : Bool {
+    override public var prefersStatusBarHidden: Bool {
         return navigationController?.isNavigationBarHidden == true
     }
     
-    override public var preferredStatusBarUpdateAnimation : UIStatusBarAnimation {
+    override public var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
     
     public override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        return thumbnailsEnabled
+        return isThumbnailsEnabled
     }
     
     override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
