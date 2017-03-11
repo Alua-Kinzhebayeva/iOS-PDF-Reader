@@ -125,13 +125,23 @@ public struct PDFDocument {
         }
         
         // Determine the size of the PDF page.
-        var pageRect = page.getBoxRect(.mediaBox)
+        let originalPageRect: CGRect
+        switch page.rotationAngle {
+        case 90, 270:
+            let originalRect = page.getBoxRect(.mediaBox)
+            let rotatedSize = CGSize(width: originalRect.size.height, height: originalRect.size.width)
+            originalPageRect = CGRect(origin: originalRect.origin, size: rotatedSize)
+        default:
+            originalPageRect = page.getBoxRect(.mediaBox)
+        }
+        
         let scalingConstant: CGFloat = 240
-        let pdfScale = min(scalingConstant/pageRect.size.width, scalingConstant/pageRect.size.height)
-        pageRect.size = CGSize(width: pageRect.size.width * pdfScale, height: pageRect.size.height * pdfScale)
+        let pdfScale = min(scalingConstant/originalPageRect.size.width, scalingConstant/originalPageRect.size.height)
+        let scaledPageSize = CGSize(width: originalPageRect.size.width * pdfScale, height: originalPageRect.size.height * pdfScale)
+        let scaledPageRect = CGRect(origin: originalPageRect.origin, size: scaledPageSize)
         
         // Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
-        UIGraphicsBeginImageContextWithOptions(pageRect.size, true, 1)
+        UIGraphicsBeginImageContextWithOptions(scaledPageSize, true, 1)
         guard let context = UIGraphicsGetCurrentContext() else {
             callback(nil)
             return
@@ -139,12 +149,29 @@ public struct PDFDocument {
         
         // First fill the background with white.
         context.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
-        context.fill(pageRect)
+        context.fill(scaledPageRect)
         
         context.saveGState()
+        
         // Flip the context so that the PDF page is rendered right side up.
-        context.translateBy(x: 0, y: pageRect.size.height)
+        let rotationAngle: CGFloat
+        switch page.rotationAngle {
+        case 90:
+            rotationAngle = 270
+            context.translateBy(x: scaledPageSize.width, y: scaledPageSize.height)
+        case 180:
+            rotationAngle = 180
+            context.translateBy(x: 0, y: scaledPageSize.height)
+        case 270:
+            rotationAngle = 90
+            context.translateBy(x: scaledPageSize.width, y: scaledPageSize.height)
+        default:
+            rotationAngle = 0
+            context.translateBy(x: 0, y: scaledPageSize.height)
+        }
+        
         context.scaleBy(x: 1, y: -1)
+        context.rotate(by: rotationAngle.degreesToRadians)
         
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         context.scaleBy(x: pdfScale, y: pdfScale)

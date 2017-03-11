@@ -63,9 +63,26 @@ internal final class TiledView: UIView {
     
         con.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
-        con.translateBy(x: 0, y: bounds.size.height)
+        
+        let rotationAngle: CGFloat
+        switch leftPdfPage.rotationAngle {
+        case 90:
+            rotationAngle = 270
+            con.translateBy(x: bounds.size.width, y: bounds.size.height)
+        case 180:
+            rotationAngle = 180
+            con.translateBy(x: 0, y: bounds.size.height)
+        case 270:
+            rotationAngle = 90
+            con.translateBy(x: bounds.size.width, y: bounds.size.height)
+        default:
+            rotationAngle = 0
+            con.translateBy(x: 0, y: bounds.size.height)
+        }
+        
         con.scaleBy(x: 1, y: -1)
-    
+        con.rotate(by: rotationAngle.degreesToRadians)
+        
         // Scale the context so that the PDF page is rendered at the correct size for the zoom level.
         con.scaleBy(x: myScale, y: myScale)
         con.drawPDFPage(leftPdfPage)

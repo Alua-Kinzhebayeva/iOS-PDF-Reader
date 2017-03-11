@@ -56,14 +56,25 @@ internal final class PDFPageView: UIScrollView {
         self.pageViewDelegate = pageViewDelegate
         
         // Determine the size of the PDF page.
-        var pageRect = pdfPage.getBoxRect(.mediaBox)
-        scale = min(frame.size.width/pageRect.size.width, frame.size.height/pageRect.size.height)
-        pageRect.size = CGSize(width: pageRect.size.width * scale, height: pageRect.size.height * scale)
+        // Determine the size of the PDF page.
+        let originalPageRect: CGRect
+        switch pageRef.rotationAngle {
+        case 90, 270:
+            let originalRect = pageRef.getBoxRect(.mediaBox)
+            let rotatedSize = CGSize(width: originalRect.size.height, height: originalRect.size.width)
+            originalPageRect = CGRect(origin: originalRect.origin, size: rotatedSize)
+        default:
+            originalPageRect = pageRef.getBoxRect(.mediaBox)
+        }
         
-        guard !pageRect.isEmpty else { fatalError() }
+        scale = min(frame.size.width/originalPageRect.size.width, frame.size.height/originalPageRect.size.height)
+        let scaledPageRectSize = CGSize(width: originalPageRect.size.width * scale, height: originalPageRect.size.height * scale)
+        let scaledPageRect = CGRect(origin: originalPageRect.origin, size: scaledPageRectSize)
+        
+        guard !scaledPageRect.isEmpty else { fatalError() }
         
         // Create our content view based on the size of the PDF page
-        contentView = UIView(frame: pageRect)
+        contentView = UIView(frame: scaledPageRect)
         
         backgroundImageView = UIImageView(image: backgroundImage)
         backgroundImageView.frame = contentView.bounds
