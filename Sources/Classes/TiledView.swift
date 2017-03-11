@@ -9,6 +9,15 @@
 import UIKit
 import QuartzCore
 
+extension Int {
+    var degreesToRadians: Double { return Double(self) * .pi / 180 }
+}
+
+extension FloatingPoint {
+    var degreesToRadians: Self { return self * .pi / 180 }
+    var radiansToDegrees: Self { return self * 180 / .pi }
+}
+
 /// Tiled representation of a portion of a rendered pdf page
 internal final class TiledView: UIView {
     /// Page of the PDF to be tiled
