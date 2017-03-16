@@ -22,12 +22,12 @@ internal final class StartViewController: UIViewController {
     }
     
     /// Displays a larger sized PDF document
-    @IBAction fileprivate func showLargePDFDocument() {
-        let largePDFDocumentName = "mongodb"
-        if let doc = document(largePDFDocumentName) {
+    @IBAction fileprivate func showRemotePDFDocument() {
+        let remotePDFDocumentURLPath = "http://devstreaming.apple.com/videos/wwdc/2016/201h1g4asm31ti2l9n1/201/201_internationalization_best_practices.pdf"
+        if let remotePDFDocumentURL = URL(string: remotePDFDocumentURLPath), let doc = document(remotePDFDocumentURL) {
             showDocument(doc)
         } else {
-            print("Document named \(largePDFDocumentName) not found in the file system")
+            print("Document named \(remotePDFDocumentURLPath) not found")
         }
     }
     
@@ -42,13 +42,19 @@ internal final class StartViewController: UIViewController {
     }
     
     /// Initializes a document with the name of the pdf in the file system
-    ///
-    /// - parameter name: name of the pdf in the file system
-    ///
-    /// - returns: a document
     fileprivate func document(_ name: String) -> PDFDocument? {
         guard let documentURL = Bundle.main.url(forResource: name, withExtension: "pdf") else { return nil }
-        return PDFDocument(fileURL: documentURL)
+        return PDFDocument(url: documentURL)
+    }
+    
+    /// Initializes a document with the data of the pdf
+    fileprivate func document(_ data: Data) -> PDFDocument? {
+        return PDFDocument(fileData: data, fileName: "Sample PDF")
+    }
+    
+    /// Initializes a document with the remote url of the pdf
+    fileprivate func document(_ remoteURL: URL) -> PDFDocument? {
+        return PDFDocument(url: remoteURL)
     }
     
     

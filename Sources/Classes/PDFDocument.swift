@@ -14,11 +14,14 @@ public struct PDFDocument {
     /// Number of pages document contains
     public let pageCount: Int
     
-    /// Name of the file stored in the file system
+    /// Name of the PDF file, used to display on navigation titles
     public let fileName: String
     
-    /// file url where this document resides
-    let fileURL: URL
+    /// File url where this document resides
+    let fileURL: URL?
+    
+    /// File data of the document
+    let fileData: Data
     
     /// Core Graphics representation of the document
     let coreDocument: CGPDFDocument
@@ -31,22 +34,49 @@ public struct PDFDocument {
     
     /// Returns a newly initialized document which is located on the file system.
     ///
-    /// - parameter fileURL:  the file URL where the locked `.pdf` document exists on the file system
+    /// - parameter url:      file or remote URL of the PDF document
+    /// - parameter password: password for the locked PDF
+    ///
+    /// - returns: A newly initialized `PDFDocument`
+    public init?(url: URL, password: String? = nil) {
+        guard let fileData = try? Data(contentsOf: url) else { return nil }
+        
+        self.init(fileData: fileData, fileURL: url, fileName: url.lastPathComponent, password: password)
+    }
+    
+    /// Returns a newly initialized document from data representing a PDF
+    ///
+    /// - parameter fileData: data of the PDF document
+    /// - parameter fileName: name of the PDF file
     /// - parameter password: password for the locked pdf
     ///
-    /// - returns: A newly initialized `PDFDocument`.
-    public init?(fileURL: URL, password: String? = nil) {
-        self.fileURL = fileURL
-        self.fileName = fileURL.lastPathComponent
+    /// - returns: A newly initialized `PDFDocument`
+    public init?(fileData: Data, fileName: String, password: String? = nil) {
+        self.init(fileData: fileData, fileURL: nil, fileName: fileName, password: password)
+    }
+    
+    /// Returns a newly initialized document
+    ///
+    /// - parameter fileData: data of the PDF document
+    /// - parameter fileURL:  file URL where the PDF document exists on the file system
+    /// - parameter fileName: name of the PDF file
+    /// - parameter password: password for the locked PDF
+    ///
+    /// - returns: A newly initialized `PDFDocument`
+    private init?(fileData: Data, fileURL: URL?, fileName: String, password: String?) {
+        guard let provider = CGDataProvider(data: fileData as CFData) else { return nil }
+        guard let coreDocument = CGPDFDocument(provider) else { return nil }
         
-        guard let coreDocument = CGPDFDocument(fileURL as CFURL) else { return nil }
+        self.fileData = fileData
+        self.fileURL = fileURL
+        self.fileName = fileName
         
         if let password = password, let cPasswordString = password.cString(using: .utf8) {
             // Try a blank password first, per Apple's Quartz PDF example
             if coreDocument.isEncrypted && !coreDocument.unlockWithPassword("") {
                 // Nope, now let's try the provided password to unlock the PDF
                 if !coreDocument.unlockWithPassword(cPasswordString) {
-                    print("CGPDFDocumentCreateX: Unable to unlock \(fileURL)")
+                    print("CGPDFDocumentCreateX: Unable to unlock \(fileName)")
                 }
                 self.password = password
             } else {

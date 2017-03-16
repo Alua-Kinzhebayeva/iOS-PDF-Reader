@@ -186,14 +186,15 @@ public final class PDFViewController: UIViewController {
     
     /// Presents activity sheet to share or open PDF in another app
     private func presentActivitySheet() {
-        let controller = UIActivityViewController(activityItems: [document.fileURL], applicationActivities: nil)
+        let controller = UIActivityViewController(activityItems: [document.fileData], applicationActivities: nil)
+        controller.popoverPresentationController?.barButtonItem = actionButton
         present(controller, animated: true, completion: nil)
     }
     
     /// Presents print sheet to print PDF
     private func print() {
         guard UIPrintInteractionController.isPrintingAvailable else { return }
-        guard UIPrintInteractionController.canPrint(document.fileURL) else { return }
+        guard UIPrintInteractionController.canPrint(document.fileData) else { return }
         guard document.password == nil else { return }
         let printInfo = UIPrintInfo.printInfo()
         printInfo.duplex = .longEdge
@@ -202,7 +203,7 @@ public final class PDFViewController: UIViewController {
         
         let printInteraction = UIPrintInteractionController.shared
         printInteraction.printInfo = printInfo
-        printInteraction.printingItem = document.fileURL
+        printInteraction.printingItem = document.fileData
         printInteraction.showsPageRange = true
         printInteraction.present(animated: true, completionHandler: nil)
     }
