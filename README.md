@@ -46,11 +46,28 @@ github "Alua-Kinzhebayeva/iOS-PDF-Reader"
 Run `carthage update` to build the framework and drag the built `PDFReader.framework` into your Xcode project.
 
 ## Usage
+### Create a PDFDocument
 
+##### From a file URL
 ```swift
-let documentURL = Bundle.main.url(forResource: "Cupcakes", withExtension: "pdf")!
-let document = PDFDocument(fileURL: documentURL)!
+let documentFileURL = Bundle.main.url(forResource: "Cupcakes", withExtension: "pdf")!
+let document = PDFDocument(url: documentFileURL)!
+```
 
+##### From a remote URL
+```swift
+let remotePDFDocumentURLPath = "http://devstreaming.apple.com/videos/wwdc/2016/201h1g4asm31ti2l9n1/201/201_internationalization_best_practices.pdf"
+let remotePDFDocumentURL = URL(string: remotePDFDocumentURLPath)!
+let document = PDFDocument(url: documentRemoteURL)!
+```
+
+##### From Data
+```swift
+let document = PDFDocument(fileData: fileData, fileName: "Sample PDF")!
+```
+
+### Display a PDFDocument
+```swift
 let readerController = PDFViewController.createNew(with: document)
 navigationController?.pushViewController(readerController, animated: true)
 ```
