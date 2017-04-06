@@ -135,7 +135,7 @@ public final class PDFViewController: UIViewController {
         let cellSpacing = CGFloat(2.0)
         let totalSpacing = (numberOfPages - 1.0) * cellSpacing
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellSize.width) + totalSpacing
-        let width = min(thumbnailWidth, view.bounds.size.width)
+        let width = min(thumbnailWidth, view.bounds.width)
         thumbnailCollectionControllerWidth.constant = width
     }
     
@@ -252,7 +252,7 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width - 1, height: collectionView.frame.size.height)
+        return CGSize(width: collectionView.frame.width - 1, height: collectionView.frame.height)
     }
 }
 
@@ -262,9 +262,9 @@ extension PDFViewController: UIScrollViewDelegate {
         var updatedPageIndex = currentPageIndex
         
         if self.scrollDirection == .vertical {
-            updatedPageIndex = Int(round(max(scrollView.contentOffset.y, 0) / scrollView.bounds.size.height))
+            updatedPageIndex = Int(round(max(scrollView.contentOffset.y, 0) / scrollView.bounds.height))
         } else {
-            updatedPageIndex = Int(round(max(scrollView.contentOffset.x, 0) / scrollView.bounds.size.width))
+            updatedPageIndex = Int(round(max(scrollView.contentOffset.x, 0) / scrollView.bounds.width))
         }
         
         if updatedPageIndex != currentPageIndex {

@@ -55,20 +55,10 @@ internal final class PDFPageView: UIScrollView {
         pdfPage = pageRef
         self.pageViewDelegate = pageViewDelegate
         
-        // Determine the size of the PDF page.
-        // Determine the size of the PDF page.
-        let originalPageRect: CGRect
-        switch pageRef.rotationAngle {
-        case 90, 270:
-            let originalRect = pageRef.getBoxRect(.mediaBox)
-            let rotatedSize = CGSize(width: originalRect.size.height, height: originalRect.size.width)
-            originalPageRect = CGRect(origin: originalRect.origin, size: rotatedSize)
-        default:
-            originalPageRect = pageRef.getBoxRect(.mediaBox)
-        }
+        let originalPageRect = pageRef.originalPageRect
         
-        scale = min(frame.size.width/originalPageRect.size.width, frame.size.height/originalPageRect.size.height)
-        let scaledPageRectSize = CGSize(width: originalPageRect.size.width * scale, height: originalPageRect.size.height * scale)
+        scale = min(frame.width/originalPageRect.width, frame.height/originalPageRect.height)
+        let scaledPageRectSize = CGSize(width: originalPageRect.width * scale, height: originalPageRect.height * scale)
         let scaledPageRect = CGRect(origin: originalPageRect.origin, size: scaledPageRectSize)
         
         guard !scaledPageRect.isEmpty else { fatalError() }
@@ -129,19 +119,18 @@ internal final class PDFPageView: UIScrollView {
         super.layoutSubviews()
         
         // Center the image as it becomes smaller than the size of the screen.
-        let boundsSize = bounds.size
         var frameToCenter = contentView.frame
     
         // Center horizontally.
-        if frameToCenter.size.width < boundsSize.width {
-            frameToCenter.origin.x = (boundsSize.width - frameToCenter.size.width) / 2
+        if frameToCenter.width < bounds.width {
+            frameToCenter.origin.x = (bounds.width - frameToCenter.width) / 2
         } else {
             frameToCenter.origin.x = 0
         }
     
         // Center vertically.
-        if frameToCenter.size.height < boundsSize.height {
-            frameToCenter.origin.y = (boundsSize.height - frameToCenter.size.height) / 2
+        if frameToCenter.height < bounds.height {
+            frameToCenter.origin.y = (bounds.height - frameToCenter.height) / 2
         } else {
             frameToCenter.origin.y = 0
         }
@@ -192,11 +181,11 @@ internal final class PDFPageView: UIScrollView {
         // Normalize current content size back to content scale of 1.0f
         let updatedContentSize = CGSize(width: contentSize.width/zoomScale, height: contentSize.height/zoomScale)
     
-        let translatedZoomPoint = CGPoint(x: (zoomPoint.x / bounds.size.width) * updatedContentSize.width,
-                                          y: (zoomPoint.y / bounds.size.height) * updatedContentSize.height)
+        let translatedZoomPoint = CGPoint(x: (zoomPoint.x / bounds.width) * updatedContentSize.width,
+                                          y: (zoomPoint.y / bounds.height) * updatedContentSize.height)
     
         // derive the size of the region to zoom to
-        let zoomSize = CGSize(width: bounds.size.width / scale, height: bounds.size.height / scale)
+        let zoomSize = CGSize(width: bounds.width / scale, height: bounds.height / scale)
     
         // offset the zoom rect so the actual zoom point is in the middle of the rectangle
         return CGRect(x: translatedZoomPoint.x - zoomSize.width / 2.0,

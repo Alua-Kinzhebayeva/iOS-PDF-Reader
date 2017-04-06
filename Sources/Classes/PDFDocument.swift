@@ -154,20 +154,11 @@ public struct PDFDocument {
             return
         }
         
-        // Determine the size of the PDF page.
-        let originalPageRect: CGRect
-        switch page.rotationAngle {
-        case 90, 270:
-            let originalRect = page.getBoxRect(.mediaBox)
-            let rotatedSize = CGSize(width: originalRect.size.height, height: originalRect.size.width)
-            originalPageRect = CGRect(origin: originalRect.origin, size: rotatedSize)
-        default:
-            originalPageRect = page.getBoxRect(.mediaBox)
-        }
+        let originalPageRect = page.originalPageRect
         
         let scalingConstant: CGFloat = 240
-        let pdfScale = min(scalingConstant/originalPageRect.size.width, scalingConstant/originalPageRect.size.height)
-        let scaledPageSize = CGSize(width: originalPageRect.size.width * pdfScale, height: originalPageRect.size.height * pdfScale)
+        let pdfScale = min(scalingConstant/originalPageRect.width, scalingConstant/originalPageRect.height)
+        let scaledPageSize = CGSize(width: originalPageRect.width * pdfScale, height: originalPageRect.height * pdfScale)
         let scaledPageRect = CGRect(origin: originalPageRect.origin, size: scaledPageSize)
         
         // Create a low resolution image representation of the PDF page to display before the TiledPDFView renders its content.
@@ -215,5 +206,19 @@ public struct PDFDocument {
         }
         
         callback(backgroundImage)
+    }
+}
+
+extension CGPDFPage {
+    /// original size of the PDF page.
+    var originalPageRect: CGRect {
+        switch rotationAngle {
+        case 90, 270:
+            let originalRect = getBoxRect(.mediaBox)
+            let rotatedSize = CGSize(width: originalRect.height, height: originalRect.width)
+            return CGRect(origin: originalRect.origin, size: rotatedSize)
+        default:
+            return getBoxRect(.mediaBox)
+        }
     }
 }
