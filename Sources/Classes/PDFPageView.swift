@@ -119,23 +119,25 @@ internal final class PDFPageView: UIScrollView {
         super.layoutSubviews()
         
         // Center the image as it becomes smaller than the size of the screen.
-        var frameToCenter = contentView.frame
+        let contentViewSize = contentView.frame.size
     
         // Center horizontally.
-        if frameToCenter.width < bounds.width {
-            frameToCenter.origin.x = (bounds.width - frameToCenter.width) / 2
+        let xOffset: CGFloat
+        if contentViewSize.width < bounds.width {
+            xOffset = (bounds.width - contentViewSize.width) / 2
         } else {
-            frameToCenter.origin.x = 0
+            xOffset = 0
         }
     
         // Center vertically.
-        if frameToCenter.height < bounds.height {
-            frameToCenter.origin.y = (bounds.height - frameToCenter.height) / 2
+        let yOffset: CGFloat
+        if contentViewSize.height < bounds.height {
+            yOffset = (bounds.height - contentViewSize.height) / 2
         } else {
-            frameToCenter.origin.y = 0
+            yOffset = 0
         }
         
-        contentView.frame = frameToCenter
+        contentView.frame = CGRect(origin: CGPoint(x: xOffset, y: yOffset), size: contentViewSize)
     
         // To handle the interaction between CATiledLayer and high resolution screens, set the 
         // tiling view's contentScaleFactor to 1.0. If this step were omitted, the content scale factor 

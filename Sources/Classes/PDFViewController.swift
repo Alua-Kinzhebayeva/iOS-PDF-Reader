@@ -258,9 +258,7 @@ extension PDFViewController: UICollectionViewDelegateFlowLayout {
 
 extension PDFViewController: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        var updatedPageIndex = currentPageIndex
-        
+        let updatedPageIndex: Int
         if self.scrollDirection == .vertical {
             updatedPageIndex = Int(round(max(scrollView.contentOffset.y, 0) / scrollView.bounds.height))
         } else {
