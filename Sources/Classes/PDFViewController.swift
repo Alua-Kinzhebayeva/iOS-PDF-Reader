@@ -17,9 +17,10 @@ extension PDFViewController {
     /// - parameter actionStyle:         sytle of the action button
     /// - parameter backButton:          button to override the default controller back button
     /// - parameter isThumbnailsEnabled: whether or not the thumbnails bar should be enabled
+    /// - parameter startPageIndex:      page index to start on load, defaults to 0; if out of bounds, set to 0
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
@@ -29,6 +30,12 @@ extension PDFViewController {
             controller.title = title
         } else {
             controller.title = document.fileName
+        }
+        
+        if startPageIndex >= 0 && startPageIndex < document.pageCount {
+            controller.currentPageIndex = startPageIndex
+        } else {
+            controller.currentPageIndex = 0
         }
         
         controller.backButton = backButton
@@ -137,6 +144,11 @@ public final class PDFViewController: UIViewController {
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellSize.width) + totalSpacing
         let width = min(thumbnailWidth, view.bounds.width)
         thumbnailCollectionControllerWidth.constant = width
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        didSelectIndexPath(IndexPath(row: currentPageIndex, section: 0))
     }
     
     override public var prefersStatusBarHidden: Bool {
