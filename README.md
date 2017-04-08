@@ -46,6 +46,12 @@ github "Alua-Kinzhebayeva/iOS-PDF-Reader"
 Run `carthage update` to build the framework and drag the built `PDFReader.framework` into your Xcode project.
 
 ## Usage
+
+### Import Framework
+```swift
+import PDFReader
+```
+
 ### Create a PDFDocument
 
 ##### From a file URL
