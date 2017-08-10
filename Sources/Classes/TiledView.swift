@@ -59,7 +59,7 @@ internal final class TiledView: UIView {
         guard let leftPdfPage = leftPdfPage else { return }
         // Fill the background with white.
         con.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
-        con.fill(bounds)
+        con.fill(layer.bounds)
     
         con.saveGState()
         // Flip the context so that the PDF page is rendered right side up.
@@ -68,16 +68,16 @@ internal final class TiledView: UIView {
         switch leftPdfPage.rotationAngle {
         case 90:
             rotationAngle = 270
-            con.translateBy(x: bounds.width, y: bounds.height)
+            con.translateBy(x: layer.bounds.width, y: layer.bounds.height)
         case 180:
             rotationAngle = 180
-            con.translateBy(x: 0, y: bounds.height)
+            con.translateBy(x: 0, y: layer.bounds.height)
         case 270:
             rotationAngle = 90
-            con.translateBy(x: bounds.width, y: bounds.height)
+            con.translateBy(x: layer.bounds.width, y: layer.bounds.height)
         default:
             rotationAngle = 0
-            con.translateBy(x: 0, y: bounds.height)
+            con.translateBy(x: 0, y: layer.bounds.height)
         }
         
         con.scaleBy(x: 1, y: -1)
