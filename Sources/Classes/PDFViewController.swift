@@ -20,11 +20,12 @@ extension PDFViewController {
     /// - parameter startPageIndex:      page index to start on load, defaults to 0; if out of bounds, set to 0
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0) -> PDFViewController {
+    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0, shouldUseToolbar: Bool = false) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
         controller.actionStyle = actionStyle
+        controller.shouldUseToolbar = shouldUseToolbar
         
         if let title = title {
             controller.title = title
@@ -96,6 +97,9 @@ public final class PDFViewController: UIViewController {
     /// Backbutton used to override the default back button
     fileprivate var backButton: UIBarButtonItem?
     
+    /// Action button can be displayed in toolbar
+    fileprivate var shouldUseToolbar: Bool = false
+    
     /// Background color to apply to the collectionView.
     public var backgroundColor: UIColor? = .lightGray {
         didSet {
@@ -133,7 +137,14 @@ public final class PDFViewController: UIViewController {
         collectionView.backgroundColor = backgroundColor
         collectionView.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
-        navigationItem.rightBarButtonItem = actionButton
+        if let actionButton = actionButton, shouldUseToolbar {
+            toolbarItems = [
+                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                actionButton]
+        } else {
+            navigationItem.rightBarButtonItem = actionButton
+        }
+        
         if let backItem = backButton {
             navigationItem.leftBarButtonItem = backItem
         }
@@ -144,6 +155,12 @@ public final class PDFViewController: UIViewController {
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellSize.width) + totalSpacing
         let width = min(thumbnailWidth, view.bounds.width)
         thumbnailCollectionControllerWidth.constant = width
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = !shouldUseToolbar
     }
     
     public override func viewDidLayoutSubviews() {

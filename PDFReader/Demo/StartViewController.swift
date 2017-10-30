@@ -21,6 +21,16 @@ internal final class StartViewController: UIViewController {
         }
     }
     
+    /// Displays a smaller sized PDF document with toolbar
+    @IBAction fileprivate func showSmallPDFDocumentWithToolbar() {
+        let smallPDFDocumentName = "apple"
+        if let doc = document(smallPDFDocumentName) {
+            showDocument(doc, withToolbar: true)
+        } else {
+            print("Document named \(smallPDFDocumentName) not found in the file system")
+        }
+    }
+    
     /// Displays a larger sized PDF document
     @IBAction fileprivate func showRemotePDFDocument() {
         let remotePDFDocumentURLPath = "http://devstreaming.apple.com/videos/wwdc/2016/201h1g4asm31ti2l9n1/201/201_internationalization_best_practices.pdf"
@@ -63,9 +73,9 @@ internal final class StartViewController: UIViewController {
     /// - parameter document: document to present
     ///
     /// Add `thumbnailsEnabled:false` to `createNew` to not load the thumbnails in the controller.
-    fileprivate func showDocument(_ document: PDFDocument) {
+    fileprivate func showDocument(_ document: PDFDocument, withToolbar: Bool = false) {
         let image = UIImage(named: "")
-        let controller = PDFViewController.createNew(with: document, title: "", actionButtonImage: image, actionStyle: .activitySheet)
+        let controller = PDFViewController.createNew(with: document, title: "", actionButtonImage: image, actionStyle: .activitySheet, shouldUseToolbar: withToolbar)
         navigationController?.pushViewController(controller, animated: true)
     }
 
