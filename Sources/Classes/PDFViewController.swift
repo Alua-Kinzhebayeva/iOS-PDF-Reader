@@ -18,6 +18,7 @@ extension PDFViewController {
     /// - parameter backButton:          button to override the default controller back button
     /// - parameter isThumbnailsEnabled: whether or not the thumbnails bar should be enabled
     /// - parameter startPageIndex:      page index to start on load, defaults to 0; if out of bounds, set to 0
+    /// - parameter shouldUseToolbar:    if true, action button shown in UIToolBar at the bottom of scree 
     ///
     /// - returns: a `PDFViewController`
     public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0, shouldUseToolbar: Bool = false) -> PDFViewController {
