@@ -164,10 +164,10 @@ public final class PDFViewController: UIViewController {
         navigationController?.isToolbarHidden = !shouldUseToolbar
     }
     
-    public override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        navigationController?.isToolbarHidden = shouldUseToolbar
+        navigationController?.setToolbarHidden(shouldUseToolbar, animated: true)
     }
     
     public override func viewDidLayoutSubviews() {
