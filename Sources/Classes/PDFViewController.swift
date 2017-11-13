@@ -63,7 +63,7 @@ public final class PDFViewController: UIViewController {
         case activitySheet
         
         /// Performs a custom action
-        case customAction((Void) -> ())
+        case customAction(() -> ())
     }
     
     /// Collection veiw where all the pdf pages are rendered
@@ -209,7 +209,7 @@ public final class PDFViewController: UIViewController {
     }
     
     /// Takes an appropriate action based on the current action style
-    func actionButtonPressed() {
+    @objc func actionButtonPressed() {
         switch actionStyle {
         case .print:
             print()
