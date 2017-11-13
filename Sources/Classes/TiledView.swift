@@ -57,6 +57,13 @@ internal final class TiledView: UIView {
     // Draw the CGPDFPage into the layer at the correct scale.
     override func draw(_ layer: CALayer, in con: CGContext) {
         guard let leftPdfPage = leftPdfPage else { return }
+        
+        // We must fetch the view bounds on the main queue
+        var bounds = CGRect.zero
+        DispatchQueue.main.sync { [weak self] in
+            bounds = self?.bounds ?? .zero
+        }
+        
         // Fill the background with white.
         con.setFillColor(red: 1, green: 1, blue: 1, alpha: 1)
         con.fill(layer.bounds)
