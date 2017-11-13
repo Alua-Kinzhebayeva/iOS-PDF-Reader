@@ -12,7 +12,7 @@ import PDFReader
 /// Presents user with some documents which can be viewed
 internal final class StartViewController: UIViewController {
     /// Displays a smaller sized PDF document
-    @IBAction fileprivate func showSmallPDFDocument() {
+    @IBAction private func showSmallPDFDocument() {
         let smallPDFDocumentName = "apple"
         if let doc = document(smallPDFDocumentName) {
             showDocument(doc)
@@ -22,7 +22,7 @@ internal final class StartViewController: UIViewController {
     }
     
     /// Displays a larger sized PDF document
-    @IBAction fileprivate func showRemotePDFDocument() {
+    @IBAction private func showRemotePDFDocument() {
         let remotePDFDocumentURLPath = "http://devstreaming.apple.com/videos/wwdc/2016/201h1g4asm31ti2l9n1/201/201_internationalization_best_practices.pdf"
         if let remotePDFDocumentURL = URL(string: remotePDFDocumentURLPath), let doc = document(remotePDFDocumentURL) {
             showDocument(doc)
@@ -32,7 +32,7 @@ internal final class StartViewController: UIViewController {
     }
     
     /// Displays an insanely large sized PDF document
-    @IBAction fileprivate func showInsanelyLargePDFDocument() {
+    @IBAction private func showInsanelyLargePDFDocument() {
         let insanelyLargePDFDocumentName = "javaScript"
         if let doc = document(insanelyLargePDFDocumentName) {
             showDocument(doc)
@@ -42,18 +42,18 @@ internal final class StartViewController: UIViewController {
     }
     
     /// Initializes a document with the name of the pdf in the file system
-    fileprivate func document(_ name: String) -> PDFDocument? {
+    private func document(_ name: String) -> PDFDocument? {
         guard let documentURL = Bundle.main.url(forResource: name, withExtension: "pdf") else { return nil }
         return PDFDocument(url: documentURL)
     }
     
     /// Initializes a document with the data of the pdf
-    fileprivate func document(_ data: Data) -> PDFDocument? {
+    private func document(_ data: Data) -> PDFDocument? {
         return PDFDocument(fileData: data, fileName: "Sample PDF")
     }
     
     /// Initializes a document with the remote url of the pdf
-    fileprivate func document(_ remoteURL: URL) -> PDFDocument? {
+    private func document(_ remoteURL: URL) -> PDFDocument? {
         return PDFDocument(url: remoteURL)
     }
     
@@ -63,7 +63,7 @@ internal final class StartViewController: UIViewController {
     /// - parameter document: document to present
     ///
     /// Add `thumbnailsEnabled:false` to `createNew` to not load the thumbnails in the controller.
-    fileprivate func showDocument(_ document: PDFDocument) {
+    private func showDocument(_ document: PDFDocument) {
         let image = UIImage(named: "")
         let controller = PDFViewController.createNew(with: document, title: "", actionButtonImage: image, actionStyle: .activitySheet)
         navigationController?.pushViewController(controller, animated: true)

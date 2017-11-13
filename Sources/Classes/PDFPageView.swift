@@ -17,16 +17,16 @@ protocol PDFPageViewDelegate: class {
 /// An interactable page of a document
 internal final class PDFPageView: UIScrollView {
     /// The TiledPDFView that is currently front most.
-    fileprivate var tiledPDFView: TiledView
+    private var tiledPDFView: TiledView
     
     /// Current scale of the scrolling view
-    fileprivate var scale: CGFloat
+    private var scale: CGFloat
     
     /// Number of zoom levels possible when double tapping
     private let zoomLevels: CGFloat = 2
     
     /// View which contains all of our content
-    fileprivate var contentView: UIView
+    private var contentView: UIView
     
     /// A low resolution image of the PDF page that is displayed until the TiledPDFView renders its content.
     private let backgroundImageView: UIImageView
