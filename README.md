@@ -15,6 +15,7 @@ PDF Reader for iOS written in Swift
 ## Requirements
 
 - iOS 8.0+
+- Swift 4
 
 ## Installation
 
