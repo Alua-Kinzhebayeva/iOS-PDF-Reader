@@ -1,3 +1,5 @@
+# Deprecated in favor of [PDFKIT](https://developer.apple.com/documentation/pdfkit) for iOS 11 apps
+
 # iOS-PDF-Reader
 [![Version](https://img.shields.io/cocoapods/v/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
 [![License](https://img.shields.io/cocoapods/l/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
