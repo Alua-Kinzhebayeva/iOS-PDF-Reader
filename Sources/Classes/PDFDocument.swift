@@ -108,7 +108,7 @@ public struct PDFDocument {
         var images = [UIImage]()
         var pagesCompleted = 0
         for pageNumber in 0..<pageCount {
-            pdfPageImage(at: pageNumber+1, callback: { (image) in
+            pdfPageImage(at: pageNumber + 1, callback: { (image) in
                 if let image = image {
                     images.append(image)
                 }

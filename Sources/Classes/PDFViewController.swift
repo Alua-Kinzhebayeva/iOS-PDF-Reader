@@ -20,32 +20,45 @@ extension PDFViewController {
     /// - parameter startPageIndex:      page index to start on load, defaults to 0; if out of bounds, set to 0
     ///
     /// - returns: a `PDFViewController`
-    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle = .print, backButton: UIBarButtonItem? = nil, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0) -> PDFViewController {
+//    public class func createNew(with document: PDFDocument, title: String? = nil, actionButtonImage: UIImage? = nil, actionStyle: ActionStyle?, isThumbnailsEnabled: Bool = true, startPageIndex: Int = 0) -> PDFViewController {
+//        let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
+//        let controller = storyboard.instantiateInitialViewController() as! PDFViewController
+//        controller.document = document
+//        controller.actionStyle = actionStyle
+//        
+//        if let title = title {
+//            controller.title = title
+//        } else {
+//            controller.title = document.fileName
+//        }
+//        
+//        if startPageIndex >= 0 && startPageIndex < document.pageCount {
+//            controller.currentPageIndex = startPageIndex
+//        } else {
+//            controller.currentPageIndex = 0
+//        }
+//
+////        controller.backButtonImage = backButtonImage
+//        
+//        if actionStyle != nil {
+//            if let actionButtonImage = actionButtonImage {
+//                controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
+//            } else {
+//                controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: controller, action: #selector(actionButtonPressed))
+//            }
+//        } else {
+//            controller.actionButton = nil
+//        }
+//        controller.isThumbnailsEnabled = isThumbnailsEnabled
+//        return controller
+//    }
+    
+    public class func createNew(with document: PDFDocument, properties: PDFViewUIProperties) -> PDFViewController {
         let storyboard = UIStoryboard(name: "PDFReader", bundle: Bundle(for: PDFViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! PDFViewController
         controller.document = document
-        controller.actionStyle = actionStyle
+        controller.uiProperties = properties
         
-        if let title = title {
-            controller.title = title
-        } else {
-            controller.title = document.fileName
-        }
-        
-        if startPageIndex >= 0 && startPageIndex < document.pageCount {
-            controller.currentPageIndex = startPageIndex
-        } else {
-            controller.currentPageIndex = 0
-        }
-        
-        controller.backButton = backButton
-        
-        if let actionButtonImage = actionButtonImage {
-            controller.actionButton = UIBarButtonItem(image: actionButtonImage, style: .plain, target: controller, action: #selector(actionButtonPressed))
-        } else {
-            controller.actionButton = UIBarButtonItem(barButtonSystemItem: .action, target: controller, action: #selector(actionButtonPressed))
-        }
-        controller.isThumbnailsEnabled = isThumbnailsEnabled
         return controller
     }
 }
@@ -64,8 +77,32 @@ public final class PDFViewController: UIViewController {
         case customAction(() -> ())
     }
     
+    /// View representing the navigation bar
+    @IBOutlet public var navigationView: UIView!
+    
+    /// button for returning to previous view
+    @IBOutlet public var backButton: UIButton!
+    
+    /// Label for title
+    @IBOutlet public var titleLabel: UILabel!
+    
+    /// Label for subtitle
+    @IBOutlet public var subtitleLabel: UILabel!
+    
+    /// Line view in the navigation view
+    @IBOutlet public var lineView: UIView!
+    
+    /// Line view above the thumbnails
+    @IBOutlet public var lineViewSeparatingThumbnails: UIView!
+    
     /// Collection veiw where all the pdf pages are rendered
     @IBOutlet public var collectionView: UICollectionView!
+    
+    /// Height of the navigation view (used to hide/show)
+    @IBOutlet private var navigationViewHeight: NSLayoutConstraint!
+    
+    /// Distance between the top of navigation view with top of page (used to hide/show)
+    @IBOutlet private var navigationViewTop: NSLayoutConstraint!
     
     /// Height of the thumbnail bar (used to hide/show)
     @IBOutlet private var thumbnailCollectionControllerHeight: NSLayoutConstraint!
@@ -79,7 +116,7 @@ public final class PDFViewController: UIViewController {
     /// PDF document that should be displayed
     private var document: PDFDocument!
     
-    private var actionStyle = ActionStyle.print
+    private var actionStyle: ActionStyle?
     
     /// Image used to override the default action button image
     private var actionButtonImage: UIImage?
@@ -93,15 +130,15 @@ public final class PDFViewController: UIViewController {
     /// UIBarButtonItem used to override the default action button
     private var actionButton: UIBarButtonItem?
     
-    /// Backbutton used to override the default back button
-    private var backButton: UIBarButtonItem?
-    
     /// Background color to apply to the collectionView.
-    public var backgroundColor: UIColor? = .lightGray {
+    public var backgroundColor: UIColor? = .lightGray /*{
         didSet {
             collectionView?.backgroundColor = backgroundColor
         }
-    }
+    }*/
+    
+//    ///Back button image
+//    private var backButtonImage: UIImage?
     
     /// Whether or not the thumbnails bar should be enabled
     private var isThumbnailsEnabled = true {
@@ -127,16 +164,19 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    /// UI values
+    private var uiProperties: PDFViewUIProperties?
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
-    
-        collectionView.backgroundColor = backgroundColor
+        
+        view.backgroundColor = .red//backgroundColor//.lightGray
+        collectionView.backgroundColor = .cyan//.clear//backgroundColor
         collectionView.register(PDFPageCollectionViewCell.self, forCellWithReuseIdentifier: "page")
         
         navigationItem.rightBarButtonItem = actionButton
-        if let backItem = backButton {
-            navigationItem.leftBarButtonItem = backItem
-        }
+
+        navigationItem.hidesBackButton = true
         
         let numberOfPages = CGFloat(document.pageCount)
         let cellSpacing = CGFloat(2.0)
@@ -144,6 +184,36 @@ public final class PDFViewController: UIViewController {
         let thumbnailWidth = (numberOfPages * PDFThumbnailCell.cellSize.width) + totalSpacing
         let width = min(thumbnailWidth, view.bounds.width)
         thumbnailCollectionControllerWidth.constant = width
+        
+        lineViewSeparatingThumbnails.backgroundColor = backgroundColor
+        
+        if let properties = uiProperties {
+            if let title = properties.title {
+                titleLabel.text = title
+                if let font = properties.titleFont {
+                    titleLabel.font = font
+                }
+            } else {
+                titleLabel.text = ""
+            }
+            if let subtitle = properties.subtitle {
+                subtitleLabel.text = subtitle
+                if let font = properties.subtitleFont {
+                    subtitleLabel.font = font
+                }
+            } else {
+                subtitleLabel.text = ""
+            }
+            
+            backButton.setImage(properties.backButtonImage, for: .normal)
+            backButton.setTitle((properties.backButtonImage != nil ? "" : "Back"), for: .normal)
+            
+            isThumbnailsEnabled = properties.isThumbnailsEnabled
+            
+            if let lineViewColor = properties.lineViewColor {
+                lineView.backgroundColor = lineViewColor
+            }
+        }
     }
     
     public override func viewDidLayoutSubviews() {
@@ -184,15 +254,22 @@ public final class PDFViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
     }
     
+    ///Back button tapped
+    @IBAction func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     /// Takes an appropriate action based on the current action style
     @objc func actionButtonPressed() {
-        switch actionStyle {
-        case .print:
-            print()
-        case .activitySheet:
-            presentActivitySheet()
-        case .customAction(let customAction):
-            customAction()
+        if let actionStyle = actionStyle {
+            switch actionStyle {
+            case .print:
+                print()
+            case .activitySheet:
+                presentActivitySheet()
+            case .customAction(let customAction):
+                customAction()
+            }
         }
     }
     
@@ -235,6 +312,7 @@ extension PDFViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "page", for: indexPath) as! PDFPageCollectionViewCell
+        
         cell.setup(indexPath.row, collectionViewBounds: collectionView.bounds, document: document, pageCollectionViewCellDelegate: self)
         return cell
     }
@@ -244,27 +322,27 @@ extension PDFViewController: PDFPageCollectionViewCellDelegate {
     /// Toggles the hiding/showing of the thumbnail controller
     ///
     /// - parameter shouldHide: whether or not the controller should hide the thumbnail controller
-    private func hideThumbnailController(_ shouldHide: Bool) {
-        self.thumbnailCollectionControllerBottom.constant = shouldHide ? -thumbnailCollectionControllerHeight.constant : 0
-    }
+//    private func hideThumbnailController(_ shouldHide: Bool) {
+//        self.thumbnailCollectionControllerBottom.constant = shouldHide ? -thumbnailCollectionControllerHeight.constant : 0
+//    }
     
     func handleSingleTap(_ cell: PDFPageCollectionViewCell, pdfPageView: PDFPageView) {
-        var shouldHide: Bool {
-            guard let isNavigationBarHidden = navigationController?.isNavigationBarHidden else {
-                return false
-            }
-            return !isNavigationBarHidden
+        if navigationViewTop.constant < CGFloat(0.0) {
+            navigationViewTop.constant = CGFloat(0.0)
+            thumbnailCollectionControllerBottom.constant = CGFloat(0.0)
+        } else {
+            navigationViewTop.constant = -navigationViewHeight.constant
+            thumbnailCollectionControllerBottom.constant = -thumbnailCollectionControllerHeight.constant
         }
         UIView.animate(withDuration: 0.25) {
-            self.hideThumbnailController(shouldHide)
-            self.navigationController?.setNavigationBarHidden(shouldHide, animated: true)
+            self.view.layoutIfNeeded()
         }
     }
 }
 
 extension PDFViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width - 1, height: collectionView.frame.height)
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
     }
 }
 
