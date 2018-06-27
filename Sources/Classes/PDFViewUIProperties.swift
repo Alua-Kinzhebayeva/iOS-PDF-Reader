@@ -40,6 +40,7 @@ public struct PDFViewUIProperties {
      - backButtonImage: image for back button
      - isThumbnailsEnabled: whether or not the thumbnails bar should be enabled
      - lineViewColor: color for the line view
+     returns: a `PDFViewUIProperties`
      */
     public init?(title: String?, titleFont: UIFont?, subtitle: String?, subtitleFont: UIFont?, backButtonImage: UIImage?, isThumbnailsEnabled: Bool = true, lineViewColor: UIColor?) {
         self.title = title
