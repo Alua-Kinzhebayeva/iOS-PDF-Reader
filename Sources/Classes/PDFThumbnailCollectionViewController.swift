@@ -45,12 +45,14 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        DispatchQueue.global(qos: .background).async {
-            self.document.allPageImages(callback: { (images) in
-                DispatchQueue.main.async {
-                    self.pageImages = images
-                }
-            })
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            if let document = self?.document {
+                document.allPageImages(callback: { (images) in
+                    DispatchQueue.main.async {
+                        self?.pageImages = images
+                    }
+                })
+            }
         }
     }
 
@@ -59,11 +61,11 @@ internal final class PDFThumbnailCollectionViewController: UICollectionViewContr
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PDFThumbnailCell
-        
-        cell.imageView?.image = pageImages?[indexPath.row]
-        cell.alpha = currentPageIndex == indexPath.row ? 1 : 0.2
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        if let thumbnailCell = cell as? PDFThumbnailCell {
+            thumbnailCell.imageView?.image = pageImages?[indexPath.row]
+            thumbnailCell.alpha = currentPageIndex == indexPath.row ? 1 : 0.2
+        }
         return cell
     }
     
