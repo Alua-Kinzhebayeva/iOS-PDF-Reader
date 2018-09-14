@@ -1,4 +1,4 @@
-# Deprecated in favor of [PDFKIT](https://developer.apple.com/documentation/pdfkit) for iOS 11 apps
+# Deprecated in favor of [PDFKIT](https://developer.apple.com/documentation/pdfkit) for iOS 11+ apps
 
 # iOS-PDF-Reader
 [![Version](https://img.shields.io/cocoapods/v/PDFReader.svg?style=flat)](http://cocoapods.org/pods/PDFReader)
@@ -17,7 +17,7 @@ PDF Reader for iOS written in Swift
 ## Requirements
 
 - iOS 8.0+
-- Swift 4
+- Swift 4.2
 
 ## Installation
 
