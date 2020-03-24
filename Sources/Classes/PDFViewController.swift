@@ -127,6 +127,11 @@ public final class PDFViewController: UIViewController {
         }
     }
     
+    /// Access currentPageIndex
+    public func getCurrentPageIndex() -> Int {
+        return currentPageIndex
+    }
+    
     /// Reset page when its unpresented
     public var resetZoom: Bool = false
     
